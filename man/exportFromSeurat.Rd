@@ -2,17 +2,40 @@
 % Please edit documentation in R/exportFromSeurat.R
 \name{exportFromSeurat}
 \alias{exportFromSeurat}
-\title{A Cat Function}
+\title{Export Seurat object to Cerebro.}
 \usage{
-exportFromSeurat()
+exportFromSeurat(object, experiment_name, organism,
+  column_sample = "sample", column_cluster = "cluster",
+  column_nUMI = "nUMI", column_nGene = "nGene",
+  column_cell_cycle_regev = NULL, column_cell_cycle_cyclone = NULL,
+  add_all_meta_data = TRUE)
 }
 \arguments{
-\item{love}{Do you love cats? Defaults to TRUE.}
+\item{object}{Seurat object.}
+
+\item{experiment_name}{Experiment name.}
+
+\item{organism}{Organism, e.g. hs (human), mm (mouse), etc.}
+
+\item{column_sample}{Column in object@meta.data that contains information about sample; defaults to "sample".}
+
+\item{column_cluster}{Column in object@meta.data that contains information about cluster; defaults to "cluster".}
+
+\item{column_nUMI}{Column in object@meta.data that contains information about number of transcripts per cell; defaults to "nUMI".}
+
+\item{column_nGene}{Column in object@meta.data that contains information about number of expressed genes per cell; defaults to "nGene".}
+
+\item{column_cell_cycle_regev}{Optional column in object@meta.data that contains information about cell cycle phase based on Regev method (default of Seurat); defaults to NULL.}
+
+\item{column_cell_cycle_cyclone}{Optional column in object@meta.data that contains information about cell cycle phase based on Cyclone method; defaults to NULL.}
+
+\item{add_all_meta_data}{If set to TRUE, all further meta data columns will be extracted as well.}
 }
 \description{
-This function allows you to express your love of cats.
+This function allows to export a Seurat object to visualize in Cerebro.
 }
 \examples{
-cat_function()
+exportFromSeurat(object = seurat, experiment_name = "PDX_patient_A", organism = "hs")
 }
-\keyword{cats}
+\keyword{cerebro}
+\keyword{seurat}
