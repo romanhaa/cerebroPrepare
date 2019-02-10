@@ -12,10 +12,11 @@ install_github("romanhaa/cerebroPrepare")
 ## How to use
 
 **Required meta data:**
-    * Sample.
-    * Cluster.
-    * Number of transcripts: usually created by Seurat by default.
-    * Number of expressed genes: usually created by Seurat by default.
+
+* Sample.
+* Cluster.
+* Number of transcripts: usually created by Seurat by default.
+* Number of expressed genes: usually created by Seurat by default.
 
 **Note:** It is recommended to save sample information in a column called `sample` and cluster information in a column called `cluster`. Otherwise, the respective column names need to specified below.
 
@@ -36,3 +37,9 @@ seurat <- getMostExpressedGenes(seurat)
 seurat <- getMarkerGenes(seurat)
 seurat <- annotateMarkerGenes(seurat)
 ```
+
+## To do
+
+* Check if functions work.
+* Check if it works with "normal" Seurat object and one from Cerebro pipeline.
+* Check how Cerebro behaves with different input data.
