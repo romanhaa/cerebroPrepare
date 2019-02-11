@@ -21,7 +21,7 @@ annotateMarkerGenes <- function(
   # try to load enrichR package and complain if it's not available
   if (!requireNamespace("enrichR", quietly = TRUE)) {
     stop(
-      "Package \"enrichR\" needed for this function to work. Please install it.",
+      "Package 'enrichR' needed for this function to work. Please install it.",
       call. = FALSE
     )
   }

@@ -13,10 +13,12 @@ install_github("romanhaa/cerebroPrepare")
 
 **Required meta data:**
 
+* Experiment name.
+* Organism, e.g. 'hg' (human) or 'mm' (mouse).
 * Sample.
 * Cluster.
-* Number of transcripts: usually created by Seurat by default.
-* Number of expressed genes: usually created by Seurat by default.
+* Number of transcripts (usually created by Seurat by default).
+* Number of expressed genes (usually created by Seurat by default).
 
 **Note:** It is recommended to save sample information in a column called `sample` and cluster information in a column called `cluster`. Otherwise, the respective column names need to specified below.
 

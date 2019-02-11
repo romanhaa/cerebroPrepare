@@ -2,11 +2,12 @@
 #'
 #' This function gets marker genes for every sample and cluster of the Seurat object.
 #' @param object Seurat object.
+#' @param organism Organism information for pulling info about presence of marker genes of cell surface; can be omitted if already saved in Seurat object; defaults to NULL.
 #' @param column_sample Column in object@meta.data that contains information about sample; defaults to "sample".
 #' @param column_cluster Column in object@meta.data that contains information about cluster; defaults to "cluster".
 #' @param only.pos Identify only over-expressed genes; defaults to TRUE.
-#' @param min.pct Only keep genes that are expressed in at least n % of current group of cells, defaults to 0.70 (70%).
-#' @param thresh.use Only keep genes that have an FDR of <= n, defaults to 0.25.
+#' @param min.pct Only keep genes that are expressed in at least n % of current group of cells, defaults to 0.70 (70\%).
+#' @param thresh.use Only keep genes that have an FDR of less than or equal to n, defaults to 0.25.
 #' @param test.use Statistical test used, defaults to "t" (t-test).
 #' @param print.bar Print progress bar; defaults to FALSE.
 #' @keywords seurat cerebro
@@ -16,6 +17,7 @@
 
 getMarkerGenes <- function(
   object,
+  organism = NULL,
   column_sample = "sample",
   column_cluster = "cluster",
   only.pos = TRUE,
@@ -28,9 +30,30 @@ getMarkerGenes <- function(
   # try to load Seurat package and complain if it's not available
   if (!requireNamespace("Seurat", quietly = TRUE)) {
     stop(
-      "Package \"Seurat\" needed for this function to work. Please install it.",
+      "Package 'Seurat' needed for this function to work. Please install it.",
       call. = FALSE
     )
+  }
+  ##--------------------------------------------------------------------------##
+  ## Get list of genes in cell surface through gene ontology term GO:0009986.
+  ##--------------------------------------------------------------------------##
+  if ( !is.null(object@misc$experiment$organism) ) {
+    organism <- object@misc$experiment$organism
+  }
+  if ( organism == "hg" || organism == "human" ) {
+    genes_on_cell_surface <- biomaRt::getBM(
+      attributes = "hgnc_symbol",
+      filters = "go",
+      values = "GO:0009986",
+      mart = useMart("ensembl", dataset = "hsapiens_gene_ensembl")
+    )[,1]
+  } else if ( organism == "mm" || organism == "mouse" ) {
+    genes_on_cell_surface <- biomaRt::getBM(
+      attributes = "external_gene_name",
+      filters = "go",
+      values = "GO:0009986",
+      mart = useMart("ensembl", dataset = "mmusculus_gene_ensembl")
+    )[,1]
   }
   #
   seurat_object <- object

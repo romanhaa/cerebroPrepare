@@ -14,15 +14,16 @@ getMostExpressedGenes <- function(
   column_sample = "sample",
   column_cluster = "cluster"
 ) {
+  require("dplyr")
   #
   seurat_object <- object
   #
-  if ( !is.null(column_sample) & column_sample %in% names(seurat_object@meta.data) ) {
+  if ( !is.null(column_sample) && column_sample %in% names(seurat_object@meta.data) ) {
     # if sample column is already a factor, take the levels from there
-    if ( is.factor(seurat_object@meta.data[column_sample]) ) {
-      sample_names <- levels(seurat_object@meta.data[column_sample])
+    if ( is.factor(seurat_object@meta.data[[column_sample]]) ) {
+      sample_names <- as.character(levels(seurat_object@meta.data[[column_sample]]))
     } else {
-      sample_names <- unique(seurat_object@meta.data[column_sample])
+      sample_names <- unique(seurat_object@meta.data[[column_sample]])
     }
     if ( length(sample_names) > 1 ) {
       most_expressed_genes_by_sample <- data.frame(
@@ -31,12 +32,14 @@ getMostExpressedGenes <- function(
         "pct" = double(),
         stringsAsFactors = FALSE
       )
-      for ( i in sample_names ) {
+      print("\nGet most expressed genes by sample...")
+      pb = txtProgressBar(min = 0, max = length(sample_names), initial = 0, style = 3) 
+      for ( i in 1:length(sample_names) ) {
         temp_table <- seurat_object@raw.data %>%
           as.data.frame(stringsAsFactors = FALSE) %>%
-          select(which(seurat_object@meta.data$sample == i)) %>%
+          select(which(seurat_object@meta.data[[column_sample]] == sample_names[i])) %>%
           mutate(
-            sample = i,
+            sample = sample_names[i],
             gene = rownames(.),
             rowSums = rowSums(.),
             pct = rowSums / sum(.[1:(ncol(.))]) * 100
@@ -47,17 +50,18 @@ getMostExpressedGenes <- function(
         most_expressed_genes_by_sample <- rbind(
             most_expressed_genes_by_sample, temp_table
           )
+        setTxtProgressBar(pb, i)
       }
-      most_expressed_genes_by_sample %<>%
+      most_expressed_genes_by_sample <- most_expressed_genes_by_sample %>%
         mutate(sample = factor(sample, levels = sample_names))
     }
   }
   #
-  if ( !is.null(column_cluster) & column_cluster %in% names(seurat_object@meta.data) ) {
-    if ( is.factor(seurat_object@meta.data[column_cluster]) ) {
-      cluster_names <- levels(seurat_object@meta.data[column_cluster])
+  if ( !is.null(column_cluster) && column_cluster %in% names(seurat_object@meta.data) ) {
+    if ( is.factor(seurat_object@meta.data[[column_cluster]]) ) {
+      cluster_names <- as.character(levels(seurat_object@meta.data[[column_cluster]]))
     } else {
-      cluster_names <- unique(seurat_object@meta.data[column_cluster])
+      cluster_names <- unique(seurat_object@meta.data[[column_cluster]])
     }
     if ( length(cluster_names) > 1 ) {
       most_expressed_genes_by_cluster <- data.frame(
@@ -66,12 +70,14 @@ getMostExpressedGenes <- function(
           "expr" = double(),
           stringsAsFactors = FALSE
         )
-      for ( i in cluster_names ) {
+      print("\nGet most expressed genes by cluster...")
+      pb = txtProgressBar(min = 0, max = length(cluster_names), initial = 0, style = 3) 
+      for ( i in 1:length(cluster_names) ) {
         temp_table <- seurat_object@raw.data %>%
           as.data.frame(stringsAsFactors = FALSE) %>%
-          select(which(seurat_object@meta.data$cluster == i)) %>%
+          select(which(seurat_object@meta.data$cluster == cluster_names[i])) %>%
           mutate(
-            cluster = i,
+            cluster = cluster_names[i],
             gene = rownames(.),
             rowSums = rowSums(.),
             pct = rowSums / sum(.[1:(ncol(.))]) * 100
@@ -82,8 +88,9 @@ getMostExpressedGenes <- function(
         most_expressed_genes_by_cluster <- rbind(
             most_expressed_genes_by_cluster, temp_table
           )
+        setTxtProgressBar(pb, i)
       }
-    most_expressed_genes_by_cluster %<>%
+    most_expressed_genes_by_cluster <- most_expressed_genes_by_cluster %>%
       mutate(cluster = factor(cluster, levels = cluster_names))
     }
   }
@@ -92,6 +99,7 @@ getMostExpressedGenes <- function(
   }
   seurat_object@misc$most_expressed_genes$by_sample <- most_expressed_genes_by_sample
   seurat_object@misc$most_expressed_genes$by_cluster <- most_expressed_genes_by_cluster
+  print("\n")
   return(seurat_object)
 }
 
