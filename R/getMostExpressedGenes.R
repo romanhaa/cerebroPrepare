@@ -32,7 +32,7 @@ getMostExpressedGenes <- function(
         "pct" = double(),
         stringsAsFactors = FALSE
       )
-      print("\nGet most expressed genes by sample...")
+      message("Get most expressed genes by sample...")
       pb = txtProgressBar(min = 0, max = length(sample_names), initial = 0, style = 3) 
       for ( i in 1:length(sample_names) ) {
         temp_table <- seurat_object@raw.data %>%
@@ -52,6 +52,7 @@ getMostExpressedGenes <- function(
           )
         setTxtProgressBar(pb, i)
       }
+      message("\n")
       most_expressed_genes_by_sample <- most_expressed_genes_by_sample %>%
         mutate(sample = factor(sample, levels = sample_names))
     }
@@ -70,7 +71,7 @@ getMostExpressedGenes <- function(
           "expr" = double(),
           stringsAsFactors = FALSE
         )
-      print("\nGet most expressed genes by cluster...")
+      message("Get most expressed genes by cluster...")
       pb = txtProgressBar(min = 0, max = length(cluster_names), initial = 0, style = 3) 
       for ( i in 1:length(cluster_names) ) {
         temp_table <- seurat_object@raw.data %>%
@@ -90,8 +91,9 @@ getMostExpressedGenes <- function(
           )
         setTxtProgressBar(pb, i)
       }
-    most_expressed_genes_by_cluster <- most_expressed_genes_by_cluster %>%
-      mutate(cluster = factor(cluster, levels = cluster_names))
+      message("\n")
+      most_expressed_genes_by_cluster <- most_expressed_genes_by_cluster %>%
+        mutate(cluster = factor(cluster, levels = cluster_names))
     }
   }
   if ( is.null(seurat_object@misc$most_expressed_genes) ) {
@@ -99,7 +101,6 @@ getMostExpressedGenes <- function(
   }
   seurat_object@misc$most_expressed_genes$by_sample <- most_expressed_genes_by_sample
   seurat_object@misc$most_expressed_genes$by_cluster <- most_expressed_genes_by_cluster
-  print("\n")
   return(seurat_object)
 }
 

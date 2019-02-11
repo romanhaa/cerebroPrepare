@@ -25,6 +25,7 @@ annotateMarkerGenes <- function(
       call. = FALSE
     )
   }
+  require("enrichR")
   #
   enrichr_dbs <- c(
       "GO_Biological_Process_2018",
@@ -38,22 +39,24 @@ annotateMarkerGenes <- function(
       "Mouse_Gene_Atlas"
     )
   #
-  seurat_object <- object
+  temp_seurat <- object
   # check if marker genes are present
-  if ( is.null(seurat_object@misc$marker_genes) ) {
+  if ( is.null(temp_seurat@misc$marker_genes) ) {
     stop("Please run 'getMarkerGenes()' first.", call. = FALSE)
   }
   # check if marker genes by sample are available
-  if ( !is.null(seurat_object@misc$marker_genes$by_sample) ) {
+  if ( !is.null(temp_seurat@misc$marker_genes$by_sample) ) {
     # if sample column is already a factor, take the levels from there
-    if ( is.factor(seurat_object@meta.data[column_sample]) ) {
-      sample_names <- levels(seurat_object@meta.data[column_sample])
+    if ( is.factor(temp_seurat@meta.data[[column_sample]]) ) {
+      sample_names <- as.character(levels(temp_seurat@meta.data[[column_sample]]))
     } else {
-      sample_names <- unique(seurat_object@meta.data[column_sample])
+      sample_names <- unique(temp_seurat@meta.data[[column_sample]])
     }
-    markers_by_sample <- seurat_object@misc$marker_genes$by_sample
+    markers_by_sample <- temp_seurat@misc$marker_genes$by_sample
+    # pb = txtProgressBar(min = 0, max = length(sample_names), initial = 0, style = 3) 
     # annotate marker genes for each sample
-    for ( i in sample_names ) {
+    for ( i in 1:length(sample_names) ) {
+      message(paste0("Get annotation for sample '", sample_names[i], "'"))
       temp <- list()
       # try up to three times to run enrichR annotation (fails sometimes)
       attempt <- 1
@@ -61,11 +64,11 @@ annotateMarkerGenes <- function(
         attempt <- attempt + 1
         try(
           temp <- markers_by_sample %>%
-            filter(sample == i) %>%
+            filter(sample == sample_names[i]) %>%
             select("gene") %>%
             t() %>%
             as.vector() %>%
-            enrichr(databases = enrichr_dbs)
+            enrichR::enrichr(databases = enrichr_dbs)
         )
       }
       # filter results
@@ -84,23 +87,27 @@ annotateMarkerGenes <- function(
           temp[j] <- NULL
         }
       }
-      if ( is.null(seurat_object@misc$marker_genes$by_sample_annotation) ) {
-        seurat_object@misc$marker_genes$by_sample_annotation <- list()
+      if ( is.null(temp_seurat@misc$marker_genes$by_sample_annotation) ) {
+        temp_seurat@misc$marker_genes$by_sample_annotation <- list()
       }
-      seurat_object@misc$marker_genes$by_sample_annotation[[i]] <- temp
+      temp_seurat@misc$marker_genes$by_sample_annotation[[sample_names[i]]] <- temp
+      # setTxtProgressBar(pb, i)
     }
+    message("\n")
   }
   # check if marker genes by cluster are available
-  if ( !is.null(seurat_object@misc$marker_genes$by_cluster) ) {
+  if ( !is.null(temp_seurat@misc$marker_genes$by_cluster) ) {
     # if cluster column is already a factor, take the levels from there
-    if ( is.factor(seurat_object@meta.data[column_cluster]) ) {
-      cluster_names <- levels(seurat_object@meta.data[column_cluster])
+    if ( is.factor(temp_seurat@meta.data[[column_cluster]]) ) {
+      cluster_names <- as.character(levels(temp_seurat@meta.data[[column_cluster]]))
     } else {
-      cluster_names <- unique(seurat_object@meta.data[column_cluster])
+      cluster_names <- unique(temp_seurat@meta.data[[column_cluster]])
     }
-    markers_by_cluster <- seurat_object@misc$marker_genes$by_cluster
+    markers_by_cluster <- temp_seurat@misc$marker_genes$by_cluster
+    # pb = txtProgressBar(min = 0, max = length(cluster_names), initial = 0, style = 3) 
     # annotate marker genes for each cluster
-    for ( i in cluster_names ) {
+    for ( i in 1:length(cluster_names) ) {
+      message(paste0("Get annotation for cluster ", cluster_names[i]))
       temp <- list()
       # try up to three times to run enrichR annotation (fails sometimes)
       attempt <- 1
@@ -108,11 +115,11 @@ annotateMarkerGenes <- function(
         attempt <- attempt + 1
         try(
           temp <- markers_by_cluster %>%
-            filter(cluster == i) %>%
+            filter(cluster == cluster_names[i]) %>%
             select("gene") %>%
             t() %>%
             as.vector() %>%
-            enrichr(databases = enrichr_dbs)
+            enrichR::enrichr(databases = enrichr_dbs)
         )
       }
       # filter results
@@ -131,13 +138,15 @@ annotateMarkerGenes <- function(
           temp[j] <- NULL
         }
       }
-      if ( is.null(seurat_object@misc$marker_genes$by_cluster_annotation) ) {
-        seurat_object@misc$marker_genes$by_cluster_annotation <- list()
+      if ( is.null(temp_seurat@misc$marker_genes$by_cluster_annotation) ) {
+        temp_seurat@misc$marker_genes$by_cluster_annotation <- list()
       }
-      seurat_object@misc$marker_genes$by_cluster_annotation[[i]] <- temp
+      temp_seurat@misc$marker_genes$by_cluster_annotation[[cluster_names[i]]] <- temp
+      # setTxtProgressBar(pb, i)
     }
+    message("\n")
   }
-  return(seurat_object)
+  return(temp_seurat)
 }
 
 

@@ -189,6 +189,10 @@ exportFromSeurat <- function(
     }
   }
   #
+  if ( !is.null(object@cluster.tree) ) {
+    export$clusters$tree <- object@cluster.tree[[1]]
+  }
+  #
   export$expression <- object@data
   #
   return(export)

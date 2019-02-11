@@ -43,5 +43,16 @@ seurat <- annotateMarkerGenes(seurat)
 ## To do
 
 * Check if functions work.
+  * Export with and without generating optional data (most expressed genes, marker genes, annotation).
 * Check if it works with "normal" Seurat object and one from Cerebro pipeline.
 * Check how Cerebro behaves with different input data.
+  * 3 cases:
+    * "Naked" Seurat object.
+      * Not pre-processed at all, with different column names for sample and column, an extra meta column, and t-SNE and UMAP.
+    * Seurat object from our "old" scRNA-seq pipeline.
+    * Seurat object from Cerebro pipeline.
+      * Should be exactly like the output from the pipeline.
+* Calculate nUMI and nGene if not present?
+  * nUMI: `colSums(seurat@raw.data)`
+  * nGene: `colSums(seurat@raw.data != 0)`
+
