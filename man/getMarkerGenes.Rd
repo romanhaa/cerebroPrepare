@@ -4,12 +4,14 @@
 \alias{getMarkerGenes}
 \title{Get marker genes for every sample and cluster in Seurat object.}
 \usage{
-getMarkerGenes(object, column_sample = "sample",
+getMarkerGenes(object, organism = NULL, column_sample = "sample",
   column_cluster = "cluster", only.pos = TRUE, min.pct = 0.7,
   thresh.use = 0.25, test.use = "t", print.bar = FALSE, ...)
 }
 \arguments{
 \item{object}{Seurat object.}
+
+\item{organism}{Organism information for pulling info about presence of marker genes of cell surface; can be omitted if already saved in Seurat object; defaults to NULL.}
 
 \item{column_sample}{Column in object@meta.data that contains information about sample; defaults to "sample".}
 
@@ -17,9 +19,9 @@ getMarkerGenes(object, column_sample = "sample",
 
 \item{only.pos}{Identify only over-expressed genes; defaults to TRUE.}
 
-\item{min.pct}{Only keep genes that are expressed in at least n % of current group of cells, defaults to 0.70 (70%).}
+\item{min.pct}{Only keep genes that are expressed in at least n \% of current group of cells, defaults to 0.70 (70\%).}
 
-\item{thresh.use}{Only keep genes that have an FDR of <= n, defaults to 0.25.}
+\item{thresh.use}{Only keep genes that have an FDR of less than or equal to n, defaults to 0.25.}
 
 \item{test.use}{Statistical test used, defaults to "t" (t-test).}
 

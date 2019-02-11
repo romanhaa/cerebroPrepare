@@ -6,7 +6,7 @@
 #' @param column_sample Column in object@meta.data that contains information about sample; defaults to "sample".
 #' @param column_cluster Column in object@meta.data that contains information about cluster; defaults to "cluster".
 #' @param only.pos Identify only over-expressed genes; defaults to TRUE.
-#' @param min.pct Only keep genes that are expressed in at least n % of current group of cells, defaults to 0.70 (70\%).
+#' @param min.pct Only keep genes that are expressed in at least n \% of current group of cells, defaults to 0.70 (70\%).
 #' @param thresh.use Only keep genes that have an FDR of less than or equal to n, defaults to 0.25.
 #' @param test.use Statistical test used, defaults to "t" (t-test).
 #' @param print.bar Print progress bar; defaults to FALSE.

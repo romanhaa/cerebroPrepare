@@ -15,7 +15,7 @@ exportFromSeurat(object, experiment_name, organism,
 
 \item{experiment_name}{Experiment name.}
 
-\item{organism}{Organism, e.g. hs (human), mm (mouse), etc.}
+\item{organism}{Organism, e.g. hg (human), mm (mouse), etc.}
 
 \item{column_sample}{Column in object@meta.data that contains information about sample; defaults to "sample".}
 
@@ -35,7 +35,7 @@ exportFromSeurat(object, experiment_name, organism,
 This function allows to export a Seurat object to visualize in Cerebro.
 }
 \examples{
-exportFromSeurat(object = seurat, experiment_name = "PDX_patient_A", organism = "hs")
+exportFromSeurat(object = seurat, experiment_name = "PDX_patient_A", organism = "hg")
 }
 \keyword{cerebro}
 \keyword{seurat}
