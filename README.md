@@ -55,4 +55,4 @@ seurat <- annotateMarkerGenes(seurat)
 * Calculate nUMI and nGene if not present?
   * nUMI: `colSums(seurat@raw.data)`
   * nGene: `colSums(seurat@raw.data != 0)`
-
+* Check if `biomaRt` package is available.

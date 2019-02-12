@@ -9,7 +9,7 @@
 #' @param min.pct Only keep genes that are expressed in at least n \% of current group of cells, defaults to 0.70 (70\%).
 #' @param thresh.use Only keep genes that have an FDR of less than or equal to n, defaults to 0.25.
 #' @param test.use Statistical test used, defaults to "t" (t-test).
-#' @param print.bar Print progress bar; defaults to FALSE.
+#' @param print.bar Print progress bar; defaults to TRUE.
 #' @param ... Further parameters can be passed to control Seurat::FindAllMakers().
 #' @keywords seurat cerebro
 #' @export
@@ -28,7 +28,9 @@ getMarkerGenes <- function(
   print.bar = TRUE,
   ...
 ) {
-  # try to load Seurat package and complain if it's not available
+  ##--------------------------------------------------------------------------##
+  ## try to load Seurat package and complain if it's not available
+  ##--------------------------------------------------------------------------##
   if (!requireNamespace("Seurat", quietly = TRUE)) {
     stop(
       "Package 'Seurat' needed for this function to work. Please install it.",
@@ -58,8 +60,13 @@ getMarkerGenes <- function(
   } else {
     message("No information about genes on cell surface because organism is either not specified or not human/mouse.")
   }
-  #
+  ##--------------------------------------------------------------------------##
+  ## make copy of Seurat object
+  ##--------------------------------------------------------------------------##
   temp_seurat <- object
+  ##--------------------------------------------------------------------------##
+  ## samples
+  ##--------------------------------------------------------------------------##
   # check if sample column is provided
   if ( !is.null(column_sample) & column_sample %in% names(temp_seurat@meta.data) ) {
     # if sample column is already a factor, take the levels from there
@@ -104,7 +111,9 @@ getMarkerGenes <- function(
   } else {
     message("Provided column name with sample information cannot be found.")
   }
-
+  ##--------------------------------------------------------------------------##
+  ## clusters
+  ##--------------------------------------------------------------------------##
   # check if cluster column is provided
   if ( !is.null(column_cluster) & column_cluster %in% names(temp_seurat@meta.data) ) {
     if ( is.factor(temp_seurat@meta.data[[column_cluster]]) ) {
@@ -145,6 +154,9 @@ getMarkerGenes <- function(
   } else {
     message("Provided column name with cluster information cannot be found.")
   }
+  ##--------------------------------------------------------------------------##
+  ## export results
+  ##--------------------------------------------------------------------------##
   if ( is.null(object@misc$marker_genes) ) {
     temp_seurat@misc$marker_genes <- list()
   }

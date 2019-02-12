@@ -28,6 +28,39 @@ exportFromSeurat <- function(
   column_cell_cycle_cyclone = NULL,
   add_all_meta_data = TRUE
 ) {
+  ##--------------------------------------------------------------------------##
+  ## load required packages
+  ##--------------------------------------------------------------------------##
+  # Seurat
+  if (!requireNamespace("Seurat", quietly = TRUE)) {
+    stop(
+      "Package 'Seurat' needed for this function to work. Please install it.",
+      call. = FALSE
+    )
+  } else {
+    require("Seurat")
+  }
+  # dplyr
+  if (!requireNamespace("dplyr", quietly = TRUE)) {
+    stop(
+      "Package 'dplyr' needed for this function to work. Please install it.",
+      call. = FALSE
+    )
+  } else {
+    require("dplyr")
+  }
+  # tidyr
+  if (!requireNamespace("dplyr", quietly = TRUE)) {
+    stop(
+      "Package 'dplyr' needed for this function to work. Please install it.",
+      call. = FALSE
+    )
+  } else {
+    require("tidyr")
+  }
+  ##--------------------------------------------------------------------------##
+  ## colors
+  ##--------------------------------------------------------------------------##
   # Dutch palette from flatuicolors.com
   colors_dutch <- c(
       "#FFC312","#C4E538","#12CBC4","#FDA7DF","#ED4C67",
@@ -47,12 +80,18 @@ exportFromSeurat <- function(
     c("#45aaf2","#f1c40f","#e74c3c", "#7f8c8d"),
     c("G1","S","G2M","-")
   )
-  #
-  export <- list()
-  export$experiment <- list(
-    experiment_name = experiment_name,
-    organism = organism
+  ##--------------------------------------------------------------------------##
+  ## initialize export object
+  ##--------------------------------------------------------------------------##
+  export <- list(
+    experiment = list(
+      experiment_name = experiment_name,
+      organism = organism
+    )
   )
+  ##--------------------------------------------------------------------------##
+  ## check provided parameters
+  ##--------------------------------------------------------------------------##
   #
   if ( (column_sample %in% names(object@meta.data) == FALSE ) ) {
     stop("Sample column not found in meta data.", call. = FALSE)
@@ -72,34 +111,43 @@ exportFromSeurat <- function(
       call. = FALSE
     )
   }
-  #
-  if ( is.factor(object@meta.data[column.sample]) ) {
-    sample_names <- levels(object@meta.data[column.sample])
+  ##--------------------------------------------------------------------------##
+  ## samples
+  ##--------------------------------------------------------------------------##
+  if ( is.factor(object@meta.data[[column_sample]]) ) {
+    sample_names <- as.character(levels(object@meta.data[[column_sample]]))
   } else {
-    sample_names <- unique(object@meta.data[column.sample])
+    sample_names <- unique(object@meta.data[[column_sample]])
   }
   export$samples <- list(
     colors = setNames(colors[ 1:length(sample_names) ], sample_names),
     overview = data.frame("sample" = sample_names)
   )
-  #
-  if ( is.factor(object@meta.data[column.cluster]) ) {
-    cluster_names <- levels(object@meta.data[column.cluster])
+  ##--------------------------------------------------------------------------##
+  ## clusters
+  ##--------------------------------------------------------------------------##
+  if ( is.factor(object@meta.data[[column_cluster]]) ) {
+    cluster_names <- as.character(levels(object@meta.data[[column_cluster]]))
   } else {
-    cluster_names <- unique(object@meta.data[column.cluster])
+    cluster_names <- unique(object@meta.data[[column_cluster]])
   }
   export$clusters <- list(
     colors = setNames(colors[ 1:length(cluster_names) ], cluster_names),
     overview = data.frame("cluster" = cluster_names)
   )
-  #
+  ##--------------------------------------------------------------------------##
+  ## meta data
+  ##--------------------------------------------------------------------------##
   meta_data_columns <- names(object@meta.data)
   export$cells <- data.frame(
-    "sample" = as.factor(object@meta.data[column_sample]),
-    "cluster" = as.factor(object@meta.data[column_cluster]),
+    "sample" = as.factor(object@meta.data[[column_sample]]),
+    "cluster" = as.factor(object@meta.data[[column_cluster]]),
     "nUMI" = object@meta.data[column_nUMI],
     "nGene" = object@meta.data[column_nGene]
   )
+  ##--------------------------------------------------------------------------##
+  ## samples by cluster
+  ##--------------------------------------------------------------------------##
   export$samples$by_cluster <- export$cells %>%
     group_by(sample, cluster) %>%
     summarize(count=n()) %>%
@@ -108,6 +156,9 @@ exportFromSeurat <- function(
     mutate(total_cell_count = rowSums(.[c(2:ncol(.))])) %>%
     select(c("sample", "total_cell_count", everything())) %>%
     arrange(factor(sample, levels = sample_names))
+  ##--------------------------------------------------------------------------##
+  ## clusters by sample
+  ##--------------------------------------------------------------------------##
   export$clusters$by_samples <- export$cells %>%
     group_by(cluster, sample) %>%
     summarize(count=n()) %>%
@@ -120,8 +171,12 @@ exportFromSeurat <- function(
   meta_data_columns <- meta_data_columns[-which(meta_data_columns == column_cluster)]
   meta_data_columns <- meta_data_columns[-which(meta_data_columns == column_nUMI)]
   meta_data_columns <- meta_data_columns[-which(meta_data_columns == column_nGene)]
+  ##--------------------------------------------------------------------------##
+  ## cell cycle Seurat (if present)
+  ##--------------------------------------------------------------------------##
   if ( !is.null(column_cell_cycle_regev) && column_cell_cycle_regev %in% names(object@meta.data) ) {
-    export$cells$cell_cycle_Regev <- object@meta.data[column_cell_cycle_regev]
+    export$cells$cell_cycle_Regev <- object@meta.data[[column_cell_cycle_regev]]
+    # by sample
     export$samples$by_cell_cycle_Regev <- export$cells %>%
       group_by(sample, cell_cycle_Regev) %>%
       summarize(count=n()) %>%
@@ -130,6 +185,7 @@ exportFromSeurat <- function(
       mutate(total_cell_count = rowSums(.[c(2:ncol(.))])) %>%
       select(c("sample", "total_cell_count", everything())) %>%
       arrange(factor(sample, levels = sample_names))
+    # by cluster
     export$clusters$by_cell_cycle_Regev <- export$cells %>%
       group_by(cluster, cell_cycle_Regev) %>%
       summarize(count=n()) %>%
@@ -140,8 +196,12 @@ exportFromSeurat <- function(
       arrange(factor(cluster, levels = cluster_names))
     meta_data_columns <- meta_data_columns[-which(meta_data_columns == column_cell_cycle_regev)]
   }
+  ##--------------------------------------------------------------------------##
+  ## cell cycle Cyclone (if present)
+  ##--------------------------------------------------------------------------##
   if ( !is.null(column_cell_cycle_cyclone) && column_cell_cycle_cyclone %in% names(object@meta.data) ) {
-    export$cells$cell_cycle_Cyclone <- object@meta.data[column_cell_cycle_cyclone]
+    export$cells$cell_cycle_Cyclone <- object@meta.data[[column_cell_cycle_cyclone]]
+    # by sample
     export$samples$by_cell_cycle_Cyclone <- export$cells %>%
       group_by(sample, cell_cycle_Cyclone) %>%
       summarize(count=n()) %>%
@@ -150,6 +210,7 @@ exportFromSeurat <- function(
       mutate(total_cell_count = rowSums(.[c(2:ncol(.))])) %>%
       select(c("sample", "total_cell_count", everything())) %>%
       arrange(factor(sample, levels = sample_names))
+    # by cluster
     export$clusters$by_cell_cycle_Cyclone <- export$cells %>%
       group_by(cluster, cell_cycle_Cyclone) %>%
       summarize(count=n()) %>%
@@ -160,21 +221,33 @@ exportFromSeurat <- function(
       arrange(factor(cluster, levels = cluster_names))
     meta_data_columns <- meta_data_columns[-which(meta_data_columns == column_cell_cycle_cyclone)]
   }
+  ##--------------------------------------------------------------------------##
+  ## cell barcode
+  ##--------------------------------------------------------------------------##
   if ( !is.null(rownames(as.data.frame(object@meta.data))) ) {
     export$cells$cell_barcode <- rownames(as.data.frame(object@meta.data))
   }
+  ##--------------------------------------------------------------------------##
+  ## add all other meta data if specified
+  ##--------------------------------------------------------------------------##
   if ( add_all_meta_data ) {
     export$cells <- cbind(export$cells, object@meta.data[meta_data_columns])
   }
-  #
+  ##--------------------------------------------------------------------------##
+  ## most expressed genes
+  ##--------------------------------------------------------------------------##
   if ( !is.null(object@misc$most_expressed_genes) ) {
     export$most_expressed_genes <- object@misc$most_expressed_genes
   }
-  #
+  ##--------------------------------------------------------------------------##
+  ## marker genes
+  ##--------------------------------------------------------------------------##
   if ( !is.null(object@misc$marker_genes) ) {
     export$marker_genes <- object@misc$marker_genes
   }
-  #
+  ##--------------------------------------------------------------------------##
+  ## dimensional reductions
+  ##--------------------------------------------------------------------------##
   export$projections <- list()
   projections_available <- names(object@dr)
   projections_available_non_pca <- projections_available[grep(projections_available, pattern = "pca", invert = TRUE)]
@@ -188,11 +261,15 @@ exportFromSeurat <- function(
       export$projections[[i]] <- as.data.frame(object@dr[[i]]@cell.embeddings)
     }
   }
-  #
+  ##--------------------------------------------------------------------------##
+  ## cluster tree
+  ##--------------------------------------------------------------------------##
   if ( !is.null(object@cluster.tree) ) {
     export$clusters$tree <- object@cluster.tree[[1]]
   }
-  #
+  ##--------------------------------------------------------------------------##
+  ## log-normalized expression
+  ##--------------------------------------------------------------------------##
   export$expression <- object@data
   #
   return(export)
