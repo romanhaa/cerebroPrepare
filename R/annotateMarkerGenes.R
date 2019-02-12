@@ -60,7 +60,7 @@ annotateMarkerGenes <- function(
       temp <- list()
       # try up to three times to run enrichR annotation (fails sometimes)
       attempt <- 1
-      while( length(temp) == 0 && attempt <= 3 ) {
+      while( length(temp) == 0 && !("Adjusted.P.value" %in% names(temp)) && attempt <= 3 ) {
         attempt <- attempt + 1
         try(
           temp <- markers_by_sample %>%
@@ -101,7 +101,7 @@ annotateMarkerGenes <- function(
     if ( is.factor(temp_seurat@meta.data[[column_cluster]]) ) {
       cluster_names <- as.character(levels(temp_seurat@meta.data[[column_cluster]]))
     } else {
-      cluster_names <- unique(temp_seurat@meta.data[[column_cluster]])
+      cluster_names <- sort(unique(temp_seurat@meta.data[[column_cluster]]))
     }
     markers_by_cluster <- temp_seurat@misc$marker_genes$by_cluster
     # pb = txtProgressBar(min = 0, max = length(cluster_names), initial = 0, style = 3) 
@@ -111,7 +111,7 @@ annotateMarkerGenes <- function(
       temp <- list()
       # try up to three times to run enrichR annotation (fails sometimes)
       attempt <- 1
-      while( length(temp) == 0 && attempt <= 3 ) {
+      while( length(temp) == 0 && !("Adjusted.P.value" %in% names(temp)) && attempt <= 3 ) {
         attempt <- attempt + 1
         try(
           temp <- markers_by_cluster %>%

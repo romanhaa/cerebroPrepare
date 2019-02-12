@@ -119,7 +119,7 @@ getMarkerGenes <- function(
     if ( is.factor(temp_seurat@meta.data[[column_cluster]]) ) {
       cluster_names <- as.character(levels(temp_seurat@meta.data[[column_cluster]]))
     } else {
-      cluster_names <- unique(temp_seurat@meta.data[[column_cluster]])
+      cluster_names <- sort(unique(temp_seurat@meta.data[[column_cluster]]))
     }
     # check if more than 1 cluster is available
     if ( length(cluster_names) > 1 ) {

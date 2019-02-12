@@ -129,7 +129,7 @@ exportFromSeurat <- function(
   if ( is.factor(object@meta.data[[column_cluster]]) ) {
     cluster_names <- as.character(levels(object@meta.data[[column_cluster]]))
   } else {
-    cluster_names <- unique(object@meta.data[[column_cluster]])
+    cluster_names <- sort(unique(object@meta.data[[column_cluster]]))
   }
   export$clusters <- list(
     colors = setNames(colors[ 1:length(cluster_names) ], cluster_names),

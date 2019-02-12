@@ -62,7 +62,7 @@ getMostExpressedGenes <- function(
     if ( is.factor(seurat_object@meta.data[[column_cluster]]) ) {
       cluster_names <- as.character(levels(seurat_object@meta.data[[column_cluster]]))
     } else {
-      cluster_names <- unique(seurat_object@meta.data[[column_cluster]])
+      cluster_names <- sort(unique(seurat_object@meta.data[[column_cluster]]))
     }
     if ( length(cluster_names) > 1 ) {
       most_expressed_genes_by_cluster <- data.frame(

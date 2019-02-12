@@ -52,6 +52,8 @@ seurat <- annotateMarkerGenes(
   column_sample = "sampleID",
   column_cluster = "clusterID"
 )
+# Error in filter_impl(.data, quo) :
+#   Evaluation error: object 'Adjusted.P.value' not found.
 t <- exportFromSeurat(
   seurat,
   experiment_name = "naked_seurat",

@@ -34,6 +34,8 @@ Launch Cerebro and load the RDS file you just exported from R.
 
 To take full advantage of Cerebro, it is recommended to also run the commands below before exporting the data.
 
+
+
 ```
 seurat <- getMostExpressedGenes(seurat)
 seurat <- getMarkerGenes(seurat)
@@ -56,3 +58,6 @@ seurat <- annotateMarkerGenes(seurat)
   * nUMI: `colSums(seurat@raw.data)`
   * nGene: `colSums(seurat@raw.data != 0)`
 * Check if `biomaRt` package is available.
+* Functions for `percent_MT` and `percent_ribo`.
+  * Use `biomaRt` to get lists of genes.
+* Format cell number on load page to have comma separation.
