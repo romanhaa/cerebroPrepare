@@ -1,6 +1,8 @@
 ##----------------------------------------------------------------------------##
 ##
 ##----------------------------------------------------------------------------##
+source("/hpcnfs/scratch/PGP/rhillje/cerebroPrepare/R/calculatePercentGenes.R")
+source("/hpcnfs/scratch/PGP/rhillje/cerebroPrepare/R/addPercentMtRibo.R")
 source("/hpcnfs/scratch/PGP/rhillje/cerebroPrepare/R/getMostExpressedGenes.R")
 source("/hpcnfs/scratch/PGP/rhillje/cerebroPrepare/R/getMarkerGenes.R")
 source("/hpcnfs/scratch/PGP/rhillje/cerebroPrepare/R/annotateMarkerGenes.R")
@@ -36,6 +38,7 @@ saveRDS(t, "/hpcnfs/scratch/PGP/rhillje/cerebroPrepare_test_data/from_cerebro/ce
 ## - cell cycle results not present at all
 ##----------------------------------------------------------------------------##
 seurat <- readRDS("/hpcnfs/scratch/PGP/rhillje/cerebroPrepare_test_data/naked/seurat.rds")
+seurat <- addPercentMtRibo(seurat, organism = "mm")
 seurat <- getMostExpressedGenes(
   seurat,
   column_sample = "sampleID",
@@ -85,19 +88,14 @@ saveRDS(t, "/hpcnfs/scratch/PGP/rhillje/cerebroPrepare_test_data/naked/cerebro_f
 ## - enriched pathways may be present, not always
 ##----------------------------------------------------------------------------##
 seurat <- readRDS("/hpcnfs/scratch/PGP/rhillje/cerebroPrepare_test_data/from_scRNAseq/seurat.rds")
-seurat <- getMostExpressedGenes(
-  seurat,
-  column_sample = "sampleID"
-)
+seurat <- addPercentMtRibo(seurat, organism = "mm")
+seurat <- getMostExpressedGenes(seurat, column_sample = "sampleID")
 seurat <- getMarkerGenes(
   seurat,
-  column_sample = "sampleID",
-  organism = "mm"
-)
-seurat <- annotateMarkerGenes(
-  seurat,
+  organism = "mm",
   column_sample = "sampleID"
 )
+seurat <- annotateMarkerGenes(seurat, column_sample = "sampleID")
 t <- exportFromSeurat(
   seurat,
   experiment_name = "from_scRNAseq",
