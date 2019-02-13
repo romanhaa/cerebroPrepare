@@ -5,15 +5,14 @@
 #' @param organism Organism, can be either human ("hg") or mouse ("mm"). Genes need to annotated as gene symbol, e.g. MKI67 (human) / Mki67 (mouse).
 #' @keywords seurat cerebro
 #' @export
+#' @import dplyr
+#' @import Seurat
 #' @examples
 #' calculatePercentGenes(object = seurat, genes = gene_list)
 addPercentMtRibo <- function(
   object,
   organism
 ) {
-  require("dplyr")
-  require("Seurat")
-  require("readr")
   ##--------------------------------------------------------------------------##
   ## check if organism is supported
   ##--------------------------------------------------------------------------##
@@ -71,7 +70,7 @@ addPercentMtRibo <- function(
   ##--------------------------------------------------------------------------##
   ## add results to Seurat object
   ##--------------------------------------------------------------------------##
-  object <- AddMetaData(
+  object <- Seurat::AddMetaData(
     object,
     data.frame(
       colnames(object@raw.data),

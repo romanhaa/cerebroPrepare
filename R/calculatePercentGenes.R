@@ -5,21 +5,26 @@
 #' @param genes List(s) of genes.
 #' @keywords seurat cerebro
 #' @export
+#' @import Seurat
 #' @examples
 #' calculatePercentGenes(object = seurat, genes = gene_list)
 calculatePercentGenes <- function(
   object,
   genes
 ) {
-  require("Matrix")
-  require("Seurat")
-  require("pbapply")
-  result <- pblapply(
+  ##--------------------------------------------------------------------------##
+  ## get for every supplied gene list, get the genes that are present in the
+  ## data set and calculate the percentage of transcripts that they account for
+  ##--------------------------------------------------------------------------##
+  result <- future.apply::future_lapply(
     genes,
     function(x) {
       genes_here <- intersect(x, rownames(object@raw.data))
       Matrix::colSums(object@raw.data[genes_here,]) / Matrix::colSums(object@raw.data)
     }
   )
+  ##--------------------------------------------------------------------------##
+  ## return list with results
+  ##--------------------------------------------------------------------------##
   return(result)
 }

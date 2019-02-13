@@ -13,6 +13,9 @@
 #' @param add_all_meta_data If set to TRUE, all further meta data columns will be extracted as well.
 #' @keywords seurat cerebro
 #' @export
+#' @import dplyr
+#' @import Seurat
+#' @import tidyr
 #' @examples
 #' exportFromSeurat(object = seurat, experiment_name = "PDX_patient_A", organism = "hg")
 
@@ -28,36 +31,6 @@ exportFromSeurat <- function(
   column_cell_cycle_cyclone = NULL,
   add_all_meta_data = TRUE
 ) {
-  ##--------------------------------------------------------------------------##
-  ## load required packages
-  ##--------------------------------------------------------------------------##
-  # Seurat
-  if (!requireNamespace("Seurat", quietly = TRUE)) {
-    stop(
-      "Package 'Seurat' needed for this function to work. Please install it.",
-      call. = FALSE
-    )
-  } else {
-    require("Seurat")
-  }
-  # dplyr
-  if (!requireNamespace("dplyr", quietly = TRUE)) {
-    stop(
-      "Package 'dplyr' needed for this function to work. Please install it.",
-      call. = FALSE
-    )
-  } else {
-    require("dplyr")
-  }
-  # tidyr
-  if (!requireNamespace("dplyr", quietly = TRUE)) {
-    stop(
-      "Package 'dplyr' needed for this function to work. Please install it.",
-      call. = FALSE
-    )
-  } else {
-    require("tidyr")
-  }
   ##--------------------------------------------------------------------------##
   ## colors
   ##--------------------------------------------------------------------------##
@@ -255,7 +228,7 @@ exportFromSeurat <- function(
     stop("Warning: No dimensional reductions available.", call. = FALSE)
   } else if ( length(projections_available) == 1 && projections_available_non_pca == 1 ) {
     export$projections[[projections_available]] <- as.data.frame(object@dr[[projections_available]]@cell.embeddings)[,1:2]
-    print("Warning: Only PCA as dimensional reduction found, will export first and second principal components. Consider using tSNE and/or UMAP instead.")
+    warning("Warning: Only PCA as dimensional reduction found, will export first and second principal components. Consider using tSNE and/or UMAP instead.")
   } else if ( length(projections_available_non_pca) > 0 ) {
     for ( i in projections_available_non_pca ) {
       export$projections[[i]] <- as.data.frame(object@dr[[i]]@cell.embeddings)
@@ -271,6 +244,8 @@ exportFromSeurat <- function(
   ## log-normalized expression
   ##--------------------------------------------------------------------------##
   export$expression <- object@data
-  #
+  ##--------------------------------------------------------------------------##
+  ## return export object
+  ##--------------------------------------------------------------------------##
   return(export)
 }

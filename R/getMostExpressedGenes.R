@@ -6,6 +6,7 @@
 #' @param column_cluster Column in object@meta.data that contains information about cluster; defaults to "cluster".
 #' @keywords seurat cerebro
 #' @export
+#' @import dplyr
 #' @examples
 #' getMostExpressedGenes(object = seurat)
 
@@ -14,16 +15,25 @@ getMostExpressedGenes <- function(
   column_sample = "sample",
   column_cluster = "cluster"
 ) {
-  require("dplyr")
-  #
-  seurat_object <- object
-  #
-  if ( !is.null(column_sample) && column_sample %in% names(seurat_object@meta.data) ) {
+  ##--------------------------------------------------------------------------##
+  ## create backup of Seurat object (probably not necessary)
+  ##--------------------------------------------------------------------------##
+  temp_seurat <- object
+  ##--------------------------------------------------------------------------##
+  ## samples
+  ## - check if column_sample was provided and exists in meta data
+  ## - get sample names
+  ## - check if more than 1 sample is available
+  ## - retrieve most expressed genes in parallel with future_lapply
+  ## - combine results in a single data frame
+  ## - sort by sample (probably not necessary)
+  ##--------------------------------------------------------------------------##
+  if ( !is.null(column_sample) && (column_sample %in% names(temp_seurat@meta.data)) ) {
     # if sample column is already a factor, take the levels from there
-    if ( is.factor(seurat_object@meta.data[[column_sample]]) ) {
-      sample_names <- as.character(levels(seurat_object@meta.data[[column_sample]]))
+    if ( is.factor(temp_seurat@meta.data[[column_sample]]) ) {
+      sample_names <- as.character(levels(temp_seurat@meta.data[[column_sample]]))
     } else {
-      sample_names <- unique(seurat_object@meta.data[[column_sample]])
+      sample_names <- unique(temp_seurat@meta.data[[column_sample]])
     }
     if ( length(sample_names) > 1 ) {
       most_expressed_genes_by_sample <- data.frame(
@@ -32,14 +42,12 @@ getMostExpressedGenes <- function(
         "pct" = double(),
         stringsAsFactors = FALSE
       )
-      message("Get most expressed genes by sample...")
-      pb = txtProgressBar(min = 0, max = length(sample_names), initial = 0, style = 3) 
-      for ( i in 1:length(sample_names) ) {
-        temp_table <- seurat_object@raw.data %>%
+      results <- future.apply::future_lapply(sample_names, function(x) {
+        temp_table <- temp_seurat@raw.data %>%
           as.data.frame(stringsAsFactors = FALSE) %>%
-          select(which(seurat_object@meta.data[[column_sample]] == sample_names[i])) %>%
+          select(which(temp_seurat@meta.data[[column_sample]] == x)) %>%
           mutate(
-            sample = sample_names[i],
+            sample = x,
             gene = rownames(.),
             rowSums = rowSums(.),
             pct = rowSums / sum(.[1:(ncol(.))]) * 100
@@ -47,22 +55,26 @@ getMostExpressedGenes <- function(
           select(c("sample","gene","pct")) %>%
           arrange(-pct) %>%
           head(100)
-        most_expressed_genes_by_sample <- rbind(
-            most_expressed_genes_by_sample, temp_table
-          )
-        setTxtProgressBar(pb, i)
-      }
-      message("\n")
-      most_expressed_genes_by_sample <- most_expressed_genes_by_sample %>%
+      })
+      most_expressed_genes_by_sample <- do.call(rbind, results) %>%
         mutate(sample = factor(sample, levels = sample_names))
     }
   }
   #
-  if ( !is.null(column_cluster) && column_cluster %in% names(seurat_object@meta.data) ) {
-    if ( is.factor(seurat_object@meta.data[[column_cluster]]) ) {
-      cluster_names <- as.character(levels(seurat_object@meta.data[[column_cluster]]))
+  ##--------------------------------------------------------------------------##
+  ## cluster
+  ## - check if column_cluster was provided and exists in meta data
+  ## - get cluster names
+  ## - check if more than 1 cluster is available
+  ## - retrieve most expressed genes in parallel with future_lapply
+  ## - combine results in a single data frame
+  ## - sort by cluster (probably not necessary)
+  ##--------------------------------------------------------------------------##
+  if ( !is.null(column_cluster) && column_cluster %in% names(temp_seurat@meta.data) ) {
+    if ( is.factor(temp_seurat@meta.data[[column_cluster]]) ) {
+      cluster_names <- as.character(levels(temp_seurat@meta.data[[column_cluster]]))
     } else {
-      cluster_names <- sort(unique(seurat_object@meta.data[[column_cluster]]))
+      cluster_names <- sort(unique(temp_seurat@meta.data[[column_cluster]]))
     }
     if ( length(cluster_names) > 1 ) {
       most_expressed_genes_by_cluster <- data.frame(
@@ -72,13 +84,12 @@ getMostExpressedGenes <- function(
           stringsAsFactors = FALSE
         )
       message("Get most expressed genes by cluster...")
-      pb = txtProgressBar(min = 0, max = length(cluster_names), initial = 0, style = 3) 
-      for ( i in 1:length(cluster_names) ) {
-        temp_table <- seurat_object@raw.data %>%
+      results <- future.apply::future_lapply(cluster_names, function(x) {
+        temp_table <- temp_seurat@raw.data %>%
           as.data.frame(stringsAsFactors = FALSE) %>%
-          select(which(seurat_object@meta.data$cluster == cluster_names[i])) %>%
+          select(which(temp_seurat@meta.data[[column_cluster]] == x)) %>%
           mutate(
-            cluster = cluster_names[i],
+            cluster = x,
             gene = rownames(.),
             rowSums = rowSums(.),
             pct = rowSums / sum(.[1:(ncol(.))]) * 100
@@ -86,21 +97,23 @@ getMostExpressedGenes <- function(
           select(c("cluster","gene","pct")) %>%
           arrange(-pct) %>%
           head(100)
-        most_expressed_genes_by_cluster <- rbind(
-            most_expressed_genes_by_cluster, temp_table
-          )
-        setTxtProgressBar(pb, i)
-      }
-      message("\n")
-      most_expressed_genes_by_cluster <- most_expressed_genes_by_cluster %>%
+      })
+      most_expressed_genes_by_cluster <- do.call(rbind, results) %>%
         mutate(cluster = factor(cluster, levels = cluster_names))
     }
   }
-  if ( is.null(seurat_object@misc$most_expressed_genes) ) {
-    seurat_object@misc$most_expressed_genes <- list()
+  ##--------------------------------------------------------------------------##
+  ## create slot for results in Seurat object if not already existing and attach
+  ## store results
+  ##--------------------------------------------------------------------------##
+  if ( is.null(temp_seurat@misc$most_expressed_genes) ) {
+    temp_seurat@misc$most_expressed_genes <- list()
   }
-  seurat_object@misc$most_expressed_genes$by_sample <- most_expressed_genes_by_sample
-  seurat_object@misc$most_expressed_genes$by_cluster <- most_expressed_genes_by_cluster
-  return(seurat_object)
+  temp_seurat@misc$most_expressed_genes$by_sample <- most_expressed_genes_by_sample
+  temp_seurat@misc$most_expressed_genes$by_cluster <- most_expressed_genes_by_cluster
+  ##--------------------------------------------------------------------------##
+  ## return Seurat object
+  ##--------------------------------------------------------------------------##
+  return(temp_seurat)
 }
 

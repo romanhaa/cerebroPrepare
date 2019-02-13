@@ -13,6 +13,8 @@
 #' @param ... Further parameters can be passed to control Seurat::FindAllMakers().
 #' @keywords seurat cerebro
 #' @export
+#' @import dplyr
+#' @import Seurat
 #' @examples
 #' getMarkerGenes(object = seurat)
 
@@ -28,15 +30,6 @@ getMarkerGenes <- function(
   print.bar = TRUE,
   ...
 ) {
-  ##--------------------------------------------------------------------------##
-  ## try to load Seurat package and complain if it's not available
-  ##--------------------------------------------------------------------------##
-  if (!requireNamespace("Seurat", quietly = TRUE)) {
-    stop(
-      "Package 'Seurat' needed for this function to work. Please install it.",
-      call. = FALSE
-    )
-  }
   ##--------------------------------------------------------------------------##
   ## Get list of genes in cell surface through gene ontology term GO:0009986.
   ##--------------------------------------------------------------------------##
@@ -66,16 +59,23 @@ getMarkerGenes <- function(
   temp_seurat <- object
   ##--------------------------------------------------------------------------##
   ## samples
+  ## - check if column_sample is provided and exists in meta data
+  ## - get sample names
+  ## - check if more than 1 sample exists
+  ## - run Seurat::FindAllMarkers()
+  ## - check if any marker genes were found
+  ## - sort and rename columns
+  ## - add column with cell surface genes if present
   ##--------------------------------------------------------------------------##
-  # check if sample column is provided
-  if ( !is.null(column_sample) & column_sample %in% names(temp_seurat@meta.data) ) {
-    # if sample column is already a factor, take the levels from there
+  #
+  if ( !is.null(column_sample) && (column_sample %in% names(temp_seurat@meta.data)) ) {
+    #
     if ( is.factor(temp_seurat@meta.data[[column_sample]]) ) {
       sample_names <- as.character(levels(temp_seurat@meta.data[[column_sample]]))
     } else {
       sample_names <- unique(temp_seurat@meta.data[[column_sample]])
     }
-    # check if more than 1 sample is available
+    #
     if ( length(sample_names) > 1 ) {
       temp_seurat <- SetAllIdent(temp_seurat, id = column_sample)
       message("Get marker genes by sample...")
@@ -88,7 +88,7 @@ getMarkerGenes <- function(
           print.bar = print.bar,
           ...
         )
-      # check if any marker genes were found
+      #
       if ( nrow(markers_by_sample) > 0 ) {
         markers_by_sample <- markers_by_sample %>%
           select(c("cluster", "gene", "p_val", "avg_logFC", "pct.1", "pct.2",
@@ -97,7 +97,7 @@ getMarkerGenes <- function(
           dplyr::rename(
             sample = cluster
           )
-        # check if information about cell surface genes is present
+        #
         if ( exists("genes_surface") ) {
           markers_by_sample <- markers_by_sample %>%
             mutate(on_cell_surface = gene %in% genes_surface)
@@ -113,15 +113,21 @@ getMarkerGenes <- function(
   }
   ##--------------------------------------------------------------------------##
   ## clusters
-  ##--------------------------------------------------------------------------##
-  # check if cluster column is provided
+  ## - check if column_cluster is provided and exists in meta data
+  ## - get cluster names
+  ## - check if more than 1 cluster exists
+  ## - run Seurat::FindAllMarkers()
+  ## - check if any marker genes were found
+  ## - sort and rename columns
+  ## - add column with cell surface genes if present
+  ##--------------------------------------------------------------------------##  # check if cluster column is provided
   if ( !is.null(column_cluster) & column_cluster %in% names(temp_seurat@meta.data) ) {
     if ( is.factor(temp_seurat@meta.data[[column_cluster]]) ) {
       cluster_names <- as.character(levels(temp_seurat@meta.data[[column_cluster]]))
     } else {
       cluster_names <- sort(unique(temp_seurat@meta.data[[column_cluster]]))
     }
-    # check if more than 1 cluster is available
+    #
     if ( length(cluster_names) > 1 ) {
       temp_seurat <- SetAllIdent(temp_seurat, id = column_cluster)
       message("Get marker genes by cluster...")
@@ -134,13 +140,13 @@ getMarkerGenes <- function(
           print.bar = print.bar,
           ...
         )
-      # check if any marker genes were found
+      #
       if ( nrow(markers_by_cluster) > 0 ) {
         markers_by_cluster <- markers_by_cluster %>%
           select(c("cluster", "gene", "p_val", "avg_logFC", "pct.1", "pct.2",
             "p_val_adj")
           )
-        # check if information about cell surface genes is present
+        #
         if ( exists("genes_surface") ) {
           markers_by_cluster <- markers_by_cluster %>%
             mutate(on_cell_surface = gene %in% genes_surface)
@@ -155,7 +161,7 @@ getMarkerGenes <- function(
     message("Provided column name with cluster information cannot be found.")
   }
   ##--------------------------------------------------------------------------##
-  ## export results
+  ## store results in Seurat object
   ##--------------------------------------------------------------------------##
   if ( is.null(object@misc$marker_genes) ) {
     temp_seurat@misc$marker_genes <- list()
@@ -166,6 +172,9 @@ getMarkerGenes <- function(
   if ( nrow(markers_by_cluster) > 1) {
     temp_seurat@misc$marker_genes$by_cluster <- markers_by_cluster
   }
+  ##--------------------------------------------------------------------------##
+  ## return Seurat object
+  ##--------------------------------------------------------------------------##
   return(temp_seurat)
 }
 

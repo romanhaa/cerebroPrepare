@@ -34,9 +34,8 @@ Launch Cerebro and load the RDS file you just exported from R.
 
 To take full advantage of Cerebro, it is recommended to also run the commands below before exporting the data.
 
-
-
 ```
+seurat <- addPercentMtRibo(seurat)
 seurat <- getMostExpressedGenes(seurat)
 seurat <- getMarkerGenes(seurat)
 seurat <- annotateMarkerGenes(seurat)
