@@ -61,3 +61,4 @@ seurat <- annotateMarkerGenes(seurat)
 * [ ] Use `biomaRt` to get lists of mitochondrial and ribosomal genes.
 * [ ] Export function should directly save the object.
 * [ ] Save as `.cerebro` and allow only that file extension to be loaded.
+* [ ] Take function from `enrichR` package, remove messages and use `future_apply` to be even faster.
