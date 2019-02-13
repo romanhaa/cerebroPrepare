@@ -1,6 +1,5 @@
-#' Export Seurat object to Cerebro.
-#'
-#' This function allows to export a Seurat object to visualize in Cerebro.
+#' @title Export Seurat object to Cerebro.
+#' @description This function allows to export a Seurat object to visualize in Cerebro.
 #' @param object Seurat object.
 #' @param experiment_name Experiment name.
 #' @param organism Organism, e.g. hg (human), mm (mouse), etc.
@@ -11,6 +10,7 @@
 #' @param column_cell_cycle_regev Optional column in object@meta.data that contains information about cell cycle phase based on Regev method (default of Seurat); defaults to NULL.
 #' @param column_cell_cycle_cyclone Optional column in object@meta.data that contains information about cell cycle phase based on Cyclone method; defaults to NULL.
 #' @param add_all_meta_data If set to TRUE, all further meta data columns will be extracted as well.
+#' @return Returns object to be saved and loaded in Cerebro.
 #' @keywords seurat cerebro
 #' @export
 #' @import dplyr
@@ -18,7 +18,6 @@
 #' @import tidyr
 #' @examples
 #' exportFromSeurat(object = seurat, experiment_name = "PDX_patient_A", organism = "hg")
-
 exportFromSeurat <- function(
   object,
   experiment_name,
@@ -127,7 +126,7 @@ exportFromSeurat <- function(
     spread(cluster, count, fill = 0) %>%
     ungroup() %>%
     mutate(total_cell_count = rowSums(.[c(2:ncol(.))])) %>%
-    select(c("sample", "total_cell_count", everything())) %>%
+    dplyr::select(c("sample", "total_cell_count", everything())) %>%
     arrange(factor(sample, levels = sample_names))
   ##--------------------------------------------------------------------------##
   ## clusters by sample
@@ -138,7 +137,7 @@ exportFromSeurat <- function(
     spread(sample, count, fill = 0) %>%
     ungroup() %>%
     mutate(total_cell_count = rowSums(.[c(2:ncol(.))])) %>%
-    select(c("cluster", "total_cell_count", everything())) %>%
+    dplyr::select(c("cluster", "total_cell_count", everything())) %>%
     arrange(factor(cluster, levels = cluster_names))
   meta_data_columns <- meta_data_columns[-which(meta_data_columns == column_sample)]
   meta_data_columns <- meta_data_columns[-which(meta_data_columns == column_cluster)]
@@ -156,7 +155,7 @@ exportFromSeurat <- function(
       spread(cell_cycle_Regev, count, fill = 0) %>%
       ungroup() %>%
       mutate(total_cell_count = rowSums(.[c(2:ncol(.))])) %>%
-      select(c("sample", "total_cell_count", everything())) %>%
+      dplyr::select(c("sample", "total_cell_count", everything())) %>%
       arrange(factor(sample, levels = sample_names))
     # by cluster
     export$clusters$by_cell_cycle_Regev <- export$cells %>%
@@ -165,7 +164,7 @@ exportFromSeurat <- function(
       spread(cell_cycle_Regev, count, fill = 0) %>%
       ungroup() %>%
       mutate(total_cell_count = rowSums(.[c(2:ncol(.))])) %>%
-      select(c("cluster", "total_cell_count", everything())) %>%
+      dplyr::select(c("cluster", "total_cell_count", everything())) %>%
       arrange(factor(cluster, levels = cluster_names))
     meta_data_columns <- meta_data_columns[-which(meta_data_columns == column_cell_cycle_regev)]
   }
@@ -181,7 +180,7 @@ exportFromSeurat <- function(
       spread(cell_cycle_Cyclone, count, fill = 0) %>%
       ungroup() %>%
       mutate(total_cell_count = rowSums(.[c(2:ncol(.))])) %>%
-      select(c("sample", "total_cell_count", everything())) %>%
+      dplyr::select(c("sample", "total_cell_count", everything())) %>%
       arrange(factor(sample, levels = sample_names))
     # by cluster
     export$clusters$by_cell_cycle_Cyclone <- export$cells %>%
@@ -190,7 +189,7 @@ exportFromSeurat <- function(
       spread(cell_cycle_Cyclone, count, fill = 0) %>%
       ungroup() %>%
       mutate(total_cell_count = rowSums(.[c(2:ncol(.))])) %>%
-      select(c("cluster", "total_cell_count", everything())) %>%
+      dplyr::select(c("cluster", "total_cell_count", everything())) %>%
       arrange(factor(cluster, levels = cluster_names))
     meta_data_columns <- meta_data_columns[-which(meta_data_columns == column_cell_cycle_cyclone)]
   }

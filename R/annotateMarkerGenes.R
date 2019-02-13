@@ -77,7 +77,7 @@ annotateMarkerGenes <- function(
         try(
           temp <- markers_by_sample %>%
             filter(sample == x) %>%
-            select("gene") %>%
+            dplyr::select("gene") %>%
             t() %>%
             as.vector() %>%
             enrichR::enrichr(databases = enrichr_dbs)
@@ -137,7 +137,7 @@ annotateMarkerGenes <- function(
         try(
           temp <- markers_by_cluster %>%
             filter(cluster == x) %>%
-            select("gene") %>%
+            dplyr::select("gene") %>%
             t() %>%
             as.vector() %>%
             enrichR::enrichr(databases = enrichr_dbs)

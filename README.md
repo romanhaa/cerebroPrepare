@@ -59,3 +59,5 @@ seurat <- annotateMarkerGenes(seurat)
   * nUMI: `colSums(seurat@raw.data)`
   * nGene: `colSums(seurat@raw.data != 0)`
 * [ ] Use `biomaRt` to get lists of mitochondrial and ribosomal genes.
+* [ ] Export function should directly save the object.
+* [ ] Save as `.cerebro` and allow only that file extension to be loaded.

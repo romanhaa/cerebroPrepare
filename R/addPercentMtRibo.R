@@ -28,9 +28,10 @@ addPercentMtRibo <- function(
       #   "extdata",
       #   paste0("genes_mt_", organism, "_names.txt"), package = "cerebroPrepare"
       # ),
+      col_types = cols(),
       col_names = FALSE
     ) %>%
-    select(1) %>%
+    dplyr::select(1) %>%
     t() %>%
     as.vector()
   genes_ribo <- read_tsv(
@@ -39,9 +40,10 @@ addPercentMtRibo <- function(
       #   "extdata",
       #   paste0("genes_ribo_", organism, "_names.txt"), package = "cerebroPrepare"
       # ),
+      col_types = cols(),
       col_names = FALSE
     ) %>%
-    select(1) %>%
+    dplyr::select(1) %>%
     t() %>%
     as.vector()
   ##--------------------------------------------------------------------------##

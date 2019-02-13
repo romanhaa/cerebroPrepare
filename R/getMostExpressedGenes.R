@@ -28,8 +28,8 @@ getMostExpressedGenes <- function(
   ## - combine results in a single data frame
   ## - sort by sample (probably not necessary)
   ##--------------------------------------------------------------------------##
-  if ( !is.null(column_sample) && (column_sample %in% names(temp_seurat@meta.data)) ) {
-    # if sample column is already a factor, take the levels from there
+  if ( !is.null(column_sample) && column_sample %in% names(temp_seurat@meta.data) ) {
+    #
     if ( is.factor(temp_seurat@meta.data[[column_sample]]) ) {
       sample_names <- as.character(levels(temp_seurat@meta.data[[column_sample]]))
     } else {
@@ -42,17 +42,18 @@ getMostExpressedGenes <- function(
         "pct" = double(),
         stringsAsFactors = FALSE
       )
-      results <- future.apply::future_lapply(sample_names, function(x) {
+      message("Get most expressed genes by sample...")
+      results <- pbapply::pblapply(sample_names, function(x) {
         temp_table <- temp_seurat@raw.data %>%
           as.data.frame(stringsAsFactors = FALSE) %>%
-          select(which(temp_seurat@meta.data[[column_sample]] == x)) %>%
+          dplyr::select(which(temp_seurat@meta.data[[column_sample]] == x)) %>%
           mutate(
             sample = x,
             gene = rownames(.),
             rowSums = rowSums(.),
             pct = rowSums / sum(.[1:(ncol(.))]) * 100
           ) %>%
-          select(c("sample","gene","pct")) %>%
+          dplyr::select(c("sample","gene","pct")) %>%
           arrange(-pct) %>%
           head(100)
       })
@@ -84,17 +85,17 @@ getMostExpressedGenes <- function(
           stringsAsFactors = FALSE
         )
       message("Get most expressed genes by cluster...")
-      results <- future.apply::future_lapply(cluster_names, function(x) {
+      results <- pbapply::pblapply(cluster_names, function(x) {
         temp_table <- temp_seurat@raw.data %>%
           as.data.frame(stringsAsFactors = FALSE) %>%
-          select(which(temp_seurat@meta.data[[column_cluster]] == x)) %>%
+          dplyr::select(which(temp_seurat@meta.data[[column_cluster]] == x)) %>%
           mutate(
             cluster = x,
             gene = rownames(.),
             rowSums = rowSums(.),
             pct = rowSums / sum(.[1:(ncol(.))]) * 100
           ) %>%
-          select(c("cluster","gene","pct")) %>%
+          dplyr::select(c("cluster","gene","pct")) %>%
           arrange(-pct) %>%
           head(100)
       })

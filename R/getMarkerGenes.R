@@ -91,7 +91,7 @@ getMarkerGenes <- function(
       #
       if ( nrow(markers_by_sample) > 0 ) {
         markers_by_sample <- markers_by_sample %>%
-          select(c("cluster", "gene", "p_val", "avg_logFC", "pct.1", "pct.2",
+          dplyr::select(c("cluster", "gene", "p_val", "avg_logFC", "pct.1", "pct.2",
             "p_val_adj")
           ) %>%
           dplyr::rename(
@@ -143,7 +143,7 @@ getMarkerGenes <- function(
       #
       if ( nrow(markers_by_cluster) > 0 ) {
         markers_by_cluster <- markers_by_cluster %>%
-          select(c("cluster", "gene", "p_val", "avg_logFC", "pct.1", "pct.2",
+          dplyr::select(c("cluster", "gene", "p_val", "avg_logFC", "pct.1", "pct.2",
             "p_val_adj")
           )
         #

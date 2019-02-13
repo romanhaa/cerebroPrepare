@@ -16,7 +16,7 @@ calculatePercentGenes <- function(
   ## get for every supplied gene list, get the genes that are present in the
   ## data set and calculate the percentage of transcripts that they account for
   ##--------------------------------------------------------------------------##
-  result <- future.apply::future_lapply(
+  result <- pbapply::pblapply(
     genes,
     function(x) {
       genes_here <- intersect(x, rownames(object@raw.data))
