@@ -215,6 +215,6 @@ enrichr <- function(
     return(r)
   }, USE.NAMES = TRUE, simplify = FALSE)
   options(stringsAsFactors = dfSAF)
-  names(result) <- dbs
+  #names(result) <- dbs
   return(result)
 }
