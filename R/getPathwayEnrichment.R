@@ -185,9 +185,6 @@ getPathwayEnrichment <- function(
 #' See http://amp.pharm.mssm.edu/Enrichr/ for available databases.
 #' @return Returns a data frame of enrichment terms, p-values, ...
 #' @author Wajid Jawaid
-#' @importFrom httr GET POST
-#' @importFrom rjson fromJSON
-#' @importFrom utils read.table
 enrichr <- function(
   genes,
   databases = NULL

@@ -6,7 +6,7 @@
 \usage{
 getMarkerGenes(object, organism = NULL, column_sample = "sample",
   column_cluster = "cluster", only.pos = TRUE, min.pct = 0.7,
-  thresh.use = 0.25, test.use = "t", print.bar = FALSE, ...)
+  thresh.use = 0.25, test.use = "t", print.bar = TRUE, ...)
 }
 \arguments{
 \item{object}{Seurat object.}
@@ -25,10 +25,15 @@ getMarkerGenes(object, organism = NULL, column_sample = "sample",
 
 \item{test.use}{Statistical test used, defaults to "t" (t-test).}
 
-\item{print.bar}{Print progress bar; defaults to FALSE.}
+\item{print.bar}{Print progress bar; defaults to TRUE.}
+
+\item{...}{Further parameters can be passed to control Seurat::FindAllMakers().}
 }
 \description{
 This function gets marker genes for every sample and cluster of the Seurat object.
+}
+\details{
+Get marker genes for every sample and cluster in Seurat object.
 }
 \examples{
 getMarkerGenes(object = seurat)

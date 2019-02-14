@@ -4,7 +4,7 @@
 \alias{exportFromSeurat}
 \title{Export Seurat object to Cerebro.}
 \usage{
-exportFromSeurat(object, experiment_name, organism,
+exportFromSeurat(object, file, experiment_name, organism,
   column_sample = "sample", column_cluster = "cluster",
   column_nUMI = "nUMI", column_nGene = "nGene",
   column_cell_cycle_regev = NULL, column_cell_cycle_cyclone = NULL,
@@ -12,6 +12,8 @@ exportFromSeurat(object, experiment_name, organism,
 }
 \arguments{
 \item{object}{Seurat object.}
+
+\item{file}{Where to save the output.}
 
 \item{experiment_name}{Experiment name.}
 
@@ -31,11 +33,17 @@ exportFromSeurat(object, experiment_name, organism,
 
 \item{add_all_meta_data}{If set to TRUE, all further meta data columns will be extracted as well.}
 }
+\value{
+Returns object to be saved and loaded in Cerebro.
+}
 \description{
 This function allows to export a Seurat object to visualize in Cerebro.
 }
+\details{
+Export Seurat object to Cerebro.
+}
 \examples{
-exportFromSeurat(object = seurat, experiment_name = "PDX_patient_A", organism = "hg")
+exportFromSeurat(object = seurat, file = "PDX_patient_A.cerebro" experiment_name = "PDX_patient_A", organism = "hg")
 }
 \keyword{cerebro}
 \keyword{seurat}

@@ -17,6 +17,9 @@ getMostExpressedGenes(object, column_sample = "sample",
 \description{
 This function calculates the most expressed genes for every sample and cluster of the Seurat object.
 }
+\details{
+Get most expressed genes for every sample and cluster in Seurat object.
+}
 \examples{
 getMostExpressedGenes(object = seurat)
 }
