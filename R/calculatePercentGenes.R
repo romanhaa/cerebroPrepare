@@ -1,6 +1,6 @@
 #' Calculate percentage of transcripts of gene list.
-#'
-#' Get percentage of transcripts of gene list compared to all transcripts per cell.
+#' @title Calculate percentage of transcripts of gene list.
+#' @description Get percentage of transcripts of gene list compared to all transcripts per cell.
 #' @param object Seurat object.
 #' @param genes List(s) of genes.
 #' @keywords seurat cerebro

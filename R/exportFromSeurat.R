@@ -1,6 +1,8 @@
+#' Export Seurat object to Cerebro.
 #' @title Export Seurat object to Cerebro.
 #' @description This function allows to export a Seurat object to visualize in Cerebro.
 #' @param object Seurat object.
+#' @param file Where to save the output.
 #' @param experiment_name Experiment name.
 #' @param organism Organism, e.g. hg (human), mm (mouse), etc.
 #' @param column_sample Column in object@meta.data that contains information about sample; defaults to "sample".
@@ -17,9 +19,10 @@
 #' @import Seurat
 #' @import tidyr
 #' @examples
-#' exportFromSeurat(object = seurat, experiment_name = "PDX_patient_A", organism = "hg")
+#' exportFromSeurat(object = seurat, file = "PDX_patient_A.cerebro" experiment_name = "PDX_patient_A", organism = "hg")
 exportFromSeurat <- function(
   object,
+  file,
   experiment_name,
   organism,
   column_sample = "sample",
@@ -244,7 +247,10 @@ exportFromSeurat <- function(
   ##--------------------------------------------------------------------------##
   export$expression <- object@data
   ##--------------------------------------------------------------------------##
-  ## return export object
+  ## save export object to disk
   ##--------------------------------------------------------------------------##
-  return(export)
+  if ( !file.exists(dirname(file)) ) {
+    dir.create(dirname(file), showWarnings = FALSE)
+  }
+  saveRDS(export, file)
 }

@@ -1,12 +1,30 @@
 ##----------------------------------------------------------------------------##
 ##
 ##----------------------------------------------------------------------------##
+require("biomaRt")
+require("dplyr")
+require("future.apply")
+require("httr")
+require("Matrix")
+require("pbapply")
+require("readr")
+require("Seurat")
+require("tidyr")
+
+##----------------------------------------------------------------------------##
+##
+##----------------------------------------------------------------------------##
 source("/hpcnfs/scratch/PGP/rhillje/cerebroPrepare/R/calculatePercentGenes.R")
 source("/hpcnfs/scratch/PGP/rhillje/cerebroPrepare/R/addPercentMtRibo.R")
 source("/hpcnfs/scratch/PGP/rhillje/cerebroPrepare/R/getMostExpressedGenes.R")
 source("/hpcnfs/scratch/PGP/rhillje/cerebroPrepare/R/getMarkerGenes.R")
-source("/hpcnfs/scratch/PGP/rhillje/cerebroPrepare/R/annotateMarkerGenes.R")
+source("/hpcnfs/scratch/PGP/rhillje/cerebroPrepare/R/getPathwayEnrichment.R")
 source("/hpcnfs/scratch/PGP/rhillje/cerebroPrepare/R/exportFromSeurat.R")
+
+##----------------------------------------------------------------------------##
+##
+##----------------------------------------------------------------------------##
+print(Sys.time())
 
 ##----------------------------------------------------------------------------##
 ## Output from Cerebro as input.
@@ -22,11 +40,11 @@ seurat <- readRDS("/hpcnfs/scratch/PGP/rhillje/cerebroPrepare_test_data/from_cer
 t <- exportFromSeurat(
   seurat,
   experiment_name = "from_cerebro",
+  file = "/hpcnfs/scratch/PGP/rhillje/cerebroPrepare_test_data/from_cerebro/cerebro_from_cerebro.rds",
   organism = "mm",
   column_cell_cycle_regev = "cell_cycle_Regev",
   column_cell_cycle_cyclone = "cell_cycle_Cyclone"
 )
-saveRDS(t, "/hpcnfs/scratch/PGP/rhillje/cerebroPrepare_test_data/from_cerebro/cerebro_from_cerebro.rds")
 
 ##----------------------------------------------------------------------------##
 ## Naked Seurat object as input.
@@ -50,7 +68,7 @@ seurat <- getMarkerGenes(
   column_cluster = "clusterID",
   organism = "mm"
 )
-seurat <- annotateMarkerGenes(
+seurat <- getPathwayEnrichment(
   seurat,
   column_sample = "sampleID",
   column_cluster = "clusterID"
@@ -58,11 +76,11 @@ seurat <- annotateMarkerGenes(
 t <- exportFromSeurat(
   seurat,
   experiment_name = "naked_seurat",
+  file = "/hpcnfs/scratch/PGP/rhillje/cerebroPrepare_test_data/naked/cerebro_from_naked.rds",
   organism = "mm",
   column_sample = "sampleID",
   column_cluster = "clusterID"
 )
-saveRDS(t, "/hpcnfs/scratch/PGP/rhillje/cerebroPrepare_test_data/naked/cerebro_from_naked.rds")
 
 # alternative
 # seurat <- readRDS("/hpcnfs/scratch/PGP/rhillje/cerebroPrepare_test_data/naked/seurat.rds")
@@ -93,25 +111,20 @@ seurat <- getMarkerGenes(
   organism = "mm",
   column_sample = "sampleID"
 )
-seurat <- annotateMarkerGenes(seurat, column_sample = "sampleID")
+seurat <- getPathwayEnrichment(seurat, column_sample = "sampleID")
 t <- exportFromSeurat(
   seurat,
   experiment_name = "from_scRNAseq",
+  file = "/hpcnfs/scratch/PGP/rhillje/cerebroPrepare_test_data/from_scRNAseq/cerebro_from_scRNAseq.rds",
   organism = "mm",
   column_sample = "sampleID",
   column_cell_cycle_regev = "cell.cycle.Regev",
   column_cell_cycle_cyclone = "cell.cycle.Cyclone"
 )
-saveRDS(t, "/hpcnfs/scratch/PGP/rhillje/cerebroPrepare_test_data/from_scRNAseq/cerebro_from_scRNAseq.rds")
 
-
-
-
-
-
-
-
-
-
+##----------------------------------------------------------------------------##
+##
+##----------------------------------------------------------------------------##
+print(Sys.time())
 
 

@@ -26,8 +26,7 @@ Prepare data:
 
 ```
 library("cerebroPrepare")
-cerebro <- exportFromSeurat(seurat)
-saveRDS(cerebro, "cerebro_data.rds")
+cerebro <- exportFromSeurat(seurat, "my_experiment.cerebro")
 ```
 
 Launch Cerebro and load the RDS file you just exported from R.
@@ -38,27 +37,36 @@ To take full advantage of Cerebro, it is recommended to also run the commands be
 seurat <- addPercentMtRibo(seurat)
 seurat <- getMostExpressedGenes(seurat)
 seurat <- getMarkerGenes(seurat)
-seurat <- annotateMarkerGenes(seurat)
+seurat <- getPathwayEnrichment(seurat)
 ```
+
+## Credit
+
+* Pathway enrichment in marker genes is done through enrichR API (<https://github.com/wjawaid/enrichR>). I took the `enrichr` function and modified it to run in parallel (`future_lapply`) and not print status messages.
 
 ## To do
 
 * [x] Check if `biomaRt` package is available.
 * [x] Functions for `percent_MT` and `percent_ribo`.
-* [ ] Check if functions work.
-  * Export with and without generating optional data (most expressed genes, marker genes, annotation).
-* [ ] Check if it works with "normal" Seurat object and one from Cerebro pipeline.
-* [ ] Check how Cerebro behaves with different input data.
-  * 3 cases:
-    * "Naked" Seurat object.
-      * Not pre-processed at all, with different column names for sample and column, an extra meta column, and t-SNE and UMAP.
-    * Seurat object from our "old" scRNA-seq pipeline.
-    * Seurat object from Cerebro pipeline.
-      * Should be exactly like the output from the pipeline.
+* [x] Take function from `enrichR` package, remove messages and use `future_apply` to be even faster.
+  * Save together with `annotateMarkerGenes()`.
+  * Give credit to author of enrichr function.
+* [x] Export function should directly save the object.
 * [ ] Calculate nUMI and nGene if not present?
   * nUMI: `colSums(seurat@raw.data)`
   * nGene: `colSums(seurat@raw.data != 0)`
 * [ ] Use `biomaRt` to get lists of mitochondrial and ribosomal genes.
-* [ ] Export function should directly save the object.
 * [ ] Save as `.cerebro` and allow only that file extension to be loaded.
-* [ ] Take function from `enrichR` package, remove messages and use `future_apply` to be even faster.
+  * User provides place to save file.
+* [ ] Create Docker container for immediate access.
+
+## Testing
+
+* 3 cases for input:
+  * "Naked" Seurat object.
+    * Not pre-processed at all, with different column names for sample and column, an extra meta column, and t-SNE and UMAP.
+  * Seurat object from our "old" scRNA-seq pipeline.
+  * Seurat object from Cerebro pipeline.
+    * Should be exactly like the output from the pipeline.
+* Other variables to test:
+  * Export with and without generating optional data (most expressed genes, marker genes, annotation).

@@ -1,6 +1,6 @@
 #' Add percentage of mitochondrial and ribosomal transcripts.
-#'
-#' Get percentage of transcripts of gene list compared to all transcripts per cell.
+#' @title Add percentage of mitochondrial and ribosomal transcripts.
+#' @description Get percentage of transcripts of gene list compared to all transcripts per cell.
 #' @param object Seurat object.
 #' @param organism Organism, can be either human ("hg") or mouse ("mm"). Genes need to annotated as gene symbol, e.g. MKI67 (human) / Mki67 (mouse).
 #' @keywords seurat cerebro
@@ -62,6 +62,7 @@ addPercentMtRibo <- function(
   ##--------------------------------------------------------------------------##
   ## calculate percentage of transcripts for mitochondrial and ribosomal genes
   ##--------------------------------------------------------------------------##
+  message("Calculate percentage of mitochondrial and ribosomal transcripts...")
   values <- calculatePercentGenes(
     object,
     list(

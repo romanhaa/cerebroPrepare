@@ -1,6 +1,6 @@
 #' Get most expressed genes for every sample and cluster in Seurat object.
-#'
-#' This function calculates the most expressed genes for every sample and cluster of the Seurat object.
+#' @title Get most expressed genes for every sample and cluster in Seurat object.
+#' @description This function calculates the most expressed genes for every sample and cluster of the Seurat object.
 #' @param object Seurat object.
 #' @param column_sample Column in object@meta.data that contains information about sample; defaults to "sample".
 #' @param column_cluster Column in object@meta.data that contains information about cluster; defaults to "cluster".

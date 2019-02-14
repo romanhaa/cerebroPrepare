@@ -1,6 +1,6 @@
-#' Annotate marker genes with EnrichR.
-#'
-#' This function uses the enrichR API to look for enriched pathways in marker gene sets of samples and clusters.
+#' Get enriched pathways based on marker genes from EnrichR.
+#' @title Get enriched pathways based on marker genes from EnrichR.
+#' @description This function uses the enrichR API to look for enriched pathways in marker gene sets of samples and clusters.
 #' @param object Seurat object.
 #' @param column_sample Column in object@meta.data that contains information about sample; defaults to "sample".
 #' @param column_cluster Column in object@meta.data that contains information about cluster; defaults to "cluster".
@@ -12,7 +12,7 @@
 #' @examples
 #' annotateMarkerGenes(object = seurat)
 
-annotateMarkerGenes <- function(
+getPathwayEnrichment <- function(
   object,
   column_sample = "sample",
   column_cluster = "cluster",
@@ -67,9 +67,9 @@ annotateMarkerGenes <- function(
       temp_seurat@misc$marker_genes$by_sample_annotation <- list()
     }
     #
+    message("Get enriched pathway by sample...")
     temp_seurat@misc$marker_genes$by_sample_annotation <- future.apply::future_sapply(
       sample_names, USE.NAMES = TRUE, simplify = FALSE, function(x) {
-      # message(paste0("Get annotation for sample '", x, "'"))
       temp <- list()
       attempt <- 1
       while( length(temp) == 0 && !("Adjusted.P.value" %in% names(temp)) && attempt <= 3 ) {
@@ -80,7 +80,7 @@ annotateMarkerGenes <- function(
             dplyr::select("gene") %>%
             t() %>%
             as.vector() %>%
-            enrichR::enrichr(databases = enrichr_dbs)
+            enrichr(databases = enrichr_dbs)
         )
       }
       #
@@ -127,9 +127,9 @@ annotateMarkerGenes <- function(
       temp_seurat@misc$marker_genes$by_cluster_annotation <- list()
     }
     #
+    message("Get enriched pathway by cluster...")
     temp_seurat@misc$marker_genes$by_cluster_annotation <- future.apply::future_sapply(
       cluster_names, USE.NAMES = TRUE, simplify = FALSE, function(x) {
-      # message(paste0("Get annotation for cluster '", x, "'"))
       temp <- list()
       attempt <- 1
       while( length(temp) == 0 && !("Adjusted.P.value" %in% names(temp)) && attempt <= 3 ) {
@@ -140,7 +140,7 @@ annotateMarkerGenes <- function(
             dplyr::select("gene") %>%
             t() %>%
             as.vector() %>%
-            enrichR::enrichr(databases = enrichr_dbs)
+            enrichr(databases = enrichr_dbs)
         )
       }
       #
@@ -177,3 +177,53 @@ annotateMarkerGenes <- function(
 
 
 
+#' Gene enrichment using Enrichr.
+#' @title Gene enrichment using Enrichr.
+#' @description Gene enrichment using Enrichr.
+#' @param genes Character vector of gene names or dataframe of gene names in 
+#' first column and a score between 0 and 1 in the other.
+#' @param databases Character vector of databases to search.
+#' See http://amp.pharm.mssm.edu/Enrichr/ for available databases.
+#' @return Returns a data frame of enrichment terms, p-values, ...
+#' @author Wajid Jawaid
+#' @importFrom httr GET POST
+#' @importFrom rjson fromJSON
+#' @importFrom utils read.table
+enrichr <- function(
+  genes,
+  databases = NULL
+) {
+  if (is.vector(genes) & ! all(genes == "") & length(genes) != 0) {
+    temp <- httr::POST(
+      url = "http://amp.pharm.mssm.edu/Enrichr/enrich",
+      body = list(list = paste(genes, collapse = "\n"))
+    )
+  } else if (is.data.frame(genes)) {
+    temp <- httr::POST(
+      url = "http://amp.pharm.mssm.edu/Enrichr/enrich",
+      body = list(
+        list = paste(paste(genes[,1], genes[,2], sep = ","), collapse = "\n")
+      )
+    )
+  } else {
+    warning("genes must be a non-empty vector of gene names or a dataframe with genes and score.")
+  }
+  httr::GET(url = "http://amp.pharm.mssm.edu/Enrichr/share")
+  dbs <- as.list(databases)
+  dfSAF <- options()$stringsAsFactors
+  options(stringsAsFactors = FALSE)
+  result <- future.apply::future_lapply(dbs, function(x) {
+    r <- httr::GET(
+      url = "http://amp.pharm.mssm.edu/Enrichr/export",
+      query = list(file = "API", backgroundType = x)
+    )
+    r <- gsub("&#39;", "'", intToUtf8(r$content))
+    tc <- textConnection(r)
+    r <- read.table(tc, sep = "\t", header = TRUE, quote = "", comment.char = "")
+    close(tc)
+    return(r)
+  })
+  options(stringsAsFactors = dfSAF)
+  names(result) <- dbs
+  return(result)
+}

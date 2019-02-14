@@ -1,6 +1,6 @@
 #' Get marker genes for every sample and cluster in Seurat object.
-#'
-#' This function gets marker genes for every sample and cluster of the Seurat object.
+#' @title Get marker genes for every sample and cluster in Seurat object.
+#' @description This function gets marker genes for every sample and cluster of the Seurat object.
 #' @param object Seurat object.
 #' @param organism Organism information for pulling info about presence of marker genes of cell surface; can be omitted if already saved in Seurat object; defaults to NULL.
 #' @param column_sample Column in object@meta.data that contains information about sample; defaults to "sample".
