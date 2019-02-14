@@ -31,7 +31,7 @@ RUN pip3 install umap-learn
 
 # install R packages
 RUN Rscript -e 'install.packages("BiocManager", repos="http://cran.us.r-project.org")'
-RUN Rscript -e 'install.packages("devtools", repos="http://cran.us.r-project.org")'
+RUN Rscript -e 'BiocManager::install("devtools")'
 RUN Rscript -e 'devtools::install_github("romanhaa/cerebroPrepare")'
 
 #
