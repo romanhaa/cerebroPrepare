@@ -10,8 +10,7 @@
 #' @export
 #' @import dplyr
 #' @examples
-#' annotateMarkerGenes(object = seurat)
-
+#' getPathwayEnrichment(object = seurat)
 getPathwayEnrichment <- function(
   object,
   column_sample = "sample",
