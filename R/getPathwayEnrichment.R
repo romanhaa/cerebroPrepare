@@ -171,11 +171,6 @@ getPathwayEnrichment <- function(
 }
 
 
-
-
-
-
-
 #' Gene enrichment using Enrichr.
 #' @title Gene enrichment using Enrichr.
 #' @description Gene enrichment using Enrichr.
@@ -208,7 +203,7 @@ enrichr <- function(
   dbs <- as.list(databases)
   dfSAF <- options()$stringsAsFactors
   options(stringsAsFactors = FALSE)
-  result <- future.apply::future_lapply(dbs, function(x) {
+  result <- future.apply::future_sapply(dbs, function(x) {
     r <- httr::GET(
       url = "http://amp.pharm.mssm.edu/Enrichr/export",
       query = list(file = "API", backgroundType = x)
@@ -218,7 +213,7 @@ enrichr <- function(
     r <- read.table(tc, sep = "\t", header = TRUE, quote = "", comment.char = "")
     close(tc)
     return(r)
-  })
+  }, USE.NAMES = TRUE, simplify = FALSE)
   options(stringsAsFactors = dfSAF)
   names(result) <- dbs
   return(result)
