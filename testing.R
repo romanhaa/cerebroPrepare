@@ -123,6 +123,36 @@ t <- exportFromSeurat(
 )
 
 ##----------------------------------------------------------------------------##
+## Output from scRNAseq pipeline as input.
+## - experiment name and organism stored in different place
+## - column with sample information named differently
+## - cell cycle info stored under different column names
+## - most expressed genes and marker genes available but stored in different places
+##   - convert are call again?
+##     - problem: all '.' are replaced with '_', also in column names
+##     - conversion might be laborious
+## - enriched pathways may be present, not always
+##----------------------------------------------------------------------------##
+seurat <- readRDS("/hpcnfs/data/PGP/egatti/scRNAseq_RPallavi/merging_seurat/seurat.rds")
+seurat <- addPercentMtRibo(seurat, organism = "mm")
+seurat <- getMostExpressedGenes(seurat, column_sample = "sampleID")
+seurat <- getMarkerGenes(
+  seurat,
+  organism = "mm",
+  column_sample = "sampleID"
+)
+seurat <- getPathwayEnrichment(seurat, column_sample = "sampleID")
+t <- exportFromSeurat(
+  seurat,
+  experiment_name = "from_scRNAseq_Rani",
+  file = "/hpcnfs/scratch/PGP/rhillje/cerebroPrepare_test_data/from_scRNAseq_Rani/cerebro_from_scRNAseq_Rani.rds",
+  organism = "mm",
+  column_sample = "sampleID",
+  column_cell_cycle_regev = "cell.cycle.Regev",
+  column_cell_cycle_cyclone = "cell.cycle.Cyclone"
+)
+
+##----------------------------------------------------------------------------##
 ##
 ##----------------------------------------------------------------------------##
 print(Sys.time())

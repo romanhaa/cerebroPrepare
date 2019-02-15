@@ -67,22 +67,27 @@ exportFromSeurat <- function(
   ##--------------------------------------------------------------------------##
   ## check provided parameters
   ##--------------------------------------------------------------------------##
-  #
   if ( (column_sample %in% names(object@meta.data) == FALSE ) ) {
-    stop("Sample column not found in meta data.", call. = FALSE)
+    stop(
+      "Column specified in 'column_sample' not found in meta data.",
+      call. = FALSE
+    )
   }
   if ( (column_cluster %in% names(object@meta.data) == FALSE ) ) {
-    stop("Cluster column not found in meta data.", call. = FALSE)
+    stop(
+      "Column specified in 'column_cluster' not found in meta data.",
+      call. = FALSE
+    )
   }
   if ( (column_nUMI %in% names(object@meta.data) == FALSE ) ) {
     stop(
-      "Column with number of transcripts per cell not found in meta data.",
+      "Column with number of transcripts per cell ('nUMI') not found in meta data.",
       call. = FALSE
     )
   }
   if ( (column_nGene %in% names(object@meta.data) == FALSE ) ) {
     stop(
-      "Column with number of expressed genes per cell not found in meta data.",
+      "Column with number of expressed genes per cell ('nGene') not found in meta data.",
       call. = FALSE
     )
   }
@@ -90,7 +95,7 @@ exportFromSeurat <- function(
   ## samples
   ##--------------------------------------------------------------------------##
   if ( is.factor(object@meta.data[[column_sample]]) ) {
-    sample_names <- as.character(levels(object@meta.data[[column_sample]]))
+    sample_names <- levels(object@meta.data[[column_sample]])
   } else {
     sample_names <- unique(object@meta.data[[column_sample]])
   }
@@ -102,7 +107,7 @@ exportFromSeurat <- function(
   ## clusters
   ##--------------------------------------------------------------------------##
   if ( is.factor(object@meta.data[[column_cluster]]) ) {
-    cluster_names <- as.character(levels(object@meta.data[[column_cluster]]))
+    cluster_names <- levels(object@meta.data[[column_cluster]])
   } else {
     cluster_names <- sort(unique(object@meta.data[[column_cluster]]))
   }
@@ -115,8 +120,8 @@ exportFromSeurat <- function(
   ##--------------------------------------------------------------------------##
   meta_data_columns <- names(object@meta.data)
   export$cells <- data.frame(
-    "sample" = as.factor(object@meta.data[[column_sample]]),
-    "cluster" = as.factor(object@meta.data[[column_cluster]]),
+    "sample" = factor(object@meta.data[[column_sample]], levels = c(sample_names)),
+    "cluster" = factor(object@meta.data[[column_cluster]], levels = c(cluster_names)),
     "nUMI" = object@meta.data[column_nUMI],
     "nGene" = object@meta.data[column_nGene]
   )

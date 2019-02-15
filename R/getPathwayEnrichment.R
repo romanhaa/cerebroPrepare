@@ -55,7 +55,7 @@ getPathwayEnrichment <- function(
   if ( !is.null(temp_seurat@misc$marker_genes$by_sample) ) {
     #
     if ( is.factor(temp_seurat@meta.data[[column_sample]]) ) {
-      sample_names <- as.character(levels(temp_seurat@meta.data[[column_sample]]))
+      sample_names <- levels(temp_seurat@meta.data[[column_sample]])
     } else {
       sample_names <- unique(temp_seurat@meta.data[[column_sample]])
     }
@@ -68,7 +68,7 @@ getPathwayEnrichment <- function(
     #
     message("Get enriched pathway by sample...")
     temp_seurat@misc$marker_genes$by_sample_annotation <- future.apply::future_sapply(
-      sample_names, USE.NAMES = TRUE, simplify = FALSE, function(x) {
+      sample_names, USE.NAMES = TRUE, simplify = FALSE, future.globals = FALSE, function(x) {
       temp <- list()
       attempt <- 1
       while( length(temp) == 0 && !("Adjusted.P.value" %in% names(temp)) && attempt <= 3 ) {
@@ -128,7 +128,7 @@ getPathwayEnrichment <- function(
     #
     message("Get enriched pathway by cluster...")
     temp_seurat@misc$marker_genes$by_cluster_annotation <- future.apply::future_sapply(
-      cluster_names, USE.NAMES = TRUE, simplify = FALSE, function(x) {
+      cluster_names, USE.NAMES = TRUE, simplify = FALSE, future.globals = FALSE, function(x) {
       temp <- list()
       attempt <- 1
       while( length(temp) == 0 && !("Adjusted.P.value" %in% names(temp)) && attempt <= 3 ) {
@@ -185,25 +185,22 @@ enrichr <- function(
   databases = NULL
 ) {
   if (is.vector(genes) & ! all(genes == "") & length(genes) != 0) {
-    temp <- httr::POST(
-      url = "http://amp.pharm.mssm.edu/Enrichr/enrich",
-      body = list(list = paste(genes, collapse = "\n"))
+    temp <- POST(
+      url="http://amp.pharm.mssm.edu/Enrichr/enrich",
+      body=list(list=paste(genes, collapse="\n"))
     )
   } else if (is.data.frame(genes)) {
-    temp <- httr::POST(
-      url = "http://amp.pharm.mssm.edu/Enrichr/enrich",
-      body = list(
-        list = paste(paste(genes[,1], genes[,2], sep = ","), collapse = "\n")
-      )
+    temp <- POST(
+      url="http://amp.pharm.mssm.edu/Enrichr/enrich",
+      body=list(list=paste(paste(genes[,1], genes[,2], sep=","), collapse="\n"))
     )
   } else {
     warning("genes must be a non-empty vector of gene names or a dataframe with genes and score.")
   }
   httr::GET(url = "http://amp.pharm.mssm.edu/Enrichr/share")
-  dbs <- as.list(databases)
   dfSAF <- options()$stringsAsFactors
   options(stringsAsFactors = FALSE)
-  result <- future.apply::future_sapply(dbs, function(x) {
+  result <- future.apply::future_sapply(databases, USE.NAMES = TRUE, simplify = FALSE, function(x) {
     r <- httr::GET(
       url = "http://amp.pharm.mssm.edu/Enrichr/export",
       query = list(file = "API", backgroundType = x)
@@ -213,7 +210,7 @@ enrichr <- function(
     r <- read.table(tc, sep = "\t", header = TRUE, quote = "", comment.char = "")
     close(tc)
     return(r)
-  }, USE.NAMES = TRUE, simplify = FALSE)
+  })
   options(stringsAsFactors = dfSAF)
   #names(result) <- dbs
   return(result)
