@@ -34,6 +34,33 @@ exportFromSeurat <- function(
   add_all_meta_data = TRUE
 ) {
   ##--------------------------------------------------------------------------##
+  ## check provided parameters
+  ##--------------------------------------------------------------------------##
+  if ( (column_sample %in% names(object@meta.data) == FALSE ) ) {
+    stop(
+      "Column specified in 'column_sample' not found in meta data.",
+      call. = FALSE
+    )
+  }
+  if ( (column_cluster %in% names(object@meta.data) == FALSE ) ) {
+    stop(
+      "Column specified in 'column_cluster' not found in meta data.",
+      call. = FALSE
+    )
+  }
+  if ( (column_nUMI %in% names(object@meta.data) == FALSE ) ) {
+    stop(
+      "Column with number of transcripts per cell ('nUMI') not found in meta data.",
+      call. = FALSE
+    )
+  }
+  if ( (column_nGene %in% names(object@meta.data) == FALSE ) ) {
+    stop(
+      "Column with number of expressed genes per cell ('nGene') not found in meta data.",
+      call. = FALSE
+    )
+  }
+  ##--------------------------------------------------------------------------##
   ## colors
   ##--------------------------------------------------------------------------##
   # Dutch palette from flatuicolors.com
@@ -65,32 +92,21 @@ exportFromSeurat <- function(
     )
   )
   ##--------------------------------------------------------------------------##
-  ## check provided parameters
+  ## collect some more data if present
   ##--------------------------------------------------------------------------##
-  if ( (column_sample %in% names(object@meta.data) == FALSE ) ) {
-    stop(
-      "Column specified in 'column_sample' not found in meta data.",
-      call. = FALSE
-    )
-  }
-  if ( (column_cluster %in% names(object@meta.data) == FALSE ) ) {
-    stop(
-      "Column specified in 'column_cluster' not found in meta data.",
-      call. = FALSE
-    )
-  }
-  if ( (column_nUMI %in% names(object@meta.data) == FALSE ) ) {
-    stop(
-      "Column with number of transcripts per cell ('nUMI') not found in meta data.",
-      call. = FALSE
-    )
-  }
-  if ( (column_nGene %in% names(object@meta.data) == FALSE ) ) {
-    stop(
-      "Column with number of expressed genes per cell ('nGene') not found in meta data.",
-      call. = FALSE
-    )
-  }
+  #
+  export$experiment$date_of_analysis <- ifelse(
+    exists(object@misc$experiment$date_of_analysis),
+    object@misc$experiment$date_of_analysis, NULL)
+  #
+  export$parameters <- ifelse(
+    exists(object@misc$parameters), object@misc$parameters, list())
+  #
+  export$gene_lists <- ifelse(
+    exists(object@misc$gene_lists), object@misc$gene_lists, list())
+  #
+  export$technical_info <- ifelse(
+    exists(object@misc$technical_info), object@misc$technical_info, list())
   ##--------------------------------------------------------------------------##
   ## samples
   ##--------------------------------------------------------------------------##
