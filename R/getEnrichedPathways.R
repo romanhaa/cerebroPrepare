@@ -179,19 +179,18 @@ getEnrichedPathways <- function(
 #' @param databases Character vector of databases to search.
 #' See http://amp.pharm.mssm.edu/Enrichr/ for available databases.
 #' @return Returns a data frame of enrichment terms, p-values, ...
-#' @import httr
 #' @author Wajid Jawaid
 enrichr <- function(
   genes,
   databases = NULL
 ) {
   if (is.vector(genes) & ! all(genes == "") & length(genes) != 0) {
-    temp <- POST(
+    temp <- httr::POST(
       url="http://amp.pharm.mssm.edu/Enrichr/enrich",
       body=list(list=paste(genes, collapse="\n"))
     )
   } else if (is.data.frame(genes)) {
-    temp <- POST(
+    temp <- httr::POST(
       url="http://amp.pharm.mssm.edu/Enrichr/enrich",
       body=list(list=paste(paste(genes[,1], genes[,2], sep=","), collapse="\n"))
     )
