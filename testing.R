@@ -18,7 +18,7 @@ source("/hpcnfs/scratch/PGP/rhillje/cerebroPrepare/R/calculatePercentGenes.R")
 source("/hpcnfs/scratch/PGP/rhillje/cerebroPrepare/R/addPercentMtRibo.R")
 source("/hpcnfs/scratch/PGP/rhillje/cerebroPrepare/R/getMostExpressedGenes.R")
 source("/hpcnfs/scratch/PGP/rhillje/cerebroPrepare/R/getMarkerGenes.R")
-source("/hpcnfs/scratch/PGP/rhillje/cerebroPrepare/R/getPathwayEnrichment.R")
+source("/hpcnfs/scratch/PGP/rhillje/cerebroPrepare/R/getEnrichedPathways.R")
 source("/hpcnfs/scratch/PGP/rhillje/cerebroPrepare/R/exportFromSeurat.R")
 
 ##----------------------------------------------------------------------------##
@@ -68,7 +68,7 @@ seurat <- getMarkerGenes(
   column_cluster = "clusterID",
   organism = "mm"
 )
-seurat <- getPathwayEnrichment(
+seurat <- getEnrichedPathways(
   seurat,
   column_sample = "sampleID",
   column_cluster = "clusterID"
@@ -111,7 +111,7 @@ seurat <- getMarkerGenes(
   organism = "mm",
   column_sample = "sampleID"
 )
-seurat <- getPathwayEnrichment(seurat, column_sample = "sampleID")
+seurat <- getEnrichedPathways(seurat, column_sample = "sampleID")
 t <- exportFromSeurat(
   seurat,
   experiment_name = "from_scRNAseq",
@@ -141,7 +141,7 @@ seurat <- getMarkerGenes(
   organism = "mm",
   column_sample = "sampleID"
 )
-seurat <- getPathwayEnrichment(seurat, column_sample = "sampleID")
+seurat <- getEnrichedPathways(seurat, column_sample = "sampleID")
 t <- exportFromSeurat(
   seurat,
   experiment_name = "from_scRNAseq_Rani",

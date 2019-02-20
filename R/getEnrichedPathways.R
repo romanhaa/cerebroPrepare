@@ -10,8 +10,8 @@
 #' @export
 #' @import dplyr
 #' @examples
-#' getPathwayEnrichment(object = seurat)
-getPathwayEnrichment <- function(
+#' getEnrichedPathways(object = seurat)
+getEnrichedPathways <- function(
   object,
   column_sample = "sample",
   column_cluster = "cluster",
@@ -179,6 +179,7 @@ getPathwayEnrichment <- function(
 #' @param databases Character vector of databases to search.
 #' See http://amp.pharm.mssm.edu/Enrichr/ for available databases.
 #' @return Returns a data frame of enrichment terms, p-values, ...
+#' @import httr
 #' @author Wajid Jawaid
 enrichr <- function(
   genes,
