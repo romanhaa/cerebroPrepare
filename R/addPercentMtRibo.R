@@ -3,6 +3,7 @@
 #' @description Get percentage of transcripts of gene list compared to all transcripts per cell.
 #' @param object Seurat object.
 #' @param organism Organism, can be either human ("hg") or mouse ("mm"). Genes need to annotated as gene symbol, e.g. MKI67 (human) / Mki67 (mouse).
+#' @param gene_nomenclature Define if genes are saved by their name ('name') or ENSEMBL ID ('id').
 #' @keywords seurat cerebro
 #' @export
 #' @import dplyr
@@ -11,7 +12,8 @@
 #' calculatePercentGenes(object = seurat, genes = gene_list)
 addPercentMtRibo <- function(
   object,
-  organism
+  organism,
+  gene_nomenclature
 ) {
   ##--------------------------------------------------------------------------##
   ## check if organism is supported
@@ -26,7 +28,8 @@ addPercentMtRibo <- function(
       # "/hpcnfs/scratch/PGP/rhillje/cerebroPrepare/inst/extdata/genes_mt_mm.txt",
       system.file(
         "extdata",
-        paste0("genes_mt_", organism, "_names.txt"), package = "cerebroPrepare"
+        paste0("genes_mt_", organism, "_", gene_nomenclature, ".txt"),
+        package = "cerebroPrepare"
       ),
       col_types = cols(),
       col_names = FALSE
@@ -38,7 +41,8 @@ addPercentMtRibo <- function(
       # "/hpcnfs/scratch/PGP/rhillje/cerebroPrepare/inst/extdata/genes_ribo_mm.txt",
       system.file(
         "extdata",
-        paste0("genes_ribo_", organism, "_names.txt"), package = "cerebroPrepare"
+        paste0("genes_ribo_", organism, "_", gene_nomenclature, ".txt"),
+        package = "cerebroPrepare"
       ),
       col_types = cols(),
       col_names = FALSE
