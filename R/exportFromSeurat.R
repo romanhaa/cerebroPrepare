@@ -95,18 +95,16 @@ exportFromSeurat <- function(
   ## collect some more data if present
   ##--------------------------------------------------------------------------##
   #
-  export$experiment$date_of_analysis <- ifelse(
-    exists(object@misc$experiment$date_of_analysis),
-    object@misc$experiment$date_of_analysis, NULL)
+  export$experiment$date_of_analysis <- object@misc$experiment$date_of_analysis
   #
   export$parameters <- ifelse(
-    exists(object@misc$parameters), object@misc$parameters, list())
+    is.null(object@misc$parameters), list(), object@misc$parameters)
   #
   export$gene_lists <- ifelse(
-    exists(object@misc$gene_lists), object@misc$gene_lists, list())
+    is.null(object@misc$gene_lists), list(), object@misc$gene_lists)
   #
   export$technical_info <- ifelse(
-    exists(object@misc$technical_info), object@misc$technical_info, list())
+    is.null(object@misc$technical_info), list(), object@misc$technical_info)
   ##--------------------------------------------------------------------------##
   ## samples
   ##--------------------------------------------------------------------------##
