@@ -76,7 +76,7 @@ addPercentMtRibo <- function(
   object <- Seurat::AddMetaData(
     object,
     data.frame(
-      colnames(object@raw.data),
+      row.names = colnames(object@raw.data),
       "percent_mt" = values[["genes_mt"]],
       "percent_ribo" = values[["genes_ribo"]]
     )
