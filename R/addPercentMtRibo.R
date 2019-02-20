@@ -23,11 +23,11 @@ addPercentMtRibo <- function(
   ## load mitochondrial and ribosomal gene lists from extdata
   ##--------------------------------------------------------------------------##
   genes_mt <- read_tsv(
-      "/hpcnfs/scratch/PGP/rhillje/cerebroPrepare/inst/extdata/genes_mt_mm.txt",
-      # system.file(
-      #   "extdata",
-      #   paste0("genes_mt_", organism, "_names.txt"), package = "cerebroPrepare"
-      # ),
+      # "/hpcnfs/scratch/PGP/rhillje/cerebroPrepare/inst/extdata/genes_mt_mm.txt",
+      system.file(
+        "extdata",
+        paste0("genes_mt_", organism, "_names.txt"), package = "cerebroPrepare"
+      ),
       col_types = cols(),
       col_names = FALSE
     ) %>%
@@ -35,11 +35,11 @@ addPercentMtRibo <- function(
     t() %>%
     as.vector()
   genes_ribo <- read_tsv(
-      "/hpcnfs/scratch/PGP/rhillje/cerebroPrepare/inst/extdata/genes_ribo_mm.txt",
-      # system.file(
-      #   "extdata",
-      #   paste0("genes_ribo_", organism, "_names.txt"), package = "cerebroPrepare"
-      # ),
+      # "/hpcnfs/scratch/PGP/rhillje/cerebroPrepare/inst/extdata/genes_ribo_mm.txt",
+      system.file(
+        "extdata",
+        paste0("genes_ribo_", organism, "_names.txt"), package = "cerebroPrepare"
+      ),
       col_types = cols(),
       col_names = FALSE
     ) %>%
@@ -54,7 +54,7 @@ addPercentMtRibo <- function(
   ##--------------------------------------------------------------------------##
   ## save gene lists in Seurat object and create place if not existing yet
   ##--------------------------------------------------------------------------##
-  if ( !is.null(object@misc$gene_lists) ) {
+  if ( is.null(object@misc$gene_lists) ) {
     object@misc$gene_lists <- list()
   }
   object@misc$gene_lists$mitochondrial_genes <- genes_mt_here

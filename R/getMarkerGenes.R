@@ -33,9 +33,6 @@ getMarkerGenes <- function(
   ##--------------------------------------------------------------------------##
   ## Get list of genes in cell surface through gene ontology term GO:0009986.
   ##--------------------------------------------------------------------------##
-  if ( !is.null(object@misc$experiment$organism) ) {
-    organism <- object@misc$experiment$organism
-  }
   if ( organism == "hg" || organism == "human" ) {
     genes_on_cell_surface <- biomaRt::getBM(
       attributes = "hgnc_symbol",
@@ -78,6 +75,7 @@ getMarkerGenes <- function(
     #
     if ( length(sample_names) > 1 ) {
       temp_seurat <- SetAllIdent(temp_seurat, id = column_sample)
+      temp_seurat@ident <- factor(temp_seurat@ident, levels = sample_names)
       message("Get marker genes by sample...")
       markers_by_sample <- Seurat::FindAllMarkers(
           temp_seurat,
@@ -120,7 +118,8 @@ getMarkerGenes <- function(
   ## - check if any marker genes were found
   ## - sort and rename columns
   ## - add column with cell surface genes if present
-  ##--------------------------------------------------------------------------##  # check if cluster column is provided
+  ##--------------------------------------------------------------------------## 
+  #
   if ( !is.null(column_cluster) & column_cluster %in% names(temp_seurat@meta.data) ) {
     if ( is.factor(temp_seurat@meta.data[[column_cluster]]) ) {
       cluster_names <- as.character(levels(temp_seurat@meta.data[[column_cluster]]))
@@ -130,6 +129,7 @@ getMarkerGenes <- function(
     #
     if ( length(cluster_names) > 1 ) {
       temp_seurat <- SetAllIdent(temp_seurat, id = column_cluster)
+      temp_seurat@ident <- factor(temp_seurat@ident, levels = cluster_names)
       message("Get marker genes by cluster...")
       markers_by_cluster <- Seurat::FindAllMarkers(
           temp_seurat,
