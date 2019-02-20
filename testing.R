@@ -56,7 +56,7 @@ t <- exportFromSeurat(
 ## - cell cycle results not present at all
 ##----------------------------------------------------------------------------##
 seurat <- readRDS("/hpcnfs/scratch/PGP/rhillje/cerebroPrepare_test_data/naked/seurat.rds")
-seurat <- addPercentMtRibo(seurat, organism = "mm")
+seurat <- addPercentMtRibo(seurat, organism = "mm", gene_nomenclature = "name")
 seurat <- getMostExpressedGenes(
   seurat,
   column_sample = "sampleID",
@@ -104,7 +104,7 @@ t <- exportFromSeurat(
 ## - enriched pathways may be present, not always
 ##----------------------------------------------------------------------------##
 seurat <- readRDS("/hpcnfs/scratch/PGP/rhillje/cerebroPrepare_test_data/from_scRNAseq/seurat.rds")
-seurat <- addPercentMtRibo(seurat, organism = "mm")
+seurat <- addPercentMtRibo(seurat, organism = "mm", gene_nomenclature = "name")
 seurat <- getMostExpressedGenes(seurat, column_sample = "sampleID")
 seurat <- getMarkerGenes(
   seurat,
@@ -134,7 +134,7 @@ t <- exportFromSeurat(
 ## - enriched pathways may be present, not always
 ##----------------------------------------------------------------------------##
 seurat <- readRDS("/hpcnfs/data/PGP/egatti/scRNAseq_RPallavi/merging_seurat/seurat.rds")
-seurat <- addPercentMtRibo(seurat, organism = "mm")
+seurat <- addPercentMtRibo(seurat, organism = "mm", gene_nomenclature = "name")
 seurat <- getMostExpressedGenes(seurat, column_sample = "sampleID")
 seurat <- getMarkerGenes(
   seurat,
