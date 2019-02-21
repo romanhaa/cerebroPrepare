@@ -7,7 +7,7 @@
 exportFromSeurat(object, file, experiment_name, organism,
   column_sample = "sample", column_cluster = "cluster",
   column_nUMI = "nUMI", column_nGene = "nGene",
-  column_cell_cycle_regev = NULL, column_cell_cycle_cyclone = NULL,
+  column_cell_cycle_seurat = NULL, column_cell_cycle_cyclone = NULL,
   add_all_meta_data = TRUE)
 }
 \arguments{
@@ -27,7 +27,7 @@ exportFromSeurat(object, file, experiment_name, organism,
 
 \item{column_nGene}{Column in object@meta.data that contains information about number of expressed genes per cell; defaults to "nGene".}
 
-\item{column_cell_cycle_regev}{Optional column in object@meta.data that contains information about cell cycle phase based on Regev method (default of Seurat); defaults to NULL.}
+\item{column_cell_cycle_seurat}{Optional column in object@meta.data that contains information about cell cycle phase based on Regev method (default of Seurat); defaults to NULL.}
 
 \item{column_cell_cycle_cyclone}{Optional column in object@meta.data that contains information about cell cycle phase based on Cyclone method; defaults to NULL.}
 

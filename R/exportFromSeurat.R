@@ -9,7 +9,7 @@
 #' @param column_cluster Column in object@meta.data that contains information about cluster; defaults to "cluster".
 #' @param column_nUMI Column in object@meta.data that contains information about number of transcripts per cell; defaults to "nUMI".
 #' @param column_nGene Column in object@meta.data that contains information about number of expressed genes per cell; defaults to "nGene".
-#' @param column_cell_cycle_regev Optional column in object@meta.data that contains information about cell cycle phase based on Regev method (default of Seurat); defaults to NULL.
+#' @param column_cell_cycle_seurat Optional column in object@meta.data that contains information about cell cycle phase based on Regev method (default of Seurat); defaults to NULL.
 #' @param column_cell_cycle_cyclone Optional column in object@meta.data that contains information about cell cycle phase based on Cyclone method; defaults to NULL.
 #' @param add_all_meta_data If set to TRUE, all further meta data columns will be extracted as well.
 #' @return Returns object to be saved and loaded in Cerebro.
@@ -29,7 +29,7 @@ exportFromSeurat <- function(
   column_cluster = "cluster",
   column_nUMI = "nUMI",
   column_nGene = "nGene",
-  column_cell_cycle_regev = NULL,
+  column_cell_cycle_seurat = NULL,
   column_cell_cycle_cyclone = NULL,
   add_all_meta_data = TRUE
 ) {
@@ -168,27 +168,27 @@ exportFromSeurat <- function(
   ##--------------------------------------------------------------------------##
   ## cell cycle Seurat (if present)
   ##--------------------------------------------------------------------------##
-  if ( !is.null(column_cell_cycle_regev) && column_cell_cycle_regev %in% names(object@meta.data) ) {
-    export$cells$cell_cycle_Regev <- object@meta.data[[column_cell_cycle_regev]]
+  if ( !is.null(column_cell_cycle_seurat) && column_cell_cycle_seurat %in% names(object@meta.data) ) {
+    export$cells$cell_cycle_seurat <- object@meta.data[[column_cell_cycle_seurat]]
     # by sample
-    export$samples$by_cell_cycle_Regev <- export$cells %>%
-      group_by(sample, cell_cycle_Regev) %>%
+    export$samples$by_cell_cycle_seurat <- export$cells %>%
+      group_by(sample, cell_cycle_seurat) %>%
       summarize(count=n()) %>%
-      spread(cell_cycle_Regev, count, fill = 0) %>%
+      spread(cell_cycle_seurat, count, fill = 0) %>%
       ungroup() %>%
       mutate(total_cell_count = rowSums(.[c(2:ncol(.))])) %>%
       dplyr::select(c("sample", "total_cell_count", everything())) %>%
       arrange(factor(sample, levels = sample_names))
     # by cluster
-    export$clusters$by_cell_cycle_Regev <- export$cells %>%
-      group_by(cluster, cell_cycle_Regev) %>%
+    export$clusters$by_cell_cycle_seurat <- export$cells %>%
+      group_by(cluster, cell_cycle_seurat) %>%
       summarize(count=n()) %>%
-      spread(cell_cycle_Regev, count, fill = 0) %>%
+      spread(cell_cycle_seurat, count, fill = 0) %>%
       ungroup() %>%
       mutate(total_cell_count = rowSums(.[c(2:ncol(.))])) %>%
       dplyr::select(c("cluster", "total_cell_count", everything())) %>%
       arrange(factor(cluster, levels = cluster_names))
-    meta_data_columns <- meta_data_columns[-which(meta_data_columns == column_cell_cycle_regev)]
+    meta_data_columns <- meta_data_columns[-which(meta_data_columns == column_cell_cycle_seurat)]
   }
   ##--------------------------------------------------------------------------##
   ## cell cycle Cyclone (if present)
