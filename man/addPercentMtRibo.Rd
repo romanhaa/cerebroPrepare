@@ -4,12 +4,14 @@
 \alias{addPercentMtRibo}
 \title{Add percentage of mitochondrial and ribosomal transcripts.}
 \usage{
-addPercentMtRibo(object, organism)
+addPercentMtRibo(object, organism, gene_nomenclature)
 }
 \arguments{
 \item{object}{Seurat object.}
 
 \item{organism}{Organism, can be either human ("hg") or mouse ("mm"). Genes need to annotated as gene symbol, e.g. MKI67 (human) / Mki67 (mouse).}
+
+\item{gene_nomenclature}{Define if genes are saved by their name ('name') or ENSEMBL ID ('id').}
 }
 \description{
 Get percentage of transcripts of gene list compared to all transcripts per cell.

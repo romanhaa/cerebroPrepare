@@ -18,14 +18,30 @@ addPercentMtRibo <- function(
   ##--------------------------------------------------------------------------##
   ## check if organism is supported
   ##--------------------------------------------------------------------------##
-  if ( !(organism %in% c("hg","mm")) ) {
-    stop("Organism-specific list of mitochondrial and ribosomal genes not available.")
+  supported_organisms <- c("hg","mm")
+  if ( !(organism %in% supported_organisms) ) {
+    stop(
+      paste0(
+        "User-specified organism ('", organism ,
+        "') not in list of supported organisms: ",
+        paste(supported_organisms, collapse = ", ")
+      )
+    )
+  }
+  supported_nomenclatures <- c("name","id")
+  if ( !(gene_nomenclature %in% supported_nomenclatures) ) {
+    stop(
+      paste0(
+        "User-specified gene nomenclature ('", gene_nomenclature,
+        "') not in list of supported nomenclatures: ",
+        paste(supported_nomenclatures, collapse = ", ")
+      )
+    )
   }
   ##--------------------------------------------------------------------------##
   ## load mitochondrial and ribosomal gene lists from extdata
   ##--------------------------------------------------------------------------##
   genes_mt <- read_tsv(
-      # "/hpcnfs/scratch/PGP/rhillje/cerebroPrepare/inst/extdata/genes_mt_mm.txt",
       system.file(
         "extdata",
         paste0("genes_mt_", organism, "_", gene_nomenclature, ".txt"),
@@ -38,7 +54,6 @@ addPercentMtRibo <- function(
     t() %>%
     as.vector()
   genes_ribo <- read_tsv(
-      # "/hpcnfs/scratch/PGP/rhillje/cerebroPrepare/inst/extdata/genes_ribo_mm.txt",
       system.file(
         "extdata",
         paste0("genes_ribo_", organism, "_", gene_nomenclature, ".txt"),
