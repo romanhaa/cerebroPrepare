@@ -52,6 +52,7 @@ seurat <- getPathwayEnrichment(seurat)
   * Save together with `annotateMarkerGenes()`.
   * Give credit to author of enrichr function.
 * [x] Export function should directly save the object.
+* [x] Add parameter for `gene_name` or `gene_id` in `addPercentMtRibo()`.
 * [ ] Calculate nUMI and nGene if not present?
   * nUMI: `colSums(seurat@raw.data)`
   * nGene: `colSums(seurat@raw.data != 0)`
@@ -59,7 +60,6 @@ seurat <- getPathwayEnrichment(seurat)
 * [ ] Save as `.cerebro` and allow only that file extension to be loaded.
   * User provides place to save file.
 * [ ] Create Docker container for immediate access.
-* [ ] Add parameter for `gene_name` or `gene_id` in `addPercentMtRibo()`.
 
 ## Testing
 

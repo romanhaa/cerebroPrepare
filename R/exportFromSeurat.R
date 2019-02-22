@@ -194,21 +194,21 @@ exportFromSeurat <- function(
   ## cell cycle Cyclone (if present)
   ##--------------------------------------------------------------------------##
   if ( !is.null(column_cell_cycle_cyclone) && column_cell_cycle_cyclone %in% names(object@meta.data) ) {
-    export$cells$cell_cycle_Cyclone <- object@meta.data[[column_cell_cycle_cyclone]]
+    export$cells$cell_cycle_cyclone <- object@meta.data[[column_cell_cycle_cyclone]]
     # by sample
-    export$samples$by_cell_cycle_Cyclone <- export$cells %>%
-      group_by(sample, cell_cycle_Cyclone) %>%
+    export$samples$by_cell_cycle_cyclone <- export$cells %>%
+      group_by(sample, cell_cycle_cyclone) %>%
       summarize(count=n()) %>%
-      spread(cell_cycle_Cyclone, count, fill = 0) %>%
+      spread(cell_cycle_cyclone, count, fill = 0) %>%
       ungroup() %>%
       mutate(total_cell_count = rowSums(.[c(2:ncol(.))])) %>%
       dplyr::select(c("sample", "total_cell_count", everything())) %>%
       arrange(factor(sample, levels = sample_names))
     # by cluster
-    export$clusters$by_cell_cycle_Cyclone <- export$cells %>%
-      group_by(cluster, cell_cycle_Cyclone) %>%
+    export$clusters$by_cell_cycle_cyclone <- export$cells %>%
+      group_by(cluster, cell_cycle_cyclone) %>%
       summarize(count=n()) %>%
-      spread(cell_cycle_Cyclone, count, fill = 0) %>%
+      spread(cell_cycle_cyclone, count, fill = 0) %>%
       ungroup() %>%
       mutate(total_cell_count = rowSums(.[c(2:ncol(.))])) %>%
       dplyr::select(c("cluster", "total_cell_count", everything())) %>%
