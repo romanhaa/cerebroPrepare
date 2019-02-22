@@ -3,7 +3,7 @@
 #' @description Get percentage of transcripts of gene list compared to all transcripts per cell.
 #' @param object Seurat object.
 #' @param organism Organism, can be either human ("hg") or mouse ("mm"). Genes need to annotated as gene symbol, e.g. MKI67 (human) / Mki67 (mouse).
-#' @param gene_nomenclature Define if genes are saved by their name ('name') or ENSEMBL ID ('id').
+#' @param gene_nomenclature Define if genes are saved by their name ('name'), ENSEMBL ID ('ensembl') or GENCODE ID ('gencode_v27', 'gencode_vM16').
 #' @keywords seurat cerebro
 #' @export
 #' @import dplyr
@@ -28,7 +28,7 @@ addPercentMtRibo <- function(
       )
     )
   }
-  supported_nomenclatures <- c("name","id")
+  supported_nomenclatures <- c("name","ensembl","gencode_v27","gencode_vM16")
   if ( !(gene_nomenclature %in% supported_nomenclatures) ) {
     stop(
       paste0(

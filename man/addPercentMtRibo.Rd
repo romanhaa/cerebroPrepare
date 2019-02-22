@@ -11,7 +11,7 @@ addPercentMtRibo(object, organism, gene_nomenclature)
 
 \item{organism}{Organism, can be either human ("hg") or mouse ("mm"). Genes need to annotated as gene symbol, e.g. MKI67 (human) / Mki67 (mouse).}
 
-\item{gene_nomenclature}{Define if genes are saved by their name ('name') or ENSEMBL ID ('id').}
+\item{gene_nomenclature}{Define if genes are saved by their name ('name'), ENSEMBL ID ('ensembl') or GENCODE ID ('gencode_v27', 'gencode_vM16').}
 }
 \description{
 Get percentage of transcripts of gene list compared to all transcripts per cell.
