@@ -97,14 +97,23 @@ exportFromSeurat <- function(
   #
   export$experiment$date_of_analysis <- object@misc$experiment$date_of_analysis
   #
-  export$parameters <- ifelse(
-    is.null(object@misc$parameters), list(), object@misc$parameters)
+  if ( is.null(object@misc$parameters) ) {
+    export$parameters <- list()
+  } else {
+    export$parameters <- object@misc$parameters)
+  }
   #
-  export$gene_lists <- ifelse(
-    is.null(object@misc$gene_lists), list(), object@misc$gene_lists)
+  if ( is.null(object@misc$gene_lists) ) {
+    export$gene_lists <- list()
+  } else {
+    export$gene_lists <- object@misc$gene_lists
+  }
   #
-  export$technical_info <- ifelse(
-    is.null(object@misc$technical_info), list(), object@misc$technical_info)
+  if ( is.null(object@misc$technical_info) ) {
+    export$technical_info <- list()
+  } else {
+    export$technical_info <- object@misc$technical_info
+  }
   ##--------------------------------------------------------------------------##
   ## samples
   ##--------------------------------------------------------------------------##
