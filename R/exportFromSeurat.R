@@ -100,7 +100,7 @@ exportFromSeurat <- function(
   if ( is.null(object@misc$parameters) ) {
     export$parameters <- list()
   } else {
-    export$parameters <- object@misc$parameters)
+    export$parameters <- object@misc$parameters
   }
   #
   if ( is.null(object@misc$gene_lists) ) {
