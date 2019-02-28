@@ -7,6 +7,7 @@
 #' @keywords seurat cerebro
 #' @export
 #' @import dplyr
+#' @import readr
 #' @import Seurat
 #' @examples
 #' calculatePercentGenes(object = seurat, genes = gene_list)
@@ -41,7 +42,7 @@ addPercentMtRibo <- function(
   ##--------------------------------------------------------------------------##
   ## load mitochondrial and ribosomal gene lists from extdata
   ##--------------------------------------------------------------------------##
-  genes_mt <- read_tsv(
+  genes_mt <- readr::read_tsv(
       system.file(
         "extdata",
         paste0("genes_mt_", organism, "_", gene_nomenclature, ".txt"),
@@ -53,7 +54,7 @@ addPercentMtRibo <- function(
     dplyr::select(1) %>%
     t() %>%
     as.vector()
-  genes_ribo <- read_tsv(
+  genes_ribo <- readr::read_tsv(
       system.file(
         "extdata",
         paste0("genes_ribo_", organism, "_", gene_nomenclature, ".txt"),
