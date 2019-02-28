@@ -68,7 +68,7 @@ getMarkerGenes <- function(
   if ( !is.null(column_sample) && (column_sample %in% names(temp_seurat@meta.data)) ) {
     #
     if ( is.factor(temp_seurat@meta.data[[column_sample]]) ) {
-      sample_names <- as.character(levels(temp_seurat@meta.data[[column_sample]]))
+      sample_names <- levels(temp_seurat@meta.data[[column_sample]])
     } else {
       sample_names <- unique(temp_seurat@meta.data[[column_sample]])
     }
@@ -122,7 +122,7 @@ getMarkerGenes <- function(
   #
   if ( !is.null(column_cluster) & column_cluster %in% names(temp_seurat@meta.data) ) {
     if ( is.factor(temp_seurat@meta.data[[column_cluster]]) ) {
-      cluster_names <- as.character(levels(temp_seurat@meta.data[[column_cluster]]))
+      cluster_names <- levels(temp_seurat@meta.data[[column_cluster]])
     } else {
       cluster_names <- sort(unique(temp_seurat@meta.data[[column_cluster]]))
     }
