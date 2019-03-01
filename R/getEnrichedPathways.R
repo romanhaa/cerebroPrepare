@@ -53,56 +53,63 @@ getEnrichedPathways <- function(
   ## - filter results
   ##--------------------------------------------------------------------------##
   if ( !is.null(temp_seurat@misc$marker_genes$by_sample) ) {
-    #
-    if ( is.factor(temp_seurat@meta.data[[column_sample]]) ) {
-      sample_names <- levels(temp_seurat@meta.data[[column_sample]])
-    } else {
-      sample_names <- unique(temp_seurat@meta.data[[column_sample]])
-    }
-    #
-    markers_by_sample <- temp_seurat@misc$marker_genes$by_sample
-    #
-    if ( is.null(temp_seurat@misc$marker_genes$by_sample_annotation) ) {
-      temp_seurat@misc$marker_genes$by_sample_annotation <- list()
-    }
-    #
-    message("Get enriched pathway by sample...")
-    temp_seurat@misc$marker_genes$by_sample_annotation <- future.apply::future_sapply(
-      sample_names, USE.NAMES = TRUE, simplify = FALSE, future.globals = FALSE, function(x) {
-      temp <- list()
-      attempt <- 1
-      while( length(temp) == 0 && !("Adjusted.P.value" %in% names(temp)) && attempt <= 3 ) {
-        attempt <- attempt + 1
-        try(
-          temp <- markers_by_sample %>%
-            filter(sample == x) %>%
-            dplyr::select("gene") %>%
-            t() %>%
-            as.vector() %>%
-            enrichr(databases = enrichr_dbs)
-        )
+    if ( temp_seurat@misc$marker_genes$by_sample == "no_markers_found" ) {
+      message("Skipping pathway enrichment analysis because no markers genes were identified for samples...")
+      temp_seurat@misc$marker_genes$by_sample_annotation <- "no_markers_found"
+    } else if ( is.data.frame(temp_seurat@misc$marker_genes$by_sample) ) {
+      message("Get enriched pathway for samples...")
+      #
+      if ( is.factor(temp_seurat@meta.data[[column_sample]]) ) {
+        sample_names <- levels(temp_seurat@meta.data[[column_sample]])
+      } else {
+        sample_names <- unique(temp_seurat@meta.data[[column_sample]])
       }
       #
-      results_2 <- sapply(names(temp), USE.NAMES = TRUE, simplify = FALSE, function(y) {
-        length <- temp[[y]] %>% filter(Adjusted.P.value <= adj_p_cutoff) %>% nrow()
-        # if there are more than max_terms entries with an adjusted p-value of 1 or less...
-        if ( length > max_terms ) {
-          temp[[y]] %>% top_n(-max_terms, Adjusted.P.value)
-        # if there is at least 1 entry with an adjusted p-value of 1 or less...
-        } else if ( length > 0 ) {
-          temp[[y]] %>% filter(Adjusted.P.value <= adj_p_cutoff)
-        # remove the curent database
-        } else {
-          NULL
-        }
-      })
-      for ( i in names(results_2) ) {
-        if ( is.null(results_2[[i]]) ) {
-          results_2[[i]] <- NULL
-        }
+      markers_by_sample <- temp_seurat@misc$marker_genes$by_sample
+      #
+      if ( is.null(temp_seurat@misc$marker_genes$by_sample_annotation) ) {
+        temp_seurat@misc$marker_genes$by_sample_annotation <- list()
       }
-      results_2
-    })
+      #
+      temp_seurat@misc$marker_genes$by_sample_annotation <- future.apply::future_sapply(
+        sample_names, USE.NAMES = TRUE, simplify = FALSE, future.globals = FALSE, function(x) {
+        temp <- list()
+        attempt <- 1
+        while( length(temp) == 0 && !("Adjusted.P.value" %in% names(temp)) && attempt <= 3 ) {
+          attempt <- attempt + 1
+          try(
+            temp <- markers_by_sample %>%
+              filter(sample == x) %>%
+              dplyr::select("gene") %>%
+              t() %>%
+              as.vector() %>%
+              enrichr(databases = enrichr_dbs)
+          )
+        }
+        #
+        results_2 <- sapply(names(temp), USE.NAMES = TRUE, simplify = FALSE, function(y) {
+          length <- temp[[y]] %>% filter(Adjusted.P.value <= adj_p_cutoff) %>% nrow()
+          # if there are more than max_terms entries with an adjusted p-value of 1 or less...
+          if ( length > max_terms ) {
+            temp[[y]] %>% top_n(-max_terms, Adjusted.P.value)
+          # if there is at least 1 entry with an adjusted p-value of 1 or less...
+          } else if ( length > 0 ) {
+            temp[[y]] %>% filter(Adjusted.P.value <= adj_p_cutoff)
+          # remove the curent database
+          } else {
+            NULL
+          }
+        })
+        for ( i in names(results_2) ) {
+          if ( is.null(results_2[[i]]) ) {
+            results_2[[i]] <- NULL
+          }
+        }
+        results_2
+      })
+    } else {
+      warning("Unexpected data format of marker genes for samples. Please submit an issue on GitHub: https://github.com/romanhaa/cerebroPrepare.")
+    }
   }
   ##--------------------------------------------------------------------------##
   ## clusters
@@ -115,54 +122,61 @@ getEnrichedPathways <- function(
   ## - filter results
   ##--------------------------------------------------------------------------##
   if ( !is.null(temp_seurat@misc$marker_genes$by_cluster) ) {
-    #
-    if ( is.factor(temp_seurat@meta.data[[column_cluster]]) ) {
-      cluster_names <- as.character(levels(temp_seurat@meta.data[[column_cluster]]))
-    } else {
-      cluster_names <- sort(unique(temp_seurat@meta.data[[column_cluster]]))
-    }
-    markers_by_cluster <- temp_seurat@misc$marker_genes$by_cluster
-    if ( is.null(temp_seurat@misc$marker_genes$by_cluster_annotation) ) {
-      temp_seurat@misc$marker_genes$by_cluster_annotation <- list()
-    }
-    #
-    message("Get enriched pathway by cluster...")
-    temp_seurat@misc$marker_genes$by_cluster_annotation <- future.apply::future_sapply(
-      cluster_names, USE.NAMES = TRUE, simplify = FALSE, future.globals = FALSE, function(x) {
-      temp <- list()
-      attempt <- 1
-      while( length(temp) == 0 && !("Adjusted.P.value" %in% names(temp)) && attempt <= 3 ) {
-        attempt <- attempt + 1
-        try(
-          temp <- markers_by_cluster %>%
-            filter(cluster == x) %>%
-            dplyr::select("gene") %>%
-            t() %>%
-            as.vector() %>%
-            enrichr(databases = enrichr_dbs)
-        )
+    if ( temp_seurat@misc$marker_genes$by_cluster == "no_markers_found" ) {
+      message("Skipping pathway enrichment analysis because no markers genes were identified for clusters...")
+      temp_seurat@misc$marker_genes$by_clusters_annotation <- "no_markers_found"
+    } else if ( is.data.frame(temp_seurat@misc$marker_genes$by_cluster) ) {
+      message("Get enriched pathway for clusters...")
+      #
+      if ( is.factor(temp_seurat@meta.data[[column_cluster]]) ) {
+        cluster_names <- as.character(levels(temp_seurat@meta.data[[column_cluster]]))
+      } else {
+        cluster_names <- sort(unique(temp_seurat@meta.data[[column_cluster]]))
+      }
+      markers_by_cluster <- temp_seurat@misc$marker_genes$by_cluster
+      if ( is.null(temp_seurat@misc$marker_genes$by_cluster_annotation) ) {
+        temp_seurat@misc$marker_genes$by_cluster_annotation <- list()
       }
       #
-      results_2 <- sapply(names(temp), USE.NAMES = TRUE, simplify = FALSE, function(y) {
-        length <- temp[[y]] %>% filter(Adjusted.P.value <= adj_p_cutoff) %>% nrow()
-        # if there are more than max_terms entries with an adjusted p-value of 1 or less...
-        if ( length > max_terms ) {
-          temp[[y]] %>% top_n(-max_terms, Adjusted.P.value)
-        # if there is at least 1 entry with an adjusted p-value of 1 or less...
-        } else if ( length > 0 ) {
-          temp[[y]] %>% filter(Adjusted.P.value <= adj_p_cutoff)
-        # remove the curent database
-        } else {
-          NULL
+      temp_seurat@misc$marker_genes$by_cluster_annotation <- future.apply::future_sapply(
+        cluster_names, USE.NAMES = TRUE, simplify = FALSE, future.globals = FALSE, function(x) {
+        temp <- list()
+        attempt <- 1
+        while( length(temp) == 0 && !("Adjusted.P.value" %in% names(temp)) && attempt <= 3 ) {
+          attempt <- attempt + 1
+          try(
+            temp <- markers_by_cluster %>%
+              filter(cluster == x) %>%
+              dplyr::select("gene") %>%
+              t() %>%
+              as.vector() %>%
+              enrichr(databases = enrichr_dbs)
+          )
         }
+        #
+        results_2 <- sapply(names(temp), USE.NAMES = TRUE, simplify = FALSE, function(y) {
+          length <- temp[[y]] %>% filter(Adjusted.P.value <= adj_p_cutoff) %>% nrow()
+          # if there are more than max_terms entries with an adjusted p-value of 1 or less...
+          if ( length > max_terms ) {
+            temp[[y]] %>% top_n(-max_terms, Adjusted.P.value)
+          # if there is at least 1 entry with an adjusted p-value of 1 or less...
+          } else if ( length > 0 ) {
+            temp[[y]] %>% filter(Adjusted.P.value <= adj_p_cutoff)
+          # remove the curent database
+          } else {
+            NULL
+          }
+        })
+        for ( i in names(results_2) ) {
+          if ( is.null(results_2[[i]]) ) {
+            results_2[[i]] <- NULL
+          }
+        }
+        results_2
       })
-      for ( i in names(results_2) ) {
-        if ( is.null(results_2[[i]]) ) {
-          results_2[[i]] <- NULL
-        }
-      }
-      results_2
-    })
+    } else {
+      warning("Unexpected data format of marker genes for clusters. Please submit an issue on GitHub: https://github.com/romanhaa/cerebroPrepare.")
+    }
   }
   ##--------------------------------------------------------------------------##
   ## return Seurat object
@@ -212,6 +226,5 @@ enrichr <- function(
     return(r)
   })
   options(stringsAsFactors = dfSAF)
-  #names(result) <- dbs
   return(result)
 }
