@@ -26,7 +26,7 @@ Prepare data:
 
 ```
 library("cerebroPrepare")
-cerebro <- exportFromSeurat(seurat, "my_experiment.cerebro")
+cerebro <- exportFromSeurat(seurat, "my_experiment.crb")
 ```
 
 Launch Cerebro and load the RDS file you just exported from R.

@@ -43,7 +43,7 @@ This function allows to export a Seurat object to visualize in Cerebro.
 Export Seurat object to Cerebro.
 }
 \examples{
-exportFromSeurat(object = seurat, file = "PDX_patient_A.cerebro" experiment_name = "PDX_patient_A", organism = "hg")
+exportFromSeurat(object = seurat, file = "PDX_patient_A.crb" experiment_name = "PDX_patient_A", organism = "hg")
 }
 \keyword{cerebro}
 \keyword{seurat}
