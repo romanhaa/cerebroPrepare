@@ -53,10 +53,7 @@ getEnrichedPathways <- function(
   ## - filter results
   ##--------------------------------------------------------------------------##
   if ( !is.null(temp_seurat@misc$marker_genes$by_sample) ) {
-    if ( temp_seurat@misc$marker_genes$by_sample == "no_markers_found" ) {
-      message("Skipping pathway enrichment analysis because no markers genes were identified for samples...")
-      temp_seurat@misc$marker_genes$by_sample_annotation <- "no_markers_found"
-    } else if ( is.data.frame(temp_seurat@misc$marker_genes$by_sample) ) {
+    if ( is.data.frame(temp_seurat@misc$marker_genes$by_sample) ) {
       message("Get enriched pathway for samples...")
       #
       if ( is.factor(temp_seurat@meta.data[[column_sample]]) ) {
@@ -107,9 +104,14 @@ getEnrichedPathways <- function(
         }
         results_2
       })
+    } else if ( temp_seurat@misc$marker_genes$by_sample == "no_markers_found" ) {
+      message("No markers genes were identified for samples.")
+      temp_seurat@misc$marker_genes$by_sample_annotation <- "no_markers_found"
     } else {
       warning("Unexpected data format of marker genes for samples. Please submit an issue on GitHub: https://github.com/romanhaa/cerebroPrepare.")
     }
+  } else {
+    warning("No marker genes for samples available.")
   }
   ##--------------------------------------------------------------------------##
   ## clusters
@@ -122,10 +124,7 @@ getEnrichedPathways <- function(
   ## - filter results
   ##--------------------------------------------------------------------------##
   if ( !is.null(temp_seurat@misc$marker_genes$by_cluster) ) {
-    if ( temp_seurat@misc$marker_genes$by_cluster == "no_markers_found" ) {
-      message("Skipping pathway enrichment analysis because no markers genes were identified for clusters...")
-      temp_seurat@misc$marker_genes$by_clusters_annotation <- "no_markers_found"
-    } else if ( is.data.frame(temp_seurat@misc$marker_genes$by_cluster) ) {
+    if ( is.data.frame(temp_seurat@misc$marker_genes$by_cluster) ) {
       message("Get enriched pathway for clusters...")
       #
       if ( is.factor(temp_seurat@meta.data[[column_cluster]]) ) {
@@ -174,9 +173,14 @@ getEnrichedPathways <- function(
         }
         results_2
       })
+    } else if ( temp_seurat@misc$marker_genes$by_cluster == "no_markers_found" ) {
+      message("No markers genes were identified for clusters.")
+      temp_seurat@misc$marker_genes$by_clusters_annotation <- "no_markers_found"
     } else {
       warning("Unexpected data format of marker genes for clusters. Please submit an issue on GitHub: https://github.com/romanhaa/cerebroPrepare.")
     }
+  } else {
+    warning("No marker genes for clusters available.")
   }
   ##--------------------------------------------------------------------------##
   ## return Seurat object
