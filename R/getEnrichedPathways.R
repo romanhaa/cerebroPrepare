@@ -4,6 +4,7 @@
 #' @param object Seurat object.
 #' @param column_sample Column in object@meta.data that contains information about sample; defaults to "sample".
 #' @param column_cluster Column in object@meta.data that contains information about cluster; defaults to "cluster".
+#' @param databases Which databases to query. Use enrichR::listEnrichrDbs() to check what databases are available.
 #' @param adj_p_cutoff Cut-off for adjusted p-value of enriched pathways; defaults to 0.05,
 #' @param max_terms Save only first n entries of each database; defaults to 100.
 #' @keywords seurat cerebro
@@ -15,23 +16,20 @@ getEnrichedPathways <- function(
   object,
   column_sample = "sample",
   column_cluster = "cluster",
+  databases = c(
+    "GO_Biological_Process_2018",
+    "GO_Cellular_Component_2018",
+    "GO_Molecular_Function_2018",
+    "KEGG_2016",
+    "WikiPathways_2016",
+    "Reactome_2016",
+    "Panther_2016",
+    "Human_Gene_Atlas",
+    "Mouse_Gene_Atlas"
+  ),
   adj_p_cutoff = 0.05,
   max_terms = 100
 ) {
-  ##--------------------------------------------------------------------------##
-  ## define which enrichR databases to query
-  ##--------------------------------------------------------------------------##
-  enrichr_dbs <- c(
-      "GO_Biological_Process_2018",
-      "GO_Cellular_Component_2018",
-      "GO_Molecular_Function_2018",
-      "KEGG_2016",
-      "WikiPathways_2016",
-      "Reactome_2016",
-      "Panther_2016",
-      "Human_Gene_Atlas",
-      "Mouse_Gene_Atlas"
-    )
   ##--------------------------------------------------------------------------##
   ## create backup of Seurat object (probably not necessary)
   ##--------------------------------------------------------------------------##
@@ -80,7 +78,7 @@ getEnrichedPathways <- function(
               dplyr::select("gene") %>%
               t() %>%
               as.vector() %>%
-              enrichr(databases = enrichr_dbs)
+              enrichr(databases = databases)
           )
         }
         #
@@ -149,7 +147,7 @@ getEnrichedPathways <- function(
               dplyr::select("gene") %>%
               t() %>%
               as.vector() %>%
-              enrichr(databases = enrichr_dbs)
+              enrichr(databases = databases)
           )
         }
         #

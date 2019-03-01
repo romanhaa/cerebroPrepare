@@ -5,7 +5,11 @@
 \title{Get enriched pathways based on marker genes from EnrichR.}
 \usage{
 getEnrichedPathways(object, column_sample = "sample",
-  column_cluster = "cluster", adj_p_cutoff = 0.05, max_terms = 100)
+  column_cluster = "cluster",
+  databases = c("GO_Biological_Process_2018",
+  "GO_Cellular_Component_2018", "GO_Molecular_Function_2018", "KEGG_2016",
+  "WikiPathways_2016", "Reactome_2016", "Panther_2016", "Human_Gene_Atlas",
+  "Mouse_Gene_Atlas"), adj_p_cutoff = 0.05, max_terms = 100)
 }
 \arguments{
 \item{object}{Seurat object.}
@@ -13,6 +17,8 @@ getEnrichedPathways(object, column_sample = "sample",
 \item{column_sample}{Column in object@meta.data that contains information about sample; defaults to "sample".}
 
 \item{column_cluster}{Column in object@meta.data that contains information about cluster; defaults to "cluster".}
+
+\item{databases}{Which databases to query. Use enrichR::listEnrichrDbs() to check what databases are available.}
 
 \item{adj_p_cutoff}{Cut-off for adjusted p-value of enriched pathways; defaults to 0.05,}
 
