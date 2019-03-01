@@ -102,6 +102,7 @@ getMarkerGenes <- function(
         }
       } else {
         message("No marker genes found for any of the samples.")
+        markers_by_sample <- "no_markers_found"
       }
     } else {
       message("Sample column provided but only 1 sample found.")
@@ -153,6 +154,7 @@ getMarkerGenes <- function(
         }
       } else {
         message("No marker genes found for any of the clusters.")
+        markers_by_cluster <- "no_markers_found"
       }
     } else {
       message("Cluster column provided but only 1 cluster found.")
@@ -166,12 +168,8 @@ getMarkerGenes <- function(
   if ( is.null(object@misc$marker_genes) ) {
     temp_seurat@misc$marker_genes <- list()
   }
-  if ( nrow(markers_by_sample) > 1 ) {
-    temp_seurat@misc$marker_genes$by_sample <- markers_by_sample
-  }
-  if ( nrow(markers_by_cluster) > 1) {
-    temp_seurat@misc$marker_genes$by_cluster <- markers_by_cluster
-  }
+  temp_seurat@misc$marker_genes$by_sample = markers_by_sample,
+  temp_seurat@misc$marker_genes$by_cluster = markers_by_cluster
   ##--------------------------------------------------------------------------##
   ## return Seurat object
   ##--------------------------------------------------------------------------##

@@ -60,6 +60,7 @@ seurat <- getPathwayEnrichment(seurat)
 * [ ] Save as `.cerebro` and allow only that file extension to be loaded.
   * User provides place to save file.
 * [ ] Create Docker container for immediate access.
+* [ ] Save data in `object@cerebro` to allow clear distinction with other data to be stored there.
 
 ## Testing
 

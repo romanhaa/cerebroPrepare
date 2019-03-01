@@ -79,8 +79,8 @@ exportFromSeurat <- function(
     )
   colors <- c(colors_dutch, colors_spanish)
   cell_cycle_colorset <- setNames(
-    c("#45aaf2","#f1c40f","#e74c3c", "#7f8c8d"),
-    c("G1","S","G2M","-")
+    c("#45aaf2", "#f1c40f", "#e74c3c", "#7f8c8d"),
+    c("G1",      "S",       "G2M",     "-")
   )
   ##--------------------------------------------------------------------------##
   ## initialize export object
