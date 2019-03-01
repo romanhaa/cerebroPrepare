@@ -168,8 +168,8 @@ getMarkerGenes <- function(
   if ( is.null(object@misc$marker_genes) ) {
     temp_seurat@misc$marker_genes <- list()
   }
-  temp_seurat@misc$marker_genes$by_sample = markers_by_sample,
-  temp_seurat@misc$marker_genes$by_cluster = markers_by_cluster
+  temp_seurat@misc$marker_genes$by_sample <- markers_by_sample
+  temp_seurat@misc$marker_genes$by_cluster <- markers_by_cluster
   ##--------------------------------------------------------------------------##
   ## return Seurat object
   ##--------------------------------------------------------------------------##
