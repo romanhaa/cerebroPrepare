@@ -57,10 +57,11 @@ seurat <- getPathwayEnrichment(seurat)
   * nUMI: `colSums(seurat@raw.data)`
   * nGene: `colSums(seurat@raw.data != 0)`
 * [ ] Use `biomaRt` to get lists of mitochondrial and ribosomal genes.
-* [ ] Save as `.cerebro` and allow only that file extension to be loaded.
+* [ ] Save as `.cbr` and allow only that file extension to be loaded.
   * User provides place to save file.
 * [ ] Create Docker container for immediate access.
 * [ ] Save data in `object@cerebro` to allow clear distinction with other data to be stored there.
+* [ ] Save parameters of analysis.
 
 ## Testing
 
