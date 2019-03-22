@@ -181,6 +181,14 @@ getEnrichedPathways <- function(
     warning("No marker genes for clusters available.")
   }
   ##--------------------------------------------------------------------------##
+  ##
+  ##--------------------------------------------------------------------------##
+  temp_seurat@misc$marker_genes$parameters_annotation <- list(
+    databases = databases,
+    adj_p_cutoff = adj_p_cutoff,
+    max_terms = max_terms
+  )
+  ##--------------------------------------------------------------------------##
   ## return Seurat object
   ##--------------------------------------------------------------------------##
   return(temp_seurat)

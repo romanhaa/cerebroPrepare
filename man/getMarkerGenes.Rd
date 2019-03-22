@@ -6,7 +6,8 @@
 \usage{
 getMarkerGenes(object, organism = NULL, column_sample = "sample",
   column_cluster = "cluster", only.pos = TRUE, min.pct = 0.7,
-  thresh.use = 0.25, test.use = "t", print.bar = TRUE, ...)
+  thresh.use = 0.25, return.thresh = 0.01, test.use = "t",
+  print.bar = TRUE, ...)
 }
 \arguments{
 \item{object}{Seurat object.}
@@ -21,7 +22,9 @@ getMarkerGenes(object, organism = NULL, column_sample = "sample",
 
 \item{min.pct}{Only keep genes that are expressed in at least n \% of current group of cells, defaults to 0.70 (70\%).}
 
-\item{thresh.use}{Only keep genes that have an FDR of less than or equal to n, defaults to 0.25.}
+\item{thresh.use}{Only keep genes that show an average logFC of at least n, defaults to 0.25.}
+
+\item{return.thresh}{Threshold for p-value, defaults to 0.01.}
 
 \item{test.use}{Statistical test used, defaults to "t" (t-test).}
 

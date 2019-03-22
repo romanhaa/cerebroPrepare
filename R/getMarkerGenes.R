@@ -7,7 +7,8 @@
 #' @param column_cluster Column in object@meta.data that contains information about cluster; defaults to "cluster".
 #' @param only.pos Identify only over-expressed genes; defaults to TRUE.
 #' @param min.pct Only keep genes that are expressed in at least n \% of current group of cells, defaults to 0.70 (70\%).
-#' @param thresh.use Only keep genes that have an FDR of less than or equal to n, defaults to 0.25.
+#' @param thresh.use Only keep genes that show an average logFC of at least n, defaults to 0.25.
+#' @param return.thresh Threshold for p-value, defaults to 0.01.
 #' @param test.use Statistical test used, defaults to "t" (t-test).
 #' @param print.bar Print progress bar; defaults to TRUE.
 #' @param ... Further parameters can be passed to control Seurat::FindAllMakers().
@@ -26,6 +27,7 @@ getMarkerGenes <- function(
   only.pos = TRUE,
   min.pct = 0.70,
   thresh.use = 0.25,
+  return.thresh = 0.01,
   test.use = "t",
   print.bar = TRUE,
   ...
@@ -82,6 +84,7 @@ getMarkerGenes <- function(
           only.pos = only.pos,
           min.pct = min.pct,
           thresh.use = thresh.use,
+          return.thresh = return.thresh,
           test.use = test.use,
           print.bar = print.bar,
           ...
@@ -136,6 +139,7 @@ getMarkerGenes <- function(
           only.pos = only.pos,
           min.pct = min.pct,
           thresh.use = thresh.use,
+          return.thresh = return.thresh,
           test.use = test.use,
           print.bar = print.bar,
           ...
@@ -168,6 +172,13 @@ getMarkerGenes <- function(
   }
   temp_seurat@misc$marker_genes$by_sample <- markers_by_sample
   temp_seurat@misc$marker_genes$by_cluster <- markers_by_cluster
+  temp_seurat@misc$marker_genes$parameters <- list(
+    only_positive = only.pos,
+    minimum_percentage = min.pct,
+    logFC_threshold = thresh.use,
+    p_value_threshold = return.thresh,
+    test = test.use
+  )
   ##--------------------------------------------------------------------------##
   ## return Seurat object
   ##--------------------------------------------------------------------------##
