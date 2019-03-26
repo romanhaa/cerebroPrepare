@@ -43,20 +43,37 @@ getMostExpressedGenes <- function(
         stringsAsFactors = FALSE
       )
       message("Get most expressed genes by sample...")
-      results <- pbapply::pblapply(sample_names, function(x) {
-        temp_table <- temp_seurat@raw.data %>%
-          as.data.frame(stringsAsFactors = FALSE) %>%
-          dplyr::select(which(temp_seurat@meta.data[[column_sample]] == x)) %>%
-          mutate(
-            sample = x,
-            gene = rownames(.),
-            rowSums = rowSums(.),
-            pct = rowSums / sum(.[1:(ncol(.))]) * 100
-          ) %>%
-          dplyr::select(c("sample","gene","pct")) %>%
-          arrange(-pct) %>%
-          head(100)
-      })
+      if ( temp_seurat@version < 3 ) {
+        results <- pbapply::pblapply(sample_names, function(x) {
+          temp_table <- temp_seurat@raw.data %>%
+            as.data.frame(stringsAsFactors = FALSE) %>%
+            dplyr::select(which(temp_seurat@meta.data[[column_sample]] == x)) %>%
+            mutate(
+              sample = x,
+              gene = rownames(.),
+              rowSums = rowSums(.),
+              pct = rowSums / sum(.[1:(ncol(.))]) * 100
+            ) %>%
+            dplyr::select(c("sample","gene","pct")) %>%
+            arrange(-pct) %>%
+            head(100)
+        })
+      } else {
+        results <- pbapply::pblapply(sample_names, function(x) {
+          temp_table <- temp_seurat@assays$RNA@counts %>%
+            as.data.frame(stringsAsFactors = FALSE) %>%
+            dplyr::select(which(temp_seurat@meta.data[[column_sample]] == x)) %>%
+            mutate(
+              sample = x,
+              gene = rownames(.),
+              rowSums = rowSums(.),
+              pct = rowSums / sum(.[1:(ncol(.))]) * 100
+            ) %>%
+            dplyr::select(c("sample","gene","pct")) %>%
+            arrange(-pct) %>%
+            head(100)
+        })
+      }
       most_expressed_genes_by_sample <- do.call(rbind, results) %>%
         mutate(sample = factor(sample, levels = sample_names))
     }
@@ -85,20 +102,37 @@ getMostExpressedGenes <- function(
           stringsAsFactors = FALSE
         )
       message("Get most expressed genes by cluster...")
-      results <- pbapply::pblapply(cluster_names, function(x) {
-        temp_table <- temp_seurat@raw.data %>%
-          as.data.frame(stringsAsFactors = FALSE) %>%
-          dplyr::select(which(temp_seurat@meta.data[[column_cluster]] == x)) %>%
-          mutate(
-            cluster = x,
-            gene = rownames(.),
-            rowSums = rowSums(.),
-            pct = rowSums / sum(.[1:(ncol(.))]) * 100
-          ) %>%
-          dplyr::select(c("cluster","gene","pct")) %>%
-          arrange(-pct) %>%
-          head(100)
-      })
+      if ( temp_seurat@version < 3 ) {
+        results <- pbapply::pblapply(cluster_names, function(x) {
+          temp_table <- temp_seurat@raw.data %>%
+            as.data.frame(stringsAsFactors = FALSE) %>%
+            dplyr::select(which(temp_seurat@meta.data[[column_cluster]] == x)) %>%
+            mutate(
+              cluster = x,
+              gene = rownames(.),
+              rowSums = rowSums(.),
+              pct = rowSums / sum(.[1:(ncol(.))]) * 100
+            ) %>%
+            dplyr::select(c("cluster","gene","pct")) %>%
+            arrange(-pct) %>%
+            head(100)
+        })
+      } else {
+        results <- pbapply::pblapply(cluster_names, function(x) {
+          temp_table <- temp_seurat@assays$RNA@counts %>%
+            as.data.frame(stringsAsFactors = FALSE) %>%
+            dplyr::select(which(temp_seurat@meta.data[[column_cluster]] == x)) %>%
+            mutate(
+              cluster = x,
+              gene = rownames(.),
+              rowSums = rowSums(.),
+              pct = rowSums / sum(.[1:(ncol(.))]) * 100
+            ) %>%
+            dplyr::select(c("cluster","gene","pct")) %>%
+            arrange(-pct) %>%
+            head(100)
+        })
+      }
       most_expressed_genes_by_cluster <- do.call(rbind, results) %>%
         mutate(cluster = factor(cluster, levels = cluster_names))
     }

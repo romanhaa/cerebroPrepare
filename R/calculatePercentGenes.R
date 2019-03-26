@@ -16,13 +16,23 @@ calculatePercentGenes <- function(
   ## get for every supplied gene list, get the genes that are present in the
   ## data set and calculate the percentage of transcripts that they account for
   ##--------------------------------------------------------------------------##
-  result <- pbapply::pblapply(
-    genes,
-    function(x) {
-      genes_here <- intersect(x, rownames(object@raw.data))
-      Matrix::colSums(object@raw.data[genes_here,]) / Matrix::colSums(object@raw.data)
-    }
-  )
+  if ( object@version < 3 ) {
+    result <- pbapply::pblapply(
+      genes,
+      function(x) {
+        genes_here <- intersect(x, rownames(object@raw.data))
+        Matrix::colSums(object@raw.data[genes_here,]) / Matrix::colSums(object@raw.data)
+      }
+    )
+  } else {
+    result <- pbapply::pblapply(
+      genes,
+      function(x) {
+        genes_here <- intersect(x, rownames(object@assays$RNA@counts))
+        Matrix::colSums(object@assays$RNA@counts[genes_here,]) / Matrix::colSums(object@assays$RNA@counts)
+      }
+    )
+  }
   ##--------------------------------------------------------------------------##
   ## return list with results
   ##--------------------------------------------------------------------------##

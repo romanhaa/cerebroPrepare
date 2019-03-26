@@ -262,36 +262,68 @@ exportFromSeurat <- function(
   ##--------------------------------------------------------------------------##
   message("Extracting dimensional reductions...")
   export$projections <- list()
-  projections_available <- names(object@dr)
-  projections_available_non_pca <- projections_available[grep(projections_available, pattern = "pca", invert = TRUE)]
-  if ( length(projections_available) == 0 ) {
-    stop("Warning: No dimensional reductions available.", call. = FALSE)
-  } else if ( length(projections_available) == 1 && projections_available_non_pca == 1 ) {
-    export$projections[[projections_available]] <- as.data.frame(object@dr[[projections_available]]@cell.embeddings)
-    warning("Warning: Only PCA as dimensional reduction found, will export first and second principal components. Consider using tSNE and/or UMAP instead.")
-  } else if ( length(projections_available_non_pca) > 1 ) {
-    message(
-      paste0(
-        "Will export the following dimensional reductions: ",
-        paste(projections_available_non_pca, collapse = ", ")
+  if ( object@version < 3 ) {
+    projections_available <- names(object@dr)
+    projections_available_non_pca <- projections_available[grep(projections_available, pattern = "pca", invert = TRUE)]
+    if ( length(projections_available) == 0 ) {
+      stop("Warning: No dimensional reductions available.", call. = FALSE)
+    } else if ( length(projections_available) == 1 && projections_available_non_pca == 1 ) {
+      export$projections[[projections_available]] <- as.data.frame(object@dr[[projections_available]]@cell.embeddings)
+      warning("Warning: Only PCA as dimensional reduction found, will export first and second principal components. Consider using tSNE and/or UMAP instead.")
+    } else if ( length(projections_available_non_pca) > 1 ) {
+      message(
+        paste0(
+          "Will export the following dimensional reductions: ",
+          paste(projections_available_non_pca, collapse = ", ")
+        )
       )
-    )
-    for ( i in projections_available_non_pca ) {
-      export$projections[[i]] <- as.data.frame(object@dr[[i]]@cell.embeddings)
+      for ( i in projections_available_non_pca ) {
+        export$projections[[i]] <- as.data.frame(object@dr[[i]]@cell.embeddings)
+      }
+    }
+  } else {
+    projections_available <- names(object@reductions)
+    projections_available_non_pca <- projections_available[grep(projections_available, pattern = "pca", invert = TRUE)]
+    if ( length(projections_available) == 0 ) {
+      stop("Warning: No dimensional reductions available.", call. = FALSE)
+    } else if ( length(projections_available) == 1 && projections_available_non_pca == 1 ) {
+      export$projections[[projections_available]] <- as.data.frame(object@reductions[[projections_available]]@cell.embeddings)
+      warning("Warning: Only PCA as dimensional reduction found, will export first and second principal components. Consider using tSNE and/or UMAP instead.")
+    } else if ( length(projections_available_non_pca) > 1 ) {
+      message(
+        paste0(
+          "Will export the following dimensional reductions: ",
+          paste(projections_available_non_pca, collapse = ", ")
+        )
+      )
+      for ( i in projections_available_non_pca ) {
+        export$projections[[i]] <- as.data.frame(object@reductions[[i]]@cell.embeddings)
+      }
     }
   }
   ##--------------------------------------------------------------------------##
   ## cluster tree
   ##--------------------------------------------------------------------------##
-  if ( !is.null(object@cluster.tree) ) {
-    message("Extracting cluster tree...")
-    export$clusters$tree <- object@cluster.tree[[1]]
+  if ( object@version < 3 ) {
+    if ( !is.null(object@cluster.tree) ) {
+      message("Extracting cluster tree...")
+      export$clusters$tree <- object@cluster.tree[[1]]
+    }
+  } else {
+    if ( !is.null(object@tools$BuildClusterTree) ) {
+      message("Extracting cluster tree...")
+      export$clusters$tree <- object@tools$BuildClusterTree
+    }
   }
   ##--------------------------------------------------------------------------##
   ## log-normalized expression
   ##--------------------------------------------------------------------------##
   message("Extracting log-normalized expression data...")
-  export$expression <- object@data
+  if ( object@version < 3 ) {
+    export$expression <- object@data
+  } else {
+    export$expression <- object@assays$RNA@data
+  }
   ##--------------------------------------------------------------------------##
   ## save export object to disk
   ##--------------------------------------------------------------------------##

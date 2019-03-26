@@ -5,12 +5,12 @@
 #' @param organism Organism information for pulling info about presence of marker genes of cell surface; can be omitted if already saved in Seurat object; defaults to NULL.
 #' @param column_sample Column in object@meta.data that contains information about sample; defaults to "sample".
 #' @param column_cluster Column in object@meta.data that contains information about cluster; defaults to "cluster".
-#' @param only.pos Identify only over-expressed genes; defaults to TRUE.
-#' @param min.pct Only keep genes that are expressed in at least n \% of current group of cells, defaults to 0.70 (70\%).
-#' @param thresh.use Only keep genes that show an average logFC of at least n, defaults to 0.25.
-#' @param return.thresh Threshold for p-value, defaults to 0.01.
-#' @param test.use Statistical test used, defaults to "t" (t-test).
-#' @param print.bar Print progress bar; defaults to TRUE.
+#' @param only_pos Identify only over-expressed genes; defaults to TRUE.
+#' @param min_pct Only keep genes that are expressed in at least n \% of current group of cells, defaults to 0.70 (70\%).
+#' @param thresh_logFC Only keep genes that show an average logFC of at least n, defaults to 0.25.
+#' @param thresh_p_val Threshold for p-value, defaults to 0.01.
+#' @param test Statistical test used, defaults to "wilcox" (Wilcoxon test).
+#' @param verbose Print progress bar; defaults to TRUE.
 #' @param ... Further parameters can be passed to control Seurat::FindAllMakers().
 #' @keywords seurat cerebro
 #' @export
@@ -24,12 +24,12 @@ getMarkerGenes <- function(
   organism = NULL,
   column_sample = "sample",
   column_cluster = "cluster",
-  only.pos = TRUE,
-  min.pct = 0.70,
-  thresh.use = 0.25,
-  return.thresh = 0.01,
-  test.use = "t",
-  print.bar = TRUE,
+  only_pos = TRUE,
+  min_pct = 0.70,
+  thresh_logFC = 0.25,
+  thresh_p_val = 0.01,
+  test = "wilcox",
+  verbose = TRUE,
   ...
 ) {
   ##--------------------------------------------------------------------------##
@@ -76,19 +76,62 @@ getMarkerGenes <- function(
     }
     #
     if ( length(sample_names) > 1 ) {
-      temp_seurat <- SetAllIdent(temp_seurat, id = column_sample)
-      temp_seurat@ident <- factor(temp_seurat@ident, levels = sample_names)
       message("Get marker genes by sample...")
-      markers_by_sample <- Seurat::FindAllMarkers(
-          temp_seurat,
-          only.pos = only.pos,
-          min.pct = min.pct,
-          thresh.use = thresh.use,
-          return.thresh = return.thresh,
-          test.use = test.use,
-          print.bar = print.bar,
-          ...
+      if ( temp_seurat@version < 3 ) {
+        temp_seurat <- SetAllIdent(temp_seurat, id = column_sample)
+        temp_seurat@ident <- factor(temp_seurat@ident, levels = sample_names)
+        if ( packageVersion("Seurat") < 3 ) {
+          markers_by_sample <- Seurat::FindAllMarkers(
+            temp_seurat,
+            only.pos = only_pos,
+            min.pct = min_pct,
+            thresh.use = thresh_logFC,
+            return.thresh = thresh_p_val,
+            test.use = test,
+            print.bar = verbose,
+            ...
+          )
+        } else {
+          markers_by_sample <- Seurat::FindAllMarkers(
+            temp_seurat,
+            only.pos = only_pos,
+            min.pct = min_pct,
+            logfc.threshold = thresh_logFC,
+            return.thresh = thresh_p_val,
+            test.use = test,
+            verbose = print.bar,
+            ...
+          )
+        }
+      } else {
+        Idents(temp_seurat) <- factor(
+          temp_seurat@meta.data[[column_sample]],
+          levels = sample_names
         )
+        if ( packageVersion("Seurat") < 3 ) {
+          markers_by_sample <- Seurat::FindAllMarkers(
+            temp_seurat,
+            only.pos = only_pos,
+            min.pct = min_pct,
+            thresh.use = thresh_logFC,
+            return.thresh = thresh_p_val,
+            test.use = test,
+            print.bar = verbose,
+            ...
+          )
+        } else {
+          markers_by_sample <- Seurat::FindAllMarkers(
+            temp_seurat,
+            only.pos = only_pos,
+            min.pct = min_pct,
+            logfc.threshold = thresh_logFC,
+            return.thresh = thresh_p_val,
+            test.use = test,
+            verbose = print.bar,
+            ...
+          )
+        }
+      }
       #
       if ( nrow(markers_by_sample) > 0 ) {
         markers_by_sample <- markers_by_sample %>%
@@ -131,19 +174,62 @@ getMarkerGenes <- function(
     }
     #
     if ( length(cluster_names) > 1 ) {
-      temp_seurat <- SetAllIdent(temp_seurat, id = column_cluster)
-      temp_seurat@ident <- factor(temp_seurat@ident, levels = cluster_names)
       message("Get marker genes by cluster...")
-      markers_by_cluster <- Seurat::FindAllMarkers(
-          temp_seurat,
-          only.pos = only.pos,
-          min.pct = min.pct,
-          thresh.use = thresh.use,
-          return.thresh = return.thresh,
-          test.use = test.use,
-          print.bar = print.bar,
-          ...
+      if ( temp_seurat@version < 3 ) {
+        temp_seurat <- SetAllIdent(temp_seurat, id = column_cluster)
+        temp_seurat@ident <- factor(temp_seurat@ident, levels = cluster_names)
+        if ( packageVersion("Seurat") < 3 ) {
+          markers_by_sample <- Seurat::FindAllMarkers(
+            temp_seurat,
+            only.pos = only_pos,
+            min.pct = min_pct,
+            thresh.use = thresh_logFC,
+            return.thresh = thresh_p_val,
+            test.use = test,
+            print.bar = verbose,
+            ...
+          )
+        } else {
+          markers_by_sample <- Seurat::FindAllMarkers(
+            temp_seurat,
+            only.pos = only_pos,
+            min.pct = min_pct,
+            logfc.threshold = thresh_logFC,
+            return.thresh = thresh_p_val,
+            test.use = test,
+            verbose = print.bar,
+            ...
+          )
+        }
+      } else {
+        Idents(temp_seurat) <- factor(
+          temp_seurat@meta.data[[column_cluster]],
+          levels = cluster_names
         )
+        if ( packageVersion("Seurat") < 3 ) {
+          markers_by_sample <- Seurat::FindAllMarkers(
+            temp_seurat,
+            only.pos = only_pos,
+            min.pct = min_pct,
+            thresh.use = thresh_logFC,
+            return.thresh = thresh_p_val,
+            test.use = test,
+            print.bar = verbose,
+            ...
+          )
+        } else {
+          markers_by_sample <- Seurat::FindAllMarkers(
+            temp_seurat,
+            only.pos = only_pos,
+            min.pct = min_pct,
+            logfc.threshold = thresh_logFC,
+            return.thresh = thresh_p_val,
+            test.use = test,
+            verbose = print.bar,
+            ...
+          )
+        }
+      }
       #
       if ( nrow(markers_by_cluster) > 0 ) {
         markers_by_cluster <- markers_by_cluster %>%
@@ -173,11 +259,11 @@ getMarkerGenes <- function(
   temp_seurat@misc$marker_genes$by_sample <- markers_by_sample
   temp_seurat@misc$marker_genes$by_cluster <- markers_by_cluster
   temp_seurat@misc$marker_genes$parameters <- list(
-    only_positive = only.pos,
-    minimum_percentage = min.pct,
-    logFC_threshold = thresh.use,
-    p_value_threshold = return.thresh,
-    test = test.use
+    only_positive = only_pos,
+    minimum_percentage = min_pct,
+    logFC_threshold = thresh_logFC,
+    p_value_threshold = thresh_p_val,
+    test = test
   )
   ##--------------------------------------------------------------------------##
   ## return Seurat object

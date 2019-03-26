@@ -69,8 +69,13 @@ addPercentMtRibo <- function(
   ##--------------------------------------------------------------------------##
   ## keep only genes that are present in data set
   ##--------------------------------------------------------------------------##
-  genes_mt_here <- intersect(genes_mt, rownames(object@raw.data))
-  genes_ribo_here <- intersect(genes_ribo, rownames(object@raw.data))
+  if ( object@version < 3 ) {
+    genes_mt_here <- intersect(genes_mt, rownames(object@raw.data))
+    genes_ribo_here <- intersect(genes_ribo, rownames(object@raw.data))
+  } else {
+    genes_mt_here <- intersect(genes_mt, rownames(object@assays$RNA@counts))
+    genes_ribo_here <- intersect(genes_ribo, rownames(object@assays$RNA@counts))
+  }
   ##--------------------------------------------------------------------------##
   ## save gene lists in Seurat object and create place if not existing yet
   ##--------------------------------------------------------------------------##
@@ -83,7 +88,7 @@ addPercentMtRibo <- function(
   ## calculate percentage of transcripts for mitochondrial and ribosomal genes
   ##--------------------------------------------------------------------------##
   message("Calculate percentage of mitochondrial and ribosomal transcripts...")
-  values <- calculatePercentGenes(
+  values <- cerebroPrepare::calculatePercentGenes(
     object,
     list(
       "genes_mt" = genes_mt_here,
@@ -93,14 +98,19 @@ addPercentMtRibo <- function(
   ##--------------------------------------------------------------------------##
   ## add results to Seurat object
   ##--------------------------------------------------------------------------##
-  object <- Seurat::AddMetaData(
-    object,
-    data.frame(
-      row.names = colnames(object@raw.data),
-      "percent_mt" = values[["genes_mt"]],
-      "percent_ribo" = values[["genes_ribo"]]
+  if ( object@version < 3 ) {
+    object <- Seurat::AddMetaData(
+      object,
+      data.frame(
+        row.names = colnames(object@raw.data),
+        "percent_mt" = values[["genes_mt"]],
+        "percent_ribo" = values[["genes_ribo"]]
+      )
     )
-  )
+  } else {
+    object$percent_mt <- values[["genes_mt"]]
+    object$percent_ribo <- values[["genes_ribo"]]
+  }
   ##--------------------------------------------------------------------------##
   ##
   ##--------------------------------------------------------------------------##

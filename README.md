@@ -54,3 +54,9 @@ seurat <- getPathwayEnrichment(seurat)
     * Should be exactly like the output from the pipeline.
 * Other variables to test:
   * Export with and without generating optional data (most expressed genes, marker genes, annotation).
+
+* 4 combinations:
+  * object Seurat v2.x + package Seurat v2.x.
+  * object Seurat v2.x + package Seurat v3.
+  * object Seurat v3 + package Seurat v2.x.
+  * object Seurat v3 + package Seurat v3.
