@@ -99,7 +99,7 @@ getMarkerGenes <- function(
             logfc.threshold = thresh_logFC,
             return.thresh = thresh_p_val,
             test.use = test,
-            verbose = print.bar,
+            verbose = verbose,
             ...
           )
         }
@@ -127,7 +127,7 @@ getMarkerGenes <- function(
             logfc.threshold = thresh_logFC,
             return.thresh = thresh_p_val,
             test.use = test,
-            verbose = print.bar,
+            verbose = verbose,
             ...
           )
         }
@@ -197,7 +197,7 @@ getMarkerGenes <- function(
             logfc.threshold = thresh_logFC,
             return.thresh = thresh_p_val,
             test.use = test,
-            verbose = print.bar,
+            verbose = verbose,
             ...
           )
         }
@@ -225,7 +225,7 @@ getMarkerGenes <- function(
             logfc.threshold = thresh_logFC,
             return.thresh = thresh_p_val,
             test.use = test,
-            verbose = print.bar,
+            verbose = verbose,
             ...
           )
         }
