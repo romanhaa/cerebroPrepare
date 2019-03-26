@@ -179,7 +179,7 @@ getMarkerGenes <- function(
         temp_seurat <- SetAllIdent(temp_seurat, id = column_cluster)
         temp_seurat@ident <- factor(temp_seurat@ident, levels = cluster_names)
         if ( packageVersion("Seurat") < 3 ) {
-          markers_by_sample <- Seurat::FindAllMarkers(
+          markers_by_cluster <- Seurat::FindAllMarkers(
             temp_seurat,
             only.pos = only_pos,
             min.pct = min_pct,
@@ -190,7 +190,7 @@ getMarkerGenes <- function(
             ...
           )
         } else {
-          markers_by_sample <- Seurat::FindAllMarkers(
+          markers_by_cluster <- Seurat::FindAllMarkers(
             temp_seurat,
             only.pos = only_pos,
             min.pct = min_pct,
@@ -207,7 +207,7 @@ getMarkerGenes <- function(
           levels = cluster_names
         )
         if ( packageVersion("Seurat") < 3 ) {
-          markers_by_sample <- Seurat::FindAllMarkers(
+          markers_by_cluster <- Seurat::FindAllMarkers(
             temp_seurat,
             only.pos = only_pos,
             min.pct = min_pct,
@@ -218,7 +218,7 @@ getMarkerGenes <- function(
             ...
           )
         } else {
-          markers_by_sample <- Seurat::FindAllMarkers(
+          markers_by_cluster <- Seurat::FindAllMarkers(
             temp_seurat,
             only.pos = only_pos,
             min.pct = min_pct,

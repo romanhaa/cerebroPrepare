@@ -17,8 +17,8 @@ install_github("romanhaa/cerebroPrepare")
 * Organism, e.g. 'hg' (human) or 'mm' (mouse).
 * Sample.
 * Cluster.
-* Number of transcripts (usually created by Seurat by default -> `nUMI` in Seurat v2 and `nCounts_RNA` in Seurat v3).
-* Number of expressed genes (usually created by Seurat by default -> `nGene` in Seurat v2 and `nFeature_RNA` in Seurat v3).
+* Number of transcripts (usually created by Seurat by default; `nUMI` / `nCounts_RNA` in Seurat v2 and v3).
+* Number of expressed genes (usually created by Seurat by default; `nGene` / `nFeature_RNA` in Seurat v2 and v3).
 
 **Note:** It is recommended to save sample information in a column called `sample` and cluster information in a column called `cluster`. Otherwise, the respective column names need to specified below.
 
@@ -55,8 +55,11 @@ seurat <- getPathwayEnrichment(seurat)
 * Other variables to test:
   * Export with and without generating optional data (most expressed genes, marker genes, annotation).
 
-* 4 combinations:
+* In principle there are at least 4 combinations to be tested:
   * object Seurat v2.x + package Seurat v2.x.
   * object Seurat v2.x + package Seurat v3.
   * object Seurat v3 + package Seurat v2.x.
   * object Seurat v3 + package Seurat v3.
+* For simplicity, I will only do v2 + v2 and v3 + v3.
+
+
