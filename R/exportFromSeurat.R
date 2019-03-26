@@ -147,8 +147,8 @@ exportFromSeurat <- function(
   export$cells <- data.frame(
     "sample" = factor(object@meta.data[[column_sample]], levels = c(sample_names)),
     "cluster" = factor(object@meta.data[[column_cluster]], levels = c(cluster_names)),
-    "nUMI" = object@meta.data[column_nUMI],
-    "nGene" = object@meta.data[column_nGene]
+    "nUMI" = object@meta.data[[column_nUMI]],
+    "nGene" = object@meta.data[[column_nGene]]
   )
   meta_data_columns <- meta_data_columns[-which(meta_data_columns == column_sample)]
   meta_data_columns <- meta_data_columns[-which(meta_data_columns == column_cluster)]
