@@ -1,6 +1,6 @@
 # cerebroPrepare
 
-R package with some helper function that prepare single-cell RNA-seq data stored in a Seurat object for visualization in Cerebro.
+R package with some helper function that prepare single-cell RNA-seq data stored in a Seurat object for visualization in Cerebro. Both Seurat v2 and Seurat v3 are supported.
 
 ## Installation
 
@@ -17,8 +17,8 @@ install_github("romanhaa/cerebroPrepare")
 * Organism, e.g. 'hg' (human) or 'mm' (mouse).
 * Sample.
 * Cluster.
-* Number of transcripts (usually created by Seurat by default -> nUMI).
-* Number of expressed genes (usually created by Seurat by default -> nGene).
+* Number of transcripts (usually created by Seurat by default -> `nUMI` in Seurat v2 and `nCounts_RNA` in Seurat v3).
+* Number of expressed genes (usually created by Seurat by default -> `nGene` in Seurat v2 and `nFeature_RNA` in Seurat v3).
 
 **Note:** It is recommended to save sample information in a column called `sample` and cluster information in a column called `cluster`. Otherwise, the respective column names need to specified below.
 
