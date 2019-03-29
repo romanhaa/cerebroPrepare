@@ -5,8 +5,8 @@ R package with some helper function that prepare single-cell RNA-seq data stored
 ## Installation
 
 ```
-library("devtools")
-install_github("romanhaa/cerebroPrepare")
+library("BiocManager")
+BiocManager::install("romanhaa/cerebroPrepare")
 ```
 
 ## How to use
