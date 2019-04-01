@@ -115,6 +115,9 @@ exportFromSeurat <- function(
   } else {
     export$technical_info <- object@misc$technical_info
   }
+  if ( is.null(object@misc$technical_info$seurat_version) ) {
+    export$technical_info$seurat_version <- object@version
+  }
   ##--------------------------------------------------------------------------##
   ## samples
   ##--------------------------------------------------------------------------##
