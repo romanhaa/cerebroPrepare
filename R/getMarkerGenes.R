@@ -76,7 +76,7 @@ getMarkerGenes <- function(
     }
     #
     if ( length(sample_names) > 1 ) {
-      message("Get marker genes by sample...")
+      message("Get marker genes for samples...")
       if ( temp_seurat@version < 3 ) {
         temp_seurat <- SetAllIdent(temp_seurat, id = column_sample)
         temp_seurat@ident <- factor(temp_seurat@ident, levels = sample_names)
@@ -153,7 +153,7 @@ getMarkerGenes <- function(
       message("Sample column provided but only 1 sample found.")
     }
   } else {
-    warning("Provided column name with sample information cannot be found.")
+    warning(paste0("Cannot find specified column (`object@meta.data$", column_sample, "`) that is supposed to contain sample information."))
   }
   ##--------------------------------------------------------------------------##
   ## clusters
@@ -248,7 +248,7 @@ getMarkerGenes <- function(
       message("Cluster column provided but only 1 cluster found.")
     }
   } else {
-    warning("Provided column name with cluster information cannot be found.")
+    warning(paste0("Cannot find specified column (`object@meta.data$", column_cluster, "`) that is supposed to contain cluster information."))
   }
   ##--------------------------------------------------------------------------##
   ## store results in Seurat object
