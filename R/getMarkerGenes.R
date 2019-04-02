@@ -141,9 +141,9 @@ getMarkerGenes <- function(
             sample = cluster
           )
         #
-        if ( exists("genes_surface") ) {
+        if ( exists("genes_on_cell_surface") ) {
           markers_by_sample <- markers_by_sample %>%
-            mutate(on_cell_surface = gene %in% genes_surface)
+            mutate(on_cell_surface = gene %in% genes_on_cell_surface)
         }
       } else {
         message("No marker genes found for any of the samples.")
@@ -236,9 +236,9 @@ getMarkerGenes <- function(
           dplyr::select(c("cluster", "gene", "p_val", "avg_logFC", "pct.1", "pct.2", "p_val_adj")
           )
         #
-        if ( exists("genes_surface") ) {
+        if ( exists("genes_on_cell_surface") ) {
           markers_by_cluster <- markers_by_cluster %>%
-            mutate(on_cell_surface = gene %in% genes_surface)
+            mutate(on_cell_surface = gene %in% genes_on_cell_surface)
         }
       } else {
         message("No marker genes found for any of the clusters.")
