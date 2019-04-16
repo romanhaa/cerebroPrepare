@@ -163,7 +163,7 @@ exportFromSeurat <- function(
   message("Stratifying samples by clusters...")
   export$samples$by_cluster <- export$cells %>%
     group_by(sample, cluster) %>%
-    summarize(count=n()) %>%
+    summarize(count = n()) %>%
     spread(cluster, count, fill = 0) %>%
     ungroup() %>%
     mutate(total_cell_count = rowSums(.[c(2:ncol(.))])) %>%
@@ -175,7 +175,7 @@ exportFromSeurat <- function(
   message("Stratifying clusters by samples...")
   export$clusters$by_samples <- export$cells %>%
     group_by(cluster, sample) %>%
-    summarize(count=n()) %>%
+    summarize(count = n()) %>%
     spread(sample, count, fill = 0) %>%
     ungroup() %>%
     mutate(total_cell_count = rowSums(.[c(2:ncol(.))])) %>%
@@ -190,7 +190,7 @@ exportFromSeurat <- function(
     # by sample
     export$samples$by_cell_cycle_seurat <- export$cells %>%
       group_by(sample, cell_cycle_seurat) %>%
-      summarize(count=n()) %>%
+      summarize(count = n()) %>%
       spread(cell_cycle_seurat, count, fill = 0) %>%
       ungroup() %>%
       mutate(total_cell_count = rowSums(.[c(2:ncol(.))])) %>%
@@ -199,7 +199,7 @@ exportFromSeurat <- function(
     # by cluster
     export$clusters$by_cell_cycle_seurat <- export$cells %>%
       group_by(cluster, cell_cycle_seurat) %>%
-      summarize(count=n()) %>%
+      summarize(count = n()) %>%
       spread(cell_cycle_seurat, count, fill = 0) %>%
       ungroup() %>%
       mutate(total_cell_count = rowSums(.[c(2:ncol(.))])) %>%
@@ -216,7 +216,7 @@ exportFromSeurat <- function(
     # by sample
     export$samples$by_cell_cycle_cyclone <- export$cells %>%
       group_by(sample, cell_cycle_cyclone) %>%
-      summarize(count=n()) %>%
+      summarize(count = n()) %>%
       spread(cell_cycle_cyclone, count, fill = 0) %>%
       ungroup() %>%
       mutate(total_cell_count = rowSums(.[c(2:ncol(.))])) %>%
@@ -225,7 +225,7 @@ exportFromSeurat <- function(
     # by cluster
     export$clusters$by_cell_cycle_cyclone <- export$cells %>%
       group_by(cluster, cell_cycle_cyclone) %>%
-      summarize(count=n()) %>%
+      summarize(count = n()) %>%
       spread(cell_cycle_cyclone, count, fill = 0) %>%
       ungroup() %>%
       mutate(total_cell_count = rowSums(.[c(2:ncol(.))])) %>%
@@ -292,7 +292,7 @@ exportFromSeurat <- function(
     } else if ( length(projections_available) == 1 && projections_available_non_pca == 1 ) {
       export$projections[[projections_available]] <- as.data.frame(object@reductions[[projections_available]]@cell.embeddings)
       warning("Warning: Only PCA as dimensional reduction found, will export first and second principal components. Consider using tSNE and/or UMAP instead.")
-    } else if ( length(projections_available_non_pca) > 1 ) {
+    } else if ( length(projections_available_non_pca) >= 1 ) {
       message(
         paste0(
           "Will export the following dimensional reductions: ",
