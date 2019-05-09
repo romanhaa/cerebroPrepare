@@ -38,7 +38,7 @@ To take full advantage of Cerebro, it is recommended to also run the commands be
 seurat <- addPercentMtRibo(seurat)
 seurat <- getMostExpressedGenes(seurat)
 seurat <- getMarkerGenes(seurat)
-seurat <- getPathwayEnrichment(seurat)
+seurat <- getEnrichedPathways(seurat)
 ```
 
 ## Credit

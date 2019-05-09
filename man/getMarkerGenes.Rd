@@ -5,9 +5,9 @@
 \title{Get marker genes for every sample and cluster in Seurat object.}
 \usage{
 getMarkerGenes(object, organism = NULL, column_sample = "sample",
-  column_cluster = "cluster", only.pos = TRUE, min.pct = 0.7,
-  thresh.use = 0.25, return.thresh = 0.01, test.use = "t",
-  print.bar = TRUE, ...)
+  column_cluster = "cluster", only_pos = TRUE, min_pct = 0.7,
+  thresh_logFC = 0.25, thresh_p_val = 0.01, test = "wilcox",
+  verbose = TRUE, ...)
 }
 \arguments{
 \item{object}{Seurat object.}
@@ -18,17 +18,17 @@ getMarkerGenes(object, organism = NULL, column_sample = "sample",
 
 \item{column_cluster}{Column in object@meta.data that contains information about cluster; defaults to "cluster".}
 
-\item{only.pos}{Identify only over-expressed genes; defaults to TRUE.}
+\item{only_pos}{Identify only over-expressed genes; defaults to TRUE.}
 
-\item{min.pct}{Only keep genes that are expressed in at least n \% of current group of cells, defaults to 0.70 (70\%).}
+\item{min_pct}{Only keep genes that are expressed in at least n \% of current group of cells, defaults to 0.70 (70\%).}
 
-\item{thresh.use}{Only keep genes that show an average logFC of at least n, defaults to 0.25.}
+\item{thresh_logFC}{Only keep genes that show an average logFC of at least n, defaults to 0.25.}
 
-\item{return.thresh}{Threshold for p-value, defaults to 0.01.}
+\item{thresh_p_val}{Threshold for p-value, defaults to 0.01.}
 
-\item{test.use}{Statistical test used, defaults to "t" (t-test).}
+\item{test}{Statistical test used, defaults to "wilcox" (Wilcoxon test).}
 
-\item{print.bar}{Print progress bar; defaults to TRUE.}
+\item{verbose}{Print progress bar; defaults to TRUE.}
 
 \item{...}{Further parameters can be passed to control Seurat::FindAllMakers().}
 }
