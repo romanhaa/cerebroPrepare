@@ -3,6 +3,7 @@
 export(addPercentMtRibo)
 export(calculatePercentGenes)
 export(exportFromSeurat)
+export(extractMonocleTrajectory)
 export(getEnrichedPathways)
 export(getMarkerGenes)
 export(getMostExpressedGenes)
