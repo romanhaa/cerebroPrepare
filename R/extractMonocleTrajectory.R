@@ -47,11 +47,17 @@ extractMonocleTrajectory <- function(
   if ( length(monocle@reducedDimS) == 0 ) {
     stop("monocle@reducedDimS appears to be empty but is required.", call. = FALSE)
   }
-  if ( nrow(monocle@phenoData@data) != nrow(seurat@meta.data) ) {
-    stop(paste0("Number of cells in monocle object (", nrow(monocle@phenoData@data), ") must be equal to number of cells in Seurat object (", nrow(seurat@meta.data), ")."), call. = FALSE)
-  }
   if ( !is.null(seurat@misc$trajectory[[trajectory_name]]) ) {
     stop(paste0("Trajectory with specified name ('", trajectory_name, "') already exists in seurat@misc$trajectory. Please choose a different name or manually remove data from that slot."), call. = FALSE)
+  }
+  if ( nrow(monocle@phenoData@data) > nrow(seurat@meta.data) ) {
+    stop(paste0("Number of cells in monocle object (", nrow(monocle@phenoData@data), ") cannot be larger than number of cells in Seurat object (", nrow(seurat@meta.data), ")."), call. = FALSE)
+  }
+  if ( length(which(rownames(monocle@phenoData@data) %in% rownames(seurat@meta.data))) != nrow(monocle@phenoData@data) ) {
+    stop(paste0("Some cells provided in the Monocle object are not present in the Seurat object. This is not supported. Please re-calculate the trajectory with all or a subset of the cells present in the Seurat object."), call. = FALSE)
+  }
+  if ( nrow(monocle@phenoData@data) < nrow(seurat@meta.data) ) {
+    warning(paste0("There are ", nrow(seurat@meta.data) - nrow(monocle@phenoData@data), " cells present in the Seurat object but not in the Monocle object. Cells without trajectory information will not be visible in Cerebro."), call. = FALSE)
   }
 
   ##--------------------------------------------------------------------------##
@@ -69,10 +75,12 @@ extractMonocleTrajectory <- function(
     igraph::as_data_frame() %>%
     dplyr::rename(source = "from", target = "to") %>%
     dplyr::left_join(
+      .,
       reduced_dim_K %>% dplyr::rename(source = "sample_name", source_dim_1 = "dim_1", source_dim_2 = "dim_2"),
       by = "source"
     ) %>%
     dplyr::left_join(
+      .,
       reduced_dim_K %>% dplyr::rename(target = "sample_name", target_dim_1 = "dim_1", target_dim_2 = "dim_2"),
       by = "target"
     ) %>%
@@ -91,12 +99,20 @@ extractMonocleTrajectory <- function(
     base::as.data.frame() %>%
     dplyr::rename(DR_1 = 1, DR_2 = 2) %>%
     dplyr::mutate(cell = base::rownames(.)) %>%
-    dplyr::left_join(trajectory_info %>% dplyr::mutate(cell = base::rownames(.)), by = "cell")
+    dplyr::left_join(
+      .,
+      trajectory_info %>% dplyr::mutate(cell = base::rownames(.)),
+      by = "cell"
+    ) %>%
+    dplyr::left_join(
+      seurat@meta.data %>% dplyr::mutate(cell = base::rownames(seurat@meta.data)),
+      .,
+      by = "cell"
+    ) %>%
+    dplyr::select(DR_1,DR_2,pseudotime,state,cell)
 
   base::rownames(trajectory_info) <- trajectory_info$cell
   trajectory_info <- trajectory_info %>% dplyr::select(-cell)
-
-  trajectory_info[match(rownames(seurat@meta.data), rownames(trajectory_info)),]
 
   ##--------------------------------------------------------------------------##
   ## Add trajectory info to Seurat object.
