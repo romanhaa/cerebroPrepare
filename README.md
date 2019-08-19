@@ -1,4 +1,4 @@
-https://img.shields.io/github/license/romanhaa/cerebroPrepare
+![](https://img.shields.io/github/license/romanhaa/cerebroPrepare)
 
 # cerebroPrepare
 
@@ -42,6 +42,8 @@ seurat <- getMostExpressedGenes(seurat)
 seurat <- getMarkerGenes(seurat)
 seurat <- getEnrichedPathways(seurat)
 ```
+
+## Further details
 
 For further details, please refer to the official [Cerebro](https://github.com/romanhaa/Cerebro) repository.
 
