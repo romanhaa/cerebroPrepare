@@ -1,3 +1,5 @@
+https://img.shields.io/github/license/romanhaa/cerebroPrepare
+
 # cerebroPrepare
 
 R package with some helper function that prepare single-cell RNA-seq data stored in a Seurat object for visualization in Cerebro.
@@ -5,9 +7,9 @@ Both Seurat v2 and Seurat v3 are supported.
 
 ## Installation
 
-```
-library("BiocManager")
-BiocManager::install("romanhaa/cerebroPrepare")
+```r
+library('BiocManager')
+BiocManager::install('romanhaa/cerebroPrepare')
 ```
 
 ## How to use
@@ -25,24 +27,24 @@ BiocManager::install("romanhaa/cerebroPrepare")
 
 Prepare data:
 
-```
-library("cerebroPrepare")
-cerebro <- exportFromSeurat(seurat, "my_experiment.crb")
+```r
+library('cerebroPrepare')
+cerebro <- exportFromSeurat(seurat, 'my_experiment.crb')
 ```
 
 Launch Cerebro and load the RDS file you just exported from R.
 
 To take full advantage of Cerebro, it is recommended to also run the commands below before exporting the data.
 
-```
+```r
 seurat <- addPercentMtRibo(seurat)
 seurat <- getMostExpressedGenes(seurat)
 seurat <- getMarkerGenes(seurat)
 seurat <- getEnrichedPathways(seurat)
 ```
 
+For further details, please refer to the official [Cerebro](https://github.com/romanhaa/Cerebro) repository.
+
 ## Credit
 
 * Pathway enrichment in marker genes is done through the enrichR API (<https://github.com/wjawaid/enrichR>). I took the `enrichr` function and modified it to run in parallel (`future_lapply`) and not print status messages.
-
-
