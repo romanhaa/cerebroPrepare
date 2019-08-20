@@ -40,10 +40,10 @@ extractMonocleTrajectory <- function(
   ## - number of cells is equal on Monocle and Seurat objects
   ##--------------------------------------------------------------------------##
   if ( !is(monocle, 'CellDataSet') ) {
-    stop("Object 'monocle' is not of type 'CellDataSet'.", call. = FALSE)
+    stop("The provided object for 'monocle' is not of type 'CellDataSet'.", call. = FALSE)
   }
-  if ( !is(seurat, 'Seurat') ) {
-    stop("Object 'seurat' is not of type 'Seurat'.", call. = FALSE)
+  if ( !(class(seurat) %in% c('seurat','Seurat')) ) {
+    stop("The provided object for 'seurat' doesn't seem to be a Seurat object.", call. = FALSE)
   }
   if ( (column_state %in% colnames(monocle@phenoData@data)) == FALSE ) {
     stop(paste0("Specified column for state info ('", column_state, "') could not be found in meta data."), call. = FALSE)
@@ -68,6 +68,9 @@ extractMonocleTrajectory <- function(
   }
   if ( length(which(rownames(monocle@phenoData@data) %in% rownames(seurat@meta.data))) != nrow(monocle@phenoData@data) ) {
     stop('Some cells provided in the Monocle object are not present in the Seurat object. This is not supported. Please re-calculate the trajectory with all or a subset of the cells present in the Seurat object.', call. = FALSE)
+  }
+  if ( nrow(monocle@reducedDimK) > 2 ) {
+    stop('Currently only two-dimensional reductions are supported.', call. = FALSE)
   }
   if ( nrow(monocle@phenoData@data) < nrow(seurat@meta.data) ) {
     warning(paste0('There are ', nrow(seurat@meta.data) - nrow(monocle@phenoData@data), ' cells present in the Seurat object but not in the Monocle object. Cells without trajectory information will not be visible in Cerebro.'), call. = FALSE)
@@ -110,7 +113,7 @@ extractMonocleTrajectory <- function(
 
   trajectory_info <- base::t(monocle@reducedDimS) %>%
     base::as.data.frame() %>%
-    dplyr::rename(DR_1 = 1, DR_2 = 2) %>%
+    dplyr::rename(DR_1 = 1, DR_2 = 2, DR_3 = 3) %>%
     dplyr::mutate(cell = base::rownames(.)) %>%
     dplyr::left_join(
       .,
@@ -122,7 +125,7 @@ extractMonocleTrajectory <- function(
       .,
       by = 'cell'
     ) %>%
-    dplyr::select(DR_1,DR_2,pseudotime,state,cell)
+    dplyr::select(DR_1,DR_2,DR_3,pseudotime,state,cell)
 
   base::rownames(trajectory_info) <- trajectory_info$cell
   trajectory_info <- trajectory_info %>% dplyr::select(-cell)
