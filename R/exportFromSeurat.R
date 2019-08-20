@@ -1,17 +1,27 @@
 #' Export Seurat object to Cerebro.
 #' @title Export Seurat object to Cerebro.
-#' @description This function allows to export a Seurat object to visualize in Cerebro.
+#' @description This function allows to export a Seurat object to visualize in
+#' Cerebro.
 #' @param object Seurat object.
 #' @param file Where to save the output.
 #' @param experiment_name Experiment name.
 #' @param organism Organism, e.g. hg (human), mm (mouse), etc.
-#' @param column_sample Column in object@meta.data that contains information about sample; defaults to "sample".
-#' @param column_cluster Column in object@meta.data that contains information about cluster; defaults to "cluster".
-#' @param column_nUMI Column in object@meta.data that contains information about number of transcripts per cell; defaults to "nUMI".
-#' @param column_nGene Column in object@meta.data that contains information about number of expressed genes per cell; defaults to "nGene".
-#' @param column_cell_cycle_seurat Optional column in object@meta.data that contains information about cell cycle phase based on Regev method (default of Seurat); defaults to NULL.
-#' @param column_cell_cycle_cyclone Optional column in object@meta.data that contains information about cell cycle phase based on Cyclone method; defaults to NULL.
-#' @param add_all_meta_data If set to TRUE, all further meta data columns will be extracted as well.
+#' @param column_sample Column in object@meta.data that contains information
+#' about sample; defaults to 'sample'.
+#' @param column_cluster Column in object@meta.data that contains information
+#' about cluster; defaults to 'cluster'.
+#' @param column_nUMI Column in object@meta.data that contains information about
+#' number of transcripts per cell; defaults to 'nUMI'.
+#' @param column_nGene Column in object@meta.data that contains information
+#' about number of expressed genes per cell; defaults to 'nGene'.
+#' @param column_cell_cycle_seurat Optional column in object@meta.data that
+#' contains information about cell cycle phase based on Regev method (default of
+#' Seurat); defaults to NULL.
+#' @param column_cell_cycle_cyclone Optional column in object@meta.data that
+#' contains information about cell cycle phase based on Cyclone method; defaults
+#' to NULL.
+#' @param add_all_meta_data If set to TRUE, all further meta data columns will
+#' be extracted as well.
 #' @return Returns object to be saved and loaded in Cerebro.
 #' @keywords seurat cerebro
 #' @export
@@ -19,16 +29,28 @@
 #' @import Seurat
 #' @import tidyr
 #' @examples
-#' exportFromSeurat(object = seurat, file = "PDX_patient_A.crb" experiment_name = "PDX_patient_A", organism = "hg")
+#' exportFromSeurat(
+#'   object = seurat,
+#'   file = 'PDX_patient_A.crb',
+#'   experiment_name = 'PDX_patient_A',
+#'   organism = 'hg',
+#'   column_sample = 'sample',
+#'   column_cluster = 'cluster',
+#'   column_nUMI = 'nUMI',
+#'   column_nGene = 'nGene',
+#'   column_cell_cycle_seurat = 'cell_cycle_seurat',
+#'   column_cell_cycle_cyclone = 'cell_cycle_cyclone',
+#'   add_all_meta_data = TRUE
+#' )
 exportFromSeurat <- function(
   object,
   file,
   experiment_name,
   organism,
-  column_sample = "sample",
-  column_cluster = "cluster",
-  column_nUMI = "nUMI",
-  column_nGene = "nGene",
+  column_sample = 'sample',
+  column_cluster = 'cluster',
+  column_nUMI = 'nUMI',
+  column_nGene = 'nGene',
   column_cell_cycle_seurat = NULL,
   column_cell_cycle_cyclone = NULL,
   add_all_meta_data = TRUE
@@ -38,25 +60,25 @@ exportFromSeurat <- function(
   ##--------------------------------------------------------------------------##
   if ( (column_sample %in% names(object@meta.data) == FALSE ) ) {
     stop(
-      "Column specified in 'column_sample' not found in meta data.",
+      'Column specified in `column_sample` not found in meta data.',
       call. = FALSE
     )
   }
   if ( (column_cluster %in% names(object@meta.data) == FALSE ) ) {
     stop(
-      "Column specified in 'column_cluster' not found in meta data.",
+      'Column specified in `column_cluster` not found in meta data.',
       call. = FALSE
     )
   }
   if ( (column_nUMI %in% names(object@meta.data) == FALSE ) ) {
     stop(
-      "Column with number of transcripts per cell ('nUMI') not found in meta data.",
+      'Column with number of transcripts per cell (`nUMI`) not found in meta data.',
       call. = FALSE
     )
   }
   if ( (column_nGene %in% names(object@meta.data) == FALSE ) ) {
     stop(
-      "Column with number of expressed genes per cell ('nGene') not found in meta data.",
+      'Column with number of expressed genes per cell (`nGene`) not found in meta data.',
       call. = FALSE
     )
   }
@@ -65,27 +87,27 @@ exportFromSeurat <- function(
   ##--------------------------------------------------------------------------##
   # Dutch palette from flatuicolors.com
   colors_dutch <- c(
-    "#FFC312","#C4E538","#12CBC4","#FDA7DF","#ED4C67",
-    "#F79F1F","#A3CB38","#1289A7","#D980FA","#B53471",
-    "#EE5A24","#009432","#0652DD","#9980FA","#833471",
-    "#EA2027","#006266","#1B1464","#5758BB","#6F1E51"
+    '#FFC312','#C4E538','#12CBC4','#FDA7DF','#ED4C67',
+    '#F79F1F','#A3CB38','#1289A7','#D980FA','#B53471',
+    '#EE5A24','#009432','#0652DD','#9980FA','#833471',
+    '#EA2027','#006266','#1B1464','#5758BB','#6F1E51'
   )
   # Spanish palette from flatuicolors.com
   colors_spanish <- c(
-    "#40407a","#706fd3","#f7f1e3","#34ace0","#33d9b2",
-    "#2c2c54","#474787","#aaa69d","#227093","#218c74",
-    "#ff5252","#ff793f","#d1ccc0","#ffb142","#ffda79",
-    "#b33939","#cd6133","#84817a","#cc8e35","#ccae62"
+    '#40407a','#706fd3','#f7f1e3','#34ace0','#33d9b2',
+    '#2c2c54','#474787','#aaa69d','#227093','#218c74',
+    '#ff5252','#ff793f','#d1ccc0','#ffb142','#ffda79',
+    '#b33939','#cd6133','#84817a','#cc8e35','#ccae62'
   )
   colors <- c(colors_dutch, colors_spanish)
   cell_cycle_colorset <- setNames(
-    c("#45aaf2", "#f1c40f", "#e74c3c", "#7f8c8d"),
-    c("G1",      "S",       "G2M",     "-")
+    c('#45aaf2', '#f1c40f', '#e74c3c', '#7f8c8d'),
+    c('G1',      'S',       'G2M',     '-')
   )
   ##--------------------------------------------------------------------------##
   ## initialize export object
   ##--------------------------------------------------------------------------##
-  message("Initializing Cerebro data slot...")
+  message('Initializing Cerebro data slot...')
   export <- list(
     experiment = list(
       experiment_name = experiment_name,
@@ -128,7 +150,7 @@ exportFromSeurat <- function(
   }
   export$samples <- list(
     colors = setNames(colors[ 1:length(sample_names) ], sample_names),
-    overview = data.frame("sample" = sample_names)
+    overview = data.frame('sample' = sample_names)
   )
   ##--------------------------------------------------------------------------##
   ## clusters
@@ -140,18 +162,18 @@ exportFromSeurat <- function(
   }
   export$clusters <- list(
     colors = setNames(colors[ 1:length(cluster_names) ], cluster_names),
-    overview = data.frame("cluster" = cluster_names)
+    overview = data.frame('cluster' = cluster_names)
   )
   ##--------------------------------------------------------------------------##
   ## meta data
   ##--------------------------------------------------------------------------##
-  message("Collecting available meta data...")
+  message('Collecting available meta data...')
   meta_data_columns <- names(object@meta.data)
   export$cells <- data.frame(
-    "sample" = factor(object@meta.data[[column_sample]], levels = c(sample_names)),
-    "cluster" = factor(object@meta.data[[column_cluster]], levels = c(cluster_names)),
-    "nUMI" = object@meta.data[[column_nUMI]],
-    "nGene" = object@meta.data[[column_nGene]]
+    'sample' = factor(object@meta.data[[column_sample]], levels = c(sample_names)),
+    'cluster' = factor(object@meta.data[[column_cluster]], levels = c(cluster_names)),
+    'nUMI' = object@meta.data[[column_nUMI]],
+    'nGene' = object@meta.data[[column_nGene]]
   )
   meta_data_columns <- meta_data_columns[-which(meta_data_columns == column_sample)]
   meta_data_columns <- meta_data_columns[-which(meta_data_columns == column_cluster)]
@@ -160,32 +182,32 @@ exportFromSeurat <- function(
   ##--------------------------------------------------------------------------##
   ## samples by cluster
   ##--------------------------------------------------------------------------##
-  message("Stratifying samples by clusters...")
+  message('Stratifying samples by clusters...')
   export$samples$by_cluster <- export$cells %>%
     group_by(sample, cluster) %>%
     summarize(count = n()) %>%
     spread(cluster, count, fill = 0) %>%
     ungroup() %>%
     mutate(total_cell_count = rowSums(.[c(2:ncol(.))])) %>%
-    dplyr::select(c("sample", "total_cell_count", everything())) %>%
+    dplyr::select(c('sample', 'total_cell_count', everything())) %>%
     arrange(factor(sample, levels = sample_names))
   ##--------------------------------------------------------------------------##
   ## clusters by sample
   ##--------------------------------------------------------------------------##
-  message("Stratifying clusters by samples...")
+  message('Stratifying clusters by samples...')
   export$clusters$by_samples <- export$cells %>%
     group_by(cluster, sample) %>%
     summarize(count = n()) %>%
     spread(sample, count, fill = 0) %>%
     ungroup() %>%
     mutate(total_cell_count = rowSums(.[c(2:ncol(.))])) %>%
-    dplyr::select(c("cluster", "total_cell_count", everything())) %>%
+    dplyr::select(c('cluster', 'total_cell_count', everything())) %>%
     arrange(factor(cluster, levels = cluster_names))
   ##--------------------------------------------------------------------------##
   ## cell cycle Seurat (if present)
   ##--------------------------------------------------------------------------##
   if ( !is.null(column_cell_cycle_seurat) && column_cell_cycle_seurat %in% names(object@meta.data) ) {
-    message("Processing cell cycle data generated by Seurat...")
+    message('Processing cell cycle data generated by Seurat...')
     export$cells$cell_cycle_seurat <- object@meta.data[[column_cell_cycle_seurat]]
     # by sample
     export$samples$by_cell_cycle_seurat <- export$cells %>%
@@ -194,7 +216,7 @@ exportFromSeurat <- function(
       spread(cell_cycle_seurat, count, fill = 0) %>%
       ungroup() %>%
       mutate(total_cell_count = rowSums(.[c(2:ncol(.))])) %>%
-      dplyr::select(c("sample", "total_cell_count", everything())) %>%
+      dplyr::select(c('sample', 'total_cell_count', everything())) %>%
       arrange(factor(sample, levels = sample_names))
     # by cluster
     export$clusters$by_cell_cycle_seurat <- export$cells %>%
@@ -203,7 +225,7 @@ exportFromSeurat <- function(
       spread(cell_cycle_seurat, count, fill = 0) %>%
       ungroup() %>%
       mutate(total_cell_count = rowSums(.[c(2:ncol(.))])) %>%
-      dplyr::select(c("cluster", "total_cell_count", everything())) %>%
+      dplyr::select(c('cluster', 'total_cell_count', everything())) %>%
       arrange(factor(cluster, levels = cluster_names))
     meta_data_columns <- meta_data_columns[-which(meta_data_columns == column_cell_cycle_seurat)]
   }
@@ -211,7 +233,7 @@ exportFromSeurat <- function(
   ## cell cycle Cyclone (if present)
   ##--------------------------------------------------------------------------##
   if ( !is.null(column_cell_cycle_cyclone) && column_cell_cycle_cyclone %in% names(object@meta.data) ) {
-    message("Processing cell cycle data generated by Cyclone...")
+    message('Processing cell cycle data generated by Cyclone...')
     export$cells$cell_cycle_cyclone <- object@meta.data[[column_cell_cycle_cyclone]]
     # by sample
     export$samples$by_cell_cycle_cyclone <- export$cells %>%
@@ -220,7 +242,7 @@ exportFromSeurat <- function(
       spread(cell_cycle_cyclone, count, fill = 0) %>%
       ungroup() %>%
       mutate(total_cell_count = rowSums(.[c(2:ncol(.))])) %>%
-      dplyr::select(c("sample", "total_cell_count", everything())) %>%
+      dplyr::select(c('sample', 'total_cell_count', everything())) %>%
       arrange(factor(sample, levels = sample_names))
     # by cluster
     export$clusters$by_cell_cycle_cyclone <- export$cells %>%
@@ -229,7 +251,7 @@ exportFromSeurat <- function(
       spread(cell_cycle_cyclone, count, fill = 0) %>%
       ungroup() %>%
       mutate(total_cell_count = rowSums(.[c(2:ncol(.))])) %>%
-      dplyr::select(c("cluster", "total_cell_count", everything())) %>%
+      dplyr::select(c('cluster', 'total_cell_count', everything())) %>%
       arrange(factor(cluster, levels = cluster_names))
     meta_data_columns <- meta_data_columns[-which(meta_data_columns == column_cell_cycle_cyclone)]
   }
@@ -243,41 +265,41 @@ exportFromSeurat <- function(
   ## add all other meta data if specified
   ##--------------------------------------------------------------------------##
   if ( add_all_meta_data ) {
-    message("Extracting all meta data columns...")
+    message('Extracting all meta data columns...')
     export$cells <- cbind(export$cells, object@meta.data[meta_data_columns])
   }
   ##--------------------------------------------------------------------------##
   ## most expressed genes
   ##--------------------------------------------------------------------------##
   if ( !is.null(object@misc$most_expressed_genes) ) {
-    message("Extracting tables of most expressed genes...")
+    message('Extracting tables of most expressed genes...')
     export$most_expressed_genes <- object@misc$most_expressed_genes
   }
   ##--------------------------------------------------------------------------##
   ## marker genes
   ##--------------------------------------------------------------------------##
   if ( !is.null(object@misc$marker_genes) ) {
-    message("Extracting tables of marker genes...")
+    message('Extracting tables of marker genes...')
     export$marker_genes <- object@misc$marker_genes
   }
   ##--------------------------------------------------------------------------##
   ## dimensional reductions
   ##--------------------------------------------------------------------------##
-  message("Extracting dimensional reductions...")
+  message('Extracting dimensional reductions...')
   export$projections <- list()
   if ( object@version < 3 ) {
     projections_available <- names(object@dr)
-    projections_available_non_pca <- projections_available[grep(projections_available, pattern = "pca", invert = TRUE)]
+    projections_available_non_pca <- projections_available[grep(projections_available, pattern = 'pca', invert = TRUE)]
     if ( length(projections_available) == 0 ) {
-      stop("Warning: No dimensional reductions available.", call. = FALSE)
+      stop('Warning: No dimensional reductions available.', call. = FALSE)
     } else if ( length(projections_available) == 1 && projections_available_non_pca == 1 ) {
       export$projections[[projections_available]] <- as.data.frame(object@dr[[projections_available]]@cell.embeddings)
-      warning("Warning: Only PCA as dimensional reduction found, will export first and second principal components. Consider using tSNE and/or UMAP instead.")
+      warning('Warning: Only PCA as dimensional reduction found, will export first and second principal components. Consider using tSNE and/or UMAP instead.')
     } else if ( length(projections_available_non_pca) > 1 ) {
       message(
         paste0(
-          "Will export the following dimensional reductions: ",
-          paste(projections_available_non_pca, collapse = ", ")
+          'Will export the following dimensional reductions: ',
+          paste(projections_available_non_pca, collapse = ', ')
         )
       )
       for ( i in projections_available_non_pca ) {
@@ -286,17 +308,17 @@ exportFromSeurat <- function(
     }
   } else {
     projections_available <- names(object@reductions)
-    projections_available_non_pca <- projections_available[grep(projections_available, pattern = "pca", invert = TRUE)]
+    projections_available_non_pca <- projections_available[grep(projections_available, pattern = 'pca', invert = TRUE)]
     if ( length(projections_available) == 0 ) {
-      stop("Warning: No dimensional reductions available.", call. = FALSE)
+      stop('Warning: No dimensional reductions available.', call. = FALSE)
     } else if ( length(projections_available) == 1 && projections_available_non_pca == 1 ) {
       export$projections[[projections_available]] <- as.data.frame(object@reductions[[projections_available]]@cell.embeddings)
-      warning("Warning: Only PCA as dimensional reduction found, will export first and second principal components. Consider using tSNE and/or UMAP instead.")
+      warning('Warning: Only PCA as dimensional reduction found, will export first and second principal components. Consider using tSNE and/or UMAP instead.')
     } else if ( length(projections_available_non_pca) >= 1 ) {
       message(
         paste0(
-          "Will export the following dimensional reductions: ",
-          paste(projections_available_non_pca, collapse = ", ")
+          'Will export the following dimensional reductions: ',
+          paste(projections_available_non_pca, collapse = ', ')
         )
       )
       for ( i in projections_available_non_pca ) {
@@ -307,28 +329,35 @@ exportFromSeurat <- function(
   ##--------------------------------------------------------------------------##
   ## trajectory
   ##--------------------------------------------------------------------------##
-  if ( length(seurat@misc$trajectory) > 0 ) {
-    message("Extracting trajectories...")
+  if ( length(seurat@misc$trajectory) == 0 ) {
+    message('No trajectories to extracting...')
+  } else {
+    message(
+      paste0(
+        'Will export the following trajectories: ',
+        paste(names(seurat@misc$trajectory), collapse = ', ')
+      )
+    )
+    export$trajectory <- seurat@misc$trajectory
   }
-  export$trajectory <- seurat@misc$trajectory
   ##--------------------------------------------------------------------------##
   ## cluster tree
   ##--------------------------------------------------------------------------##
   if ( object@version < 3 ) {
     if ( !is.null(object@cluster.tree) ) {
-      message("Extracting cluster tree...")
+      message('Extracting cluster tree...')
       export$clusters$tree <- object@cluster.tree[[1]]
     }
   } else {
     if ( !is.null(object@tools$BuildClusterTree) ) {
-      message("Extracting cluster tree...")
+      message('Extracting cluster tree...')
       export$clusters$tree <- object@tools$BuildClusterTree
     }
   }
   ##--------------------------------------------------------------------------##
   ## log-normalized expression
   ##--------------------------------------------------------------------------##
-  message("Extracting log-normalized expression data...")
+  message('Extracting log-normalized expression data...')
   if ( object@version < 3 ) {
     export$expression <- object@data
   } else {
@@ -338,9 +367,9 @@ exportFromSeurat <- function(
   ## save export object to disk
   ##--------------------------------------------------------------------------##
   if ( !file.exists(dirname(file)) ) {
-    message("Creating output directory...")
+    message('Creating output directory...')
     dir.create(dirname(file), showWarnings = FALSE)
   }
-  message("Saving Cerebro file...")
+  message('Saving Cerebro file...')
   saveRDS(export, file)
 }

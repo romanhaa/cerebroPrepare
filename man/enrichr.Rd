@@ -4,13 +4,15 @@
 \alias{enrichr}
 \title{Gene enrichment using Enrichr.}
 \usage{
-enrichr(genes, databases = NULL)
+enrichr(genes, databases = NULL, URL_API = NULL)
 }
 \arguments{
-\item{genes}{Character vector of gene names or dataframe of gene names in 
-first column and a score between 0 and 1 in the other.}
+\item{genes}{Gene names or dataframe of gene names in first column and a
+score between 0 and 1 in the other.}
 
-\item{databases}{Character vector of databases to search.
+\item{databases}{Databases to search.}
+
+\item{API_url}{URL to send requests to (Enrichr API).
 See http://amp.pharm.mssm.edu/Enrichr/ for available databases.}
 }
 \value{
@@ -23,5 +25,5 @@ Gene enrichment using Enrichr.
 Gene enrichment using Enrichr.
 }
 \author{
-Wajid Jawaid
+Wajid Jawaid, modified by Roman Hillje
 }

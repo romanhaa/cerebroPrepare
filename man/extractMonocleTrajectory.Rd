@@ -10,25 +10,38 @@ extractMonocleTrajectory(monocle, seurat, trajectory_name,
 \arguments{
 \item{monocle}{Monocle object to extract trajectory from.}
 
-\item{seurat}{Seurat object to store trajectory in.}
+\item{seurat}{Seurat object to transfer trajectory to.}
 
 \item{trajectory_name}{Name of trajectory.}
 
-\item{column_state}{Name of meta data column that holds info about the state of a cell; defaults to "State".}
+\item{column_state}{Name of meta data column that holds info about the state
+of a cell; defaults to 'State'.}
 
-\item{column_pseudotime}{Name of meta data column that holds info about the pseudotime of a cell; defaults to "Pseudotime".}
+\item{column_pseudotime}{Name of meta data column that holds info about the
+pseudotime of a cell; defaults to 'Pseudotime'.}
 }
 \value{
-Returns Seurat object with added trajectory. Trajectory info (state, pseudotime, projection and tree) will be stored in seurat@misc$trajectory under the specified name.
+Returns Seurat object with added trajectory. Trajectory info (state,
+pseudotime, projection and tree) will be stored in seurat@misc$trajectory
+under the specified name.
 }
 \description{
-This function takes a Monocle object, extracts a trajectory that was calculated, and stores it in the specified Seurat object. Trajectory info (state, pseudotime, projection and tree) will be stored in seurat@misc$trajectory under the specified name.
+This function takes a Monocle object, extracts a trajectory that
+was calculated, and stores it in the specified Seurat object. Trajectory info
+(state, pseudotime, projection and tree) will be stored in
+seurat@misc$trajectory under the specified name.
 }
 \details{
 Extract trajectory from Monocle and add to Seurat object.
 }
 \examples{
-extractMonocleTrajectory(monocle = monocle, seurat = seurat, name = "trajectory_1")
+seurat <- extractMonocleTrajectory(
+  monocle = monocle,
+  seurat = seurat,
+  name = 'trajectory_1'
+  column_state = 'State',
+  column_pseudotime = 'Pseudotime'
+)
 }
 \keyword{cerebro}
 \keyword{monocle}

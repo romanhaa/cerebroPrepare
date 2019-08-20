@@ -2,7 +2,8 @@
 % Please edit documentation in R/getMostExpressedGenes.R
 \name{getMostExpressedGenes}
 \alias{getMostExpressedGenes}
-\title{Get most expressed genes for every sample and cluster in Seurat object.}
+\title{Get most expressed genes for every sample and cluster in Seurat
+object.}
 \usage{
 getMostExpressedGenes(object, column_sample = "sample",
   column_cluster = "cluster")
@@ -10,18 +11,25 @@ getMostExpressedGenes(object, column_sample = "sample",
 \arguments{
 \item{object}{Seurat object.}
 
-\item{column_sample}{Column in object@meta.data that contains information about sample; defaults to "sample".}
+\item{column_sample}{Column in object@meta.data that contains information
+about sample; defaults to 'sample'.}
 
-\item{column_cluster}{Column in object@meta.data that contains information about cluster; defaults to "cluster".}
+\item{column_cluster}{Column in object@meta.data that contains information
+about cluster; defaults to 'cluster'.}
 }
 \description{
-This function calculates the most expressed genes for every sample and cluster of the Seurat object.
+This function calculates the most expressed genes for every
+sample and cluster of the Seurat object.
 }
 \details{
 Get most expressed genes for every sample and cluster in Seurat object.
 }
 \examples{
-getMostExpressedGenes(object = seurat)
+seurat <- getMostExpressedGenes(
+  object = seurat,
+  column_sample = 'sample',
+  column_cluster = 'cluster'
+)
 }
 \keyword{cerebro}
 \keyword{seurat}

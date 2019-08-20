@@ -1,16 +1,23 @@
 #' Add percentage of mitochondrial and ribosomal transcripts.
 #' @title Add percentage of mitochondrial and ribosomal transcripts.
-#' @description Get percentage of transcripts of gene list compared to all transcripts per cell.
+#' @description Get percentage of transcripts of gene list compared to all
+#' transcripts per cell.
 #' @param object Seurat object.
-#' @param organism Organism, can be either human ("hg") or mouse ("mm"). Genes need to annotated as gene symbol, e.g. MKI67 (human) / Mki67 (mouse).
-#' @param gene_nomenclature Define if genes are saved by their name ('name'), ENSEMBL ID ('ensembl') or GENCODE ID ('gencode_v27', 'gencode_vM16').
+#' @param organism Organism, can be either human ('hg') or mouse ('mm'). Genes
+#' need to annotated as gene symbol, e.g. MKI67 (human) / Mki67 (mouse).
+#' @param gene_nomenclature Define if genes are saved by their name ('name'),
+#' ENSEMBL ID ('ensembl') or GENCODE ID ('gencode_v27', 'gencode_vM16').
 #' @keywords seurat cerebro
 #' @export
 #' @import dplyr
 #' @import readr
 #' @import Seurat
 #' @examples
-#' calculatePercentGenes(object = seurat, genes = gene_list)
+#' seurat <- addPercentMtRibo(
+#'   object = seurat,
+#'   organism = 'hg',
+#'   gene_nomenclature = 'name'
+#' )
 addPercentMtRibo <- function(
   object,
   organism,
@@ -19,23 +26,23 @@ addPercentMtRibo <- function(
   ##--------------------------------------------------------------------------##
   ## check if organism is supported
   ##--------------------------------------------------------------------------##
-  supported_organisms <- c("hg","mm")
+  supported_organisms <- c('hg','mm')
   if ( !(organism %in% supported_organisms) ) {
     stop(
       paste0(
         "User-specified organism ('", organism ,
         "') not in list of supported organisms: ",
-        paste(supported_organisms, collapse = ", ")
+        paste(supported_organisms, collapse = ', ')
       )
     )
   }
-  supported_nomenclatures <- c("name","ensembl","gencode_v27","gencode_vM16")
+  supported_nomenclatures <- c('name','ensembl','gencode_v27','gencode_vM16')
   if ( !(gene_nomenclature %in% supported_nomenclatures) ) {
     stop(
       paste0(
         "User-specified gene nomenclature ('", gene_nomenclature,
         "') not in list of supported nomenclatures: ",
-        paste(supported_nomenclatures, collapse = ", ")
+        paste(supported_nomenclatures, collapse = ', ')
       )
     )
   }
@@ -44,9 +51,9 @@ addPercentMtRibo <- function(
   ##--------------------------------------------------------------------------##
   genes_mt <- readr::read_tsv(
       system.file(
-        "extdata",
-        paste0("genes_mt_", organism, "_", gene_nomenclature, ".txt"),
-        package = "cerebroPrepare"
+        'extdata',
+        paste0('genes_mt_', organism, '_', gene_nomenclature, '.txt'),
+        package = 'cerebroPrepare'
       ),
       col_types = cols(),
       col_names = FALSE
@@ -56,9 +63,9 @@ addPercentMtRibo <- function(
     as.vector()
   genes_ribo <- readr::read_tsv(
       system.file(
-        "extdata",
-        paste0("genes_ribo_", organism, "_", gene_nomenclature, ".txt"),
-        package = "cerebroPrepare"
+        'extdata',
+        paste0('genes_ribo_', organism, '_', gene_nomenclature, '.txt'),
+        package = 'cerebroPrepare'
       ),
       col_types = cols(),
       col_names = FALSE
@@ -87,12 +94,12 @@ addPercentMtRibo <- function(
   ##--------------------------------------------------------------------------##
   ## calculate percentage of transcripts for mitochondrial and ribosomal genes
   ##--------------------------------------------------------------------------##
-  message("Calculate percentage of mitochondrial and ribosomal transcripts...")
+  message('Calculate percentage of mitochondrial and ribosomal transcripts...')
   values <- cerebroPrepare::calculatePercentGenes(
     object,
     list(
-      "genes_mt" = genes_mt_here,
-      "genes_ribo" = genes_ribo_here
+      'genes_mt' = genes_mt_here,
+      'genes_ribo' = genes_ribo_here
     )
   )
   ##--------------------------------------------------------------------------##
@@ -103,13 +110,13 @@ addPercentMtRibo <- function(
       object,
       data.frame(
         row.names = colnames(object@raw.data),
-        "percent_mt" = values[["genes_mt"]],
-        "percent_ribo" = values[["genes_ribo"]]
+        'percent_mt' = values[['genes_mt']],
+        'percent_ribo' = values[['genes_ribo']]
       )
     )
   } else {
-    object$percent_mt <- values[["genes_mt"]]
-    object$percent_ribo <- values[["genes_ribo"]]
+    object$percent_mt <- values[['genes_mt']]
+    object$percent_ribo <- values[['genes_ribo']]
   }
   ##--------------------------------------------------------------------------##
   ##

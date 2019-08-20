@@ -1,17 +1,34 @@
 #' Get enriched pathways based on marker genes from EnrichR.
 #' @title Get enriched pathways based on marker genes from EnrichR.
-#' @description This function uses the enrichR API to look for enriched pathways in marker gene sets of samples and clusters.
+#' @description This function uses the enrichR API to look for enriched pathways
+#' in marker gene sets of samples and clusters.
 #' @param object Seurat object.
-#' @param column_sample Column in object@meta.data that contains information about sample; defaults to "sample".
-#' @param column_cluster Column in object@meta.data that contains information about cluster; defaults to "cluster".
-#' @param databases Which databases to query. Use enrichR::listEnrichrDbs() to check what databases are available.
-#' @param adj_p_cutoff Cut-off for adjusted p-value of enriched pathways; defaults to 0.05,
+#' @param column_sample Column in object@meta.data that contains information
+#' about sample; defaults to "sample".
+#' @param column_cluster Column in object@meta.data that contains information
+#" about cluster; defaults to "cluster".
+#' @param databases Which databases to query. Use enrichR::listEnrichrDbs() to
+#' check what databases are available.
+#' @param adj_p_cutoff Cut-off for adjusted p-value of enriched pathways;
+#' defaults to 0.05,
 #' @param max_terms Save only first n entries of each database; defaults to 100.
+#' @param URL_API URL to send requests to (Enrichr API). Allows to overwrite
+#' default URL with an alternative taken from the Enrichr website in case the
+#' original is out-of-service; defaults to
+#' "http://amp.pharm.mssm.edu/Enrichr/enrich".
 #' @keywords seurat cerebro
 #' @export
 #' @import dplyr
 #' @examples
-#' getEnrichedPathways(object = seurat)
+#' seurat <- getEnrichedPathways(
+#'   object = seurat,
+#'   column_sample = 'sample',
+#'   column_cluster = 'cluster',
+#'   databases = c('GO_Biological_Process_2018','GO_Cellular_Component_2018'),
+#'   adj_p_cutoff = 0.01,
+#'   max_terms = 100,
+#'   URL_API = "http://amp.pharm.mssm.edu/Enrichr/enrich"
+#' )
 getEnrichedPathways <- function(
   object,
   column_sample = "sample",
@@ -28,7 +45,8 @@ getEnrichedPathways <- function(
     "Mouse_Gene_Atlas"
   ),
   adj_p_cutoff = 0.05,
-  max_terms = 100
+  max_terms = 100,
+  URL_API = "http://amp.pharm.mssm.edu/Enrichr/enrich"
 ) {
   ##--------------------------------------------------------------------------##
   ## create backup of Seurat object (probably not necessary)
@@ -78,7 +96,7 @@ getEnrichedPathways <- function(
               dplyr::select("gene") %>%
               t() %>%
               as.vector() %>%
-              enrichr(databases = databases)
+              enrichr(databases = databases, URL_API = URL_API)
           )
         }
         #
@@ -147,7 +165,7 @@ getEnrichedPathways <- function(
               dplyr::select("gene") %>%
               t() %>%
               as.vector() %>%
-              enrichr(databases = databases)
+              enrichr(databases = databases, URL_API = URL_API)
           )
         }
         #
@@ -198,25 +216,27 @@ getEnrichedPathways <- function(
 #' Gene enrichment using Enrichr.
 #' @title Gene enrichment using Enrichr.
 #' @description Gene enrichment using Enrichr.
-#' @param genes Character vector of gene names or dataframe of gene names in 
-#' first column and a score between 0 and 1 in the other.
-#' @param databases Character vector of databases to search.
+#' @param genes Gene names or dataframe of gene names in first column and a
+#' score between 0 and 1 in the other.
+#' @param databases Databases to search.
+#' @param API_url URL to send requests to (Enrichr API).
 #' See http://amp.pharm.mssm.edu/Enrichr/ for available databases.
 #' @return Returns a data frame of enrichment terms, p-values, ...
-#' @author Wajid Jawaid
+#' @author Wajid Jawaid, modified by Roman Hillje
 enrichr <- function(
   genes,
-  databases = NULL
+  databases = NULL,
+  URL_API = NULL
 ) {
   if (is.vector(genes) & ! all(genes == "") & length(genes) != 0) {
     temp <- httr::POST(
-      url="http://amp.pharm.mssm.edu/Enrichr/enrich",
-      body=list(list=paste(genes, collapse="\n"))
+      url = URL_API,
+      body = list(list = paste(genes, collapse = "\n"))
     )
   } else if (is.data.frame(genes)) {
     temp <- httr::POST(
-      url="http://amp.pharm.mssm.edu/Enrichr/enrich",
-      body=list(list=paste(paste(genes[,1], genes[,2], sep=","), collapse="\n"))
+      url = URL_API,
+      body = list(list = paste(paste(genes[,1], genes[,2], sep = ","), collapse = "\n"))
     )
   } else {
     warning("genes must be a non-empty vector of gene names or a dataframe with genes and score.")
