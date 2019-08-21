@@ -9,18 +9,25 @@ addPercentMtRibo(object, organism, gene_nomenclature)
 \arguments{
 \item{object}{Seurat object.}
 
-\item{organism}{Organism, can be either human ("hg") or mouse ("mm"). Genes need to annotated as gene symbol, e.g. MKI67 (human) / Mki67 (mouse).}
+\item{organism}{Organism, can be either human ('hg') or mouse ('mm'). Genes
+need to annotated as gene symbol, e.g. MKI67 (human) / Mki67 (mouse).}
 
-\item{gene_nomenclature}{Define if genes are saved by their name ('name'), ENSEMBL ID ('ensembl') or GENCODE ID ('gencode_v27', 'gencode_vM16').}
+\item{gene_nomenclature}{Define if genes are saved by their name ('name'),
+ENSEMBL ID ('ensembl') or GENCODE ID ('gencode_v27', 'gencode_vM16').}
 }
 \description{
-Get percentage of transcripts of gene list compared to all transcripts per cell.
+Get percentage of transcripts of gene list compared to all
+transcripts per cell.
 }
 \details{
 Add percentage of mitochondrial and ribosomal transcripts.
 }
 \examples{
-calculatePercentGenes(object = seurat, genes = gene_list)
+seurat <- addPercentMtRibo(
+  object = seurat,
+  organism = 'hg',
+  gene_nomenclature = 'name'
+)
 }
 \keyword{cerebro}
 \keyword{seurat}

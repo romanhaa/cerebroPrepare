@@ -1,7 +1,7 @@
 Package: cerebroPrepare
 Title: Export data for display in Cerebro.
 Version: 1.0.0
-Authors@R: 
+Authors@R:
   person("Roman", "Hillje", email = "roman.hillje@googlemail.com", role = c("aut", "cre"))
 Description: Package that allows to pre-process single-cell RNA-seq data stored in a Seurat object for visualization in Cerebro.
 License: MIT
@@ -15,9 +15,10 @@ Imports:
   dplyr (>= 0.7.8),
   future.apply (>= 1.1.0),
   httr (>= 1.4.0),
+  igraph,
   Matrix (>= 1.2),
+  monocle (>= 2.10),
   pbapply (>= 1.4),
   readr (>= 1.3.1),
   Seurat (>= 2.3.0),
   tidyr (>= 0.8.2)
-

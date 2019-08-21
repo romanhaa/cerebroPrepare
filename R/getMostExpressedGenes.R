@@ -1,19 +1,27 @@
 #' Get most expressed genes for every sample and cluster in Seurat object.
-#' @title Get most expressed genes for every sample and cluster in Seurat object.
-#' @description This function calculates the most expressed genes for every sample and cluster of the Seurat object.
+#' @title Get most expressed genes for every sample and cluster in Seurat
+#' object.
+#' @description This function calculates the most expressed genes for every
+#' sample and cluster of the Seurat object.
 #' @param object Seurat object.
-#' @param column_sample Column in object@meta.data that contains information about sample; defaults to "sample".
-#' @param column_cluster Column in object@meta.data that contains information about cluster; defaults to "cluster".
+#' @param column_sample Column in object@meta.data that contains information
+#' about sample; defaults to 'sample'.
+#' @param column_cluster Column in object@meta.data that contains information
+#' about cluster; defaults to 'cluster'.
 #' @keywords seurat cerebro
 #' @export
 #' @import dplyr
 #' @examples
-#' getMostExpressedGenes(object = seurat)
+#' seurat <- getMostExpressedGenes(
+#'   object = seurat,
+#'   column_sample = 'sample',
+#'   column_cluster = 'cluster'
+#' )
 
 getMostExpressedGenes <- function(
   object,
-  column_sample = "sample",
-  column_cluster = "cluster"
+  column_sample = 'sample',
+  column_cluster = 'cluster'
 ) {
   ##--------------------------------------------------------------------------##
   ## create backup of Seurat object (probably not necessary)
@@ -37,12 +45,12 @@ getMostExpressedGenes <- function(
     }
     if ( length(sample_names) > 1 ) {
       most_expressed_genes_by_sample <- data.frame(
-        "sample" = character(),
-        "gene" = character(),
-        "pct" = double(),
+        'sample' = character(),
+        'gene' = character(),
+        'pct' = double(),
         stringsAsFactors = FALSE
       )
-      message("Get most expressed genes by sample...")
+      message(paste0('[', format(Sys.time(), '%H:%M:%S'), '] Get most expressed genes by sample...'))
       if ( temp_seurat@version < 3 ) {
         results <- pbapply::pblapply(sample_names, function(x) {
           temp_table <- temp_seurat@raw.data %>%
@@ -54,7 +62,7 @@ getMostExpressedGenes <- function(
               rowSums = rowSums(.),
               pct = rowSums / sum(.[1:(ncol(.))]) * 100
             ) %>%
-            dplyr::select(c("sample","gene","pct")) %>%
+            dplyr::select(c('sample','gene','pct')) %>%
             arrange(-pct) %>%
             head(100)
         })
@@ -69,7 +77,7 @@ getMostExpressedGenes <- function(
               rowSums = rowSums(.),
               pct = rowSums / sum(.[1:(ncol(.))]) * 100
             ) %>%
-            dplyr::select(c("sample","gene","pct")) %>%
+            dplyr::select(c('sample','gene','pct')) %>%
             arrange(-pct) %>%
             head(100)
         })
@@ -96,12 +104,12 @@ getMostExpressedGenes <- function(
     }
     if ( length(cluster_names) > 1 ) {
       most_expressed_genes_by_cluster <- data.frame(
-          "cluster" = character(),
-          "gene" = character(),
-          "expr" = double(),
+          'cluster' = character(),
+          'gene' = character(),
+          'expr' = double(),
           stringsAsFactors = FALSE
         )
-      message("Get most expressed genes by cluster...")
+      message(paste0('[', format(Sys.time(), '%H:%M:%S'), '] Get most expressed genes by cluster...'))
       if ( temp_seurat@version < 3 ) {
         results <- pbapply::pblapply(cluster_names, function(x) {
           temp_table <- temp_seurat@raw.data %>%
@@ -113,7 +121,7 @@ getMostExpressedGenes <- function(
               rowSums = rowSums(.),
               pct = rowSums / sum(.[1:(ncol(.))]) * 100
             ) %>%
-            dplyr::select(c("cluster","gene","pct")) %>%
+            dplyr::select(c('cluster','gene','pct')) %>%
             arrange(-pct) %>%
             head(100)
         })
@@ -128,7 +136,7 @@ getMostExpressedGenes <- function(
               rowSums = rowSums(.),
               pct = rowSums / sum(.[1:(ncol(.))]) * 100
             ) %>%
-            dplyr::select(c("cluster","gene","pct")) %>%
+            dplyr::select(c('cluster','gene','pct')) %>%
             arrange(-pct) %>%
             head(100)
         })

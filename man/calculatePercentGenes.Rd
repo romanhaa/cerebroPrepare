@@ -12,13 +12,17 @@ calculatePercentGenes(object, genes)
 \item{genes}{List(s) of genes.}
 }
 \description{
-Get percentage of transcripts of gene list compared to all transcripts per cell.
+Get percentage of transcripts of gene list compared to all
+transcripts per cell.
 }
 \details{
 Calculate percentage of transcripts of gene list.
 }
 \examples{
-calculatePercentGenes(object = seurat, genes = gene_list)
+calculatePercentGenes(
+  object = seurat,
+  genes = list('example' = c('Fth1','Atf1'))
+)
 }
 \keyword{cerebro}
 \keyword{seurat}

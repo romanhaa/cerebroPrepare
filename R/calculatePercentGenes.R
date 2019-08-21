@@ -1,13 +1,17 @@
 #' Calculate percentage of transcripts of gene list.
 #' @title Calculate percentage of transcripts of gene list.
-#' @description Get percentage of transcripts of gene list compared to all transcripts per cell.
+#' @description Get percentage of transcripts of gene list compared to all
+#' transcripts per cell.
 #' @param object Seurat object.
 #' @param genes List(s) of genes.
 #' @keywords seurat cerebro
 #' @export
 #' @import Seurat
 #' @examples
-#' calculatePercentGenes(object = seurat, genes = gene_list)
+#' calculatePercentGenes(
+#'   object = seurat,
+#'   genes = list('example' = c('Fth1','Atf1'))
+#' )
 calculatePercentGenes <- function(
   object,
   genes
