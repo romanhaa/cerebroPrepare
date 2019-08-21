@@ -289,13 +289,14 @@ exportFromSeurat <- function(
   export$projections <- list()
   if ( object@version < 3 ) {
     projections_available <- names(object@dr)
-    projections_available_non_pca <- projections_available[grep(projections_available, pattern = 'pca', invert = TRUE)]
+    projections_available_pca <- projections_available[grep(projections_available, pattern = 'pca', ignore.case = TRUE, invert = FALSE)]
+    projections_available_non_pca <- projections_available[grep(projections_available, pattern = 'pca', ignore.case = TRUE, invert = TRUE)]
     if ( length(projections_available) == 0 ) {
       stop('Warning: No dimensional reductions available.', call. = FALSE)
-    } else if ( length(projections_available) == 1 && length(projections_available_non_pca) == 1 ) {
-      export$projections[[projections_available]] <- as.data.frame(object@dr[[projections_available]]@cell.embeddings)
+    } else if ( length(projections_available) == 1 && length(projections_available_pca) == 1 ) {
       warning('Warning: Only PCA as dimensional reduction found, will export first and second principal components. Consider using tSNE and/or UMAP instead.')
-    } else if ( length(projections_available_non_pca) > 1 ) {
+      export$projections[[projections_available]] <- as.data.frame(object@dr[[projections_available]]@cell.embeddings)
+    } else if ( length(projections_available_non_pca) > 0 ) {
       message(
         paste0(
           'Will export the following dimensional reductions: ',
