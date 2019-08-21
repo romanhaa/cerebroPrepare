@@ -4,9 +4,9 @@
 #' in marker gene sets of samples and clusters.
 #' @param object Seurat object.
 #' @param column_sample Column in object@meta.data that contains information
-#' about sample; defaults to "sample".
+#' about sample; defaults to 'sample'.
 #' @param column_cluster Column in object@meta.data that contains information
-#" about cluster; defaults to "cluster".
+#' about cluster; defaults to 'cluster'.
 #' @param databases Which databases to query. Use enrichR::listEnrichrDbs() to
 #' check what databases are available.
 #' @param adj_p_cutoff Cut-off for adjusted p-value of enriched pathways;
@@ -15,7 +15,7 @@
 #' @param URL_API URL to send requests to (Enrichr API). Allows to overwrite
 #' default URL with an alternative taken from the Enrichr website in case the
 #' original is out-of-service; defaults to
-#' "http://amp.pharm.mssm.edu/Enrichr/enrich".
+#' 'http://amp.pharm.mssm.edu/Enrichr/enrich'.
 #' @keywords seurat cerebro
 #' @export
 #' @import dplyr
@@ -27,26 +27,26 @@
 #'   databases = c('GO_Biological_Process_2018','GO_Cellular_Component_2018'),
 #'   adj_p_cutoff = 0.01,
 #'   max_terms = 100,
-#'   URL_API = "http://amp.pharm.mssm.edu/Enrichr/enrich"
+#'   URL_API = 'http://amp.pharm.mssm.edu/Enrichr/enrich'
 #' )
 getEnrichedPathways <- function(
   object,
-  column_sample = "sample",
-  column_cluster = "cluster",
+  column_sample = 'sample',
+  column_cluster = 'cluster',
   databases = c(
-    "GO_Biological_Process_2018",
-    "GO_Cellular_Component_2018",
-    "GO_Molecular_Function_2018",
-    "KEGG_2016",
-    "WikiPathways_2016",
-    "Reactome_2016",
-    "Panther_2016",
-    "Human_Gene_Atlas",
-    "Mouse_Gene_Atlas"
+    'GO_Biological_Process_2018',
+    'GO_Cellular_Component_2018',
+    'GO_Molecular_Function_2018',
+    'KEGG_2016',
+    'WikiPathways_2016',
+    'Reactome_2016',
+    'Panther_2016',
+    'Human_Gene_Atlas',
+    'Mouse_Gene_Atlas'
   ),
   adj_p_cutoff = 0.05,
   max_terms = 100,
-  URL_API = "http://amp.pharm.mssm.edu/Enrichr/enrich"
+  URL_API = 'http://amp.pharm.mssm.edu/Enrichr/enrich'
 ) {
   ##--------------------------------------------------------------------------##
   ## create backup of Seurat object (probably not necessary)
@@ -70,7 +70,7 @@ getEnrichedPathways <- function(
   ##--------------------------------------------------------------------------##
   if ( !is.null(temp_seurat@misc$marker_genes$by_sample) ) {
     if ( is.data.frame(temp_seurat@misc$marker_genes$by_sample) ) {
-      message("Get enriched pathway for samples...")
+      message(paste0('[', format(Sys.time(), '%H:%M:%S'), '] Get enriched pathway for samples...'))
       #
       if ( is.factor(temp_seurat@meta.data[[column_sample]]) ) {
         sample_names <- levels(temp_seurat@meta.data[[column_sample]])
@@ -88,12 +88,12 @@ getEnrichedPathways <- function(
         sample_names, USE.NAMES = TRUE, simplify = FALSE, future.globals = FALSE, function(x) {
         temp <- list()
         attempt <- 1
-        while( length(temp) == 0 && !("Adjusted.P.value" %in% names(temp)) && attempt <= 3 ) {
+        while( length(temp) == 0 && !('Adjusted.P.value' %in% names(temp)) && attempt <= 3 ) {
           attempt <- attempt + 1
           try(
             temp <- markers_by_sample %>%
               filter(sample == x) %>%
-              dplyr::select("gene") %>%
+              dplyr::select('gene') %>%
               t() %>%
               as.vector() %>%
               enrichr(databases = databases, URL_API = URL_API)
@@ -120,14 +120,14 @@ getEnrichedPathways <- function(
         }
         results_2
       })
-    } else if ( temp_seurat@misc$marker_genes$by_sample == "no_markers_found" ) {
-      message("Skipping pathway enrichment for samples because no marker genes were identified for any sample.")
-      temp_seurat@misc$marker_genes$by_sample_annotation <- "no_markers_found"
+    } else if ( temp_seurat@misc$marker_genes$by_sample == 'no_markers_found' ) {
+      message(paste0('[', format(Sys.time(), '%H:%M:%S'), '] Skipping pathway enrichment for samples because no marker genes were identified for any sample.'))
+      temp_seurat@misc$marker_genes$by_sample_annotation <- 'no_markers_found'
     } else {
-      warning("Unexpected data format of marker genes for samples. Please submit an issue on GitHub: https://github.com/romanhaa/cerebroPrepare.")
+      warning('Unexpected data format of marker genes for samples. Please submit an issue on GitHub: https://github.com/romanhaa/cerebroPrepare.')
     }
   } else {
-    warning("No marker genes for samples available.")
+    warning('No marker genes for samples available.')
   }
   ##--------------------------------------------------------------------------##
   ## clusters
@@ -141,7 +141,7 @@ getEnrichedPathways <- function(
   ##--------------------------------------------------------------------------##
   if ( !is.null(temp_seurat@misc$marker_genes$by_cluster) ) {
     if ( is.data.frame(temp_seurat@misc$marker_genes$by_cluster) ) {
-      message("Get enriched pathway for clusters...")
+      message(paste0('[', format(Sys.time(), '%H:%M:%S'), '] Get enriched pathway for clusters...'))
       #
       if ( is.factor(temp_seurat@meta.data[[column_cluster]]) ) {
         cluster_names <- as.character(levels(temp_seurat@meta.data[[column_cluster]]))
@@ -157,12 +157,12 @@ getEnrichedPathways <- function(
         cluster_names, USE.NAMES = TRUE, simplify = FALSE, future.globals = FALSE, function(x) {
         temp <- list()
         attempt <- 1
-        while( length(temp) == 0 && !("Adjusted.P.value" %in% names(temp)) && attempt <= 3 ) {
+        while( length(temp) == 0 && !('Adjusted.P.value' %in% names(temp)) && attempt <= 3 ) {
           attempt <- attempt + 1
           try(
             temp <- markers_by_cluster %>%
               filter(cluster == x) %>%
-              dplyr::select("gene") %>%
+              dplyr::select('gene') %>%
               t() %>%
               as.vector() %>%
               enrichr(databases = databases, URL_API = URL_API)
@@ -189,14 +189,14 @@ getEnrichedPathways <- function(
         }
         results_2
       })
-    } else if ( temp_seurat@misc$marker_genes$by_cluster == "no_markers_found" ) {
-      message("Skipping pathway enrichment for cluster because no marker genes were identified for any cluster.")
-      temp_seurat@misc$marker_genes$by_clusters_annotation <- "no_markers_found"
+    } else if ( temp_seurat@misc$marker_genes$by_cluster == 'no_markers_found' ) {
+      message(paste0('[', format(Sys.time(), '%H:%M:%S'), '] Skipping pathway enrichment for cluster because no marker genes were identified for any cluster.'))
+      temp_seurat@misc$marker_genes$by_clusters_annotation <- 'no_markers_found'
     } else {
-      warning("Unexpected data format of marker genes for clusters. Please submit an issue on GitHub: https://github.com/romanhaa/cerebroPrepare.")
+      warning('Unexpected data format of marker genes for clusters. Please submit an issue on GitHub: https://github.com/romanhaa/cerebroPrepare.')
     }
   } else {
-    warning("No marker genes for clusters available.")
+    warning('No marker genes for clusters available.')
   }
   ##--------------------------------------------------------------------------##
   ##
@@ -228,30 +228,30 @@ enrichr <- function(
   databases = NULL,
   URL_API = NULL
 ) {
-  if (is.vector(genes) & ! all(genes == "") & length(genes) != 0) {
+  if (is.vector(genes) & ! all(genes == '') & length(genes) != 0) {
     temp <- httr::POST(
       url = URL_API,
-      body = list(list = paste(genes, collapse = "\n"))
+      body = list(list = paste(genes, collapse = '\n'))
     )
   } else if (is.data.frame(genes)) {
     temp <- httr::POST(
       url = URL_API,
-      body = list(list = paste(paste(genes[,1], genes[,2], sep = ","), collapse = "\n"))
+      body = list(list = paste(paste(genes[,1], genes[,2], sep = ','), collapse = '\n'))
     )
   } else {
-    warning("genes must be a non-empty vector of gene names or a dataframe with genes and score.")
+    warning('genes must be a non-empty vector of gene names or a dataframe with genes and score.')
   }
-  httr::GET(url = "http://amp.pharm.mssm.edu/Enrichr/share")
+  httr::GET(url = 'http://amp.pharm.mssm.edu/Enrichr/share')
   dfSAF <- options()$stringsAsFactors
   options(stringsAsFactors = FALSE)
   result <- future.apply::future_sapply(databases, USE.NAMES = TRUE, simplify = FALSE, function(x) {
     r <- httr::GET(
-      url = "http://amp.pharm.mssm.edu/Enrichr/export",
-      query = list(file = "API", backgroundType = x)
+      url = 'http://amp.pharm.mssm.edu/Enrichr/export',
+      query = list(file = 'API', backgroundType = x)
     )
-    r <- gsub("&#39;", "'", intToUtf8(r$content))
+    r <- gsub('&#39;', "'", intToUtf8(r$content))
     tc <- textConnection(r)
-    r <- read.table(tc, sep = "\t", header = TRUE, quote = "", comment.char = "")
+    r <- read.table(tc, sep = '\t', header = TRUE, quote = '', comment.char = '')
     close(tc)
     return(r)
   })

@@ -50,7 +50,7 @@ getMostExpressedGenes <- function(
         'pct' = double(),
         stringsAsFactors = FALSE
       )
-      message('Get most expressed genes by sample...')
+      message(paste0('[', format(Sys.time(), '%H:%M:%S'), '] Get most expressed genes by sample...'))
       if ( temp_seurat@version < 3 ) {
         results <- pbapply::pblapply(sample_names, function(x) {
           temp_table <- temp_seurat@raw.data %>%
@@ -109,7 +109,7 @@ getMostExpressedGenes <- function(
           'expr' = double(),
           stringsAsFactors = FALSE
         )
-      message('Get most expressed genes by cluster...')
+      message(paste0('[', format(Sys.time(), '%H:%M:%S'), '] Get most expressed genes by cluster...'))
       if ( temp_seurat@version < 3 ) {
         results <- pbapply::pblapply(cluster_names, function(x) {
           temp_table <- temp_seurat@raw.data %>%

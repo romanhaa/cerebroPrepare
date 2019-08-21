@@ -94,7 +94,7 @@ getMarkerGenes <- function(
     }
     #
     if ( length(sample_names) > 1 ) {
-      message('Get marker genes for samples...')
+      message(paste0('[', format(Sys.time(), '%H:%M:%S'), '] Get marker genes for samples...'))
       if ( temp_seurat@version < 3 ) {
         temp_seurat <- SetAllIdent(temp_seurat, id = column_sample)
         temp_seurat@ident <- factor(temp_seurat@ident, levels = sample_names)
@@ -164,7 +164,7 @@ getMarkerGenes <- function(
             mutate(on_cell_surface = gene %in% genes_on_cell_surface)
         }
       } else {
-        message('No marker genes found for any of the samples.')
+        message(paste0('[', format(Sys.time(), '%H:%M:%S'), '] No marker genes found for any of the samples.'))
         markers_by_sample <- 'no_markers_found'
       }
     } else {
@@ -192,7 +192,7 @@ getMarkerGenes <- function(
     }
     #
     if ( length(cluster_names) > 1 ) {
-      message('Get marker genes by cluster...')
+      message(paste0('[', format(Sys.time(), '%H:%M:%S'), '] Get marker genes by cluster...'))
       if ( temp_seurat@version < 3 ) {
         temp_seurat <- SetAllIdent(temp_seurat, id = column_cluster)
         temp_seurat@ident <- factor(temp_seurat@ident, levels = cluster_names)
@@ -259,7 +259,7 @@ getMarkerGenes <- function(
             mutate(on_cell_surface = gene %in% genes_on_cell_surface)
         }
       } else {
-        message('No marker genes found for any of the clusters.')
+        message(paste0('[', format(Sys.time(), '%H:%M:%S'), '] No marker genes found for any of the clusters.'))
         markers_by_cluster <- 'no_markers_found'
       }
     } else {
