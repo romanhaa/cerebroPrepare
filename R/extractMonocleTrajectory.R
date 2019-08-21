@@ -113,7 +113,7 @@ extractMonocleTrajectory <- function(
 
   trajectory_info <- base::t(monocle@reducedDimS) %>%
     base::as.data.frame() %>%
-    dplyr::rename(DR_1 = 1, DR_2 = 2, DR_3 = 3) %>%
+    dplyr::rename(DR_1 = 1, DR_2 = 2) %>%
     dplyr::mutate(cell = base::rownames(.)) %>%
     dplyr::left_join(
       .,
@@ -125,7 +125,7 @@ extractMonocleTrajectory <- function(
       .,
       by = 'cell'
     ) %>%
-    dplyr::select(DR_1,DR_2,DR_3,pseudotime,state,cell)
+    dplyr::select(DR_1,DR_2,pseudotime,state,cell)
 
   base::rownames(trajectory_info) <- trajectory_info$cell
   trajectory_info <- trajectory_info %>% dplyr::select(-cell)
