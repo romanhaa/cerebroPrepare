@@ -1,5 +1,5 @@
 [![](https://img.shields.io/github/license/romanhaa/cerebroPrepare)](LICENSE.md)
-[![](https://img.shields.io/twitter/follow/fakechek1?label=Twitter&style=social)](https://twitter.com/fakechek1)
+[![](https://img.shields.io/twitter/follow/fakechek1?label=Follow%20%40fakechek1&style=social)](https://twitter.com/fakechek1)
 
 # cerebroPrepare
 
