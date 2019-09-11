@@ -16,9 +16,10 @@ getEnrichedPathways(object, column_sample = "sample",
 \item{object}{Seurat object.}
 
 \item{column_sample}{Column in object@meta.data that contains information
-about sample; defaults to "sample".}
+about sample; defaults to 'sample'.}
 
-\item{column_cluster}{Column in object@meta.data that contains information}
+\item{column_cluster}{Column in object@meta.data that contains information
+about cluster; defaults to 'cluster'.}
 
 \item{databases}{Which databases to query. Use enrichR::listEnrichrDbs() to
 check what databases are available.}
@@ -31,7 +32,7 @@ defaults to 0.05,}
 \item{URL_API}{URL to send requests to (Enrichr API). Allows to overwrite
 default URL with an alternative taken from the Enrichr website in case the
 original is out-of-service; defaults to
-"http://amp.pharm.mssm.edu/Enrichr/enrich".}
+'http://amp.pharm.mssm.edu/Enrichr/enrich'.}
 }
 \description{
 This function uses the enrichR API to look for enriched pathways
@@ -48,7 +49,7 @@ seurat <- getEnrichedPathways(
   databases = c('GO_Biological_Process_2018','GO_Cellular_Component_2018'),
   adj_p_cutoff = 0.01,
   max_terms = 100,
-  URL_API = "http://amp.pharm.mssm.edu/Enrichr/enrich"
+  URL_API = 'http://amp.pharm.mssm.edu/Enrichr/enrich'
 )
 }
 \keyword{cerebro}
