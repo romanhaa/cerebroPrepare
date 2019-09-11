@@ -28,6 +28,12 @@ getMostExpressedGenes <- function(
   ##--------------------------------------------------------------------------##
   temp_seurat <- object
   ##--------------------------------------------------------------------------##
+  ## create slot for results in Seurat object if not already existing
+  ##--------------------------------------------------------------------------##
+  if ( is.null(temp_seurat@misc$most_expressed_genes) ) {
+    temp_seurat@misc$most_expressed_genes <- list()
+  }
+  ##--------------------------------------------------------------------------##
   ## samples
   ## - check if column_sample was provided and exists in meta data
   ## - get sample names
@@ -35,6 +41,7 @@ getMostExpressedGenes <- function(
   ## - retrieve most expressed genes in parallel with future_lapply
   ## - combine results in a single data frame
   ## - sort by sample (probably not necessary)
+  ## - store results in Seurat object
   ##--------------------------------------------------------------------------##
   if ( !is.null(column_sample) && column_sample %in% names(temp_seurat@meta.data) ) {
     #
@@ -84,6 +91,7 @@ getMostExpressedGenes <- function(
       }
       most_expressed_genes_by_sample <- do.call(rbind, results) %>%
         mutate(sample = factor(sample, levels = sample_names))
+      temp_seurat@misc$most_expressed_genes$by_sample <- most_expressed_genes_by_sample
     }
   }
   #
@@ -95,6 +103,7 @@ getMostExpressedGenes <- function(
   ## - retrieve most expressed genes in parallel with future_lapply
   ## - combine results in a single data frame
   ## - sort by cluster (probably not necessary)
+  ## - store results in Seurat object
   ##--------------------------------------------------------------------------##
   if ( !is.null(column_cluster) && column_cluster %in% names(temp_seurat@meta.data) ) {
     if ( is.factor(temp_seurat@meta.data[[column_cluster]]) ) {
@@ -143,17 +152,9 @@ getMostExpressedGenes <- function(
       }
       most_expressed_genes_by_cluster <- do.call(rbind, results) %>%
         mutate(cluster = factor(cluster, levels = cluster_names))
+      temp_seurat@misc$most_expressed_genes$by_cluster <- most_expressed_genes_by_cluster
     }
   }
-  ##--------------------------------------------------------------------------##
-  ## create slot for results in Seurat object if not already existing and attach
-  ## store results
-  ##--------------------------------------------------------------------------##
-  if ( is.null(temp_seurat@misc$most_expressed_genes) ) {
-    temp_seurat@misc$most_expressed_genes <- list()
-  }
-  temp_seurat@misc$most_expressed_genes$by_sample <- most_expressed_genes_by_sample
-  temp_seurat@misc$most_expressed_genes$by_cluster <- most_expressed_genes_by_cluster
   ##--------------------------------------------------------------------------##
   ## return Seurat object
   ##--------------------------------------------------------------------------##
