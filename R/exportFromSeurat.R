@@ -26,6 +26,7 @@
 #' @keywords seurat cerebro
 #' @export
 #' @import dplyr
+#' @import Seurat
 #' @import tidyr
 #' @examples
 #' exportFromSeurat(
