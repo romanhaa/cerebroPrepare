@@ -6,15 +6,15 @@
 #' @param object Seurat object. log-counts for analysis must be stored in
 #' `object@data` (Seurat object older than v3) or `object@assays$RNA@data`
 #' (Seurat object v3 or newer).
+#' @param gene_sets Path to GMT file containing the gene sets to be tested.
+#' The Broad Institute provides many gene sets which can be downloaded:
+#' http://software.broadinstitute.org/gsea/msigdb/index.jsp
 #' @param column_sample Column in object@meta.data that contains information
 #' about sample; defaults to 'sample'.
 #' @param column_cluster Column in object@meta.data that contains information
 #' about cluster; defaults to 'cluster'.
 #' @param thresh_p_val Threshold for p-value, defaults to 0.05.
 #' @param thresh_q_val Threshold for q-value, defaults to 0.1.
-#' @param gene_sets GMT file containing the gene sets to be tested. Defaults to
-#' all gene sets stored in MSigDB [v7.0]:
-#' http://software.broadinstitute.org/gsea/msigdb/index.jsp
 #' @keywords seurat cerebro
 #' @export
 #' @import dplyr
@@ -26,26 +26,30 @@
 #' @examples
 #' seurat <- performGeneSetEnrichmentAnalysis(
 #'   object = seurat,
+#'   gene_sets = 'path/to/gene_sets.gmt',
 #'   column_sample = 'sample',
 #'   column_cluster = 'cluster',
 #'   thresh_p_val = 0.05,
-#'   thresh_q_val = 0.1,
-#'   gene_sets = 'msigdb'
+#'   thresh_q_val = 0.1
 #' )
 
 performGeneSetEnrichmentAnalysis <- function(
   object,
+  gene_sets_to_test,
   column_sample = 'sample',
   column_cluster = 'cluster',
   thresh_p_val = 0.05,
-  thresh_q_val = 0.1,
-  gene_sets_to_test = 'msigdb'
+  thresh_q_val = 0.1
 )
 {
 
   #----------------------------------------------------------------------------#
   # check input parameters
   #----------------------------------------------------------------------------#
+  if ( !file.exists(gene_sets_to_test) )
+  {
+    stop("Specified GMT file with gene sets cannot be found.", call. = FALSE)
+  }
   if ( (column_sample %in% colnames(object@meta.data)) == FALSE )
   {
     stop("Specified sample column doesn't exist in meta data. Please correct it.", call. = FALSE)
@@ -72,14 +76,7 @@ performGeneSetEnrichmentAnalysis <- function(
       '[', format(Sys.time(), '%H:%M:%S'), '] Loading gene sets...'
     )
   )
-  if ( gene_sets_to_test == 'msigdb' ) {
-    gene_sets <- read_GMT_file(system.file('extdata', 'msigdb.v7.0.symbols.gmt.gz', package = 'cerebroPrepare'))
-  } else {
-    if ( !file.exists(gene_sets_to_test) )
-    {
-      stop("Specified GMT file with gene sets cannot be found.", call. = FALSE)
-    }
-    gene_sets <- read_GMT_file(gene_sets_to_test)
+  gene_sets <- read_GMT_file(gene_sets_to_test)
   }
   message(
     paste0(
