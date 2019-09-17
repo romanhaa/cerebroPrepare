@@ -15,6 +15,7 @@
 #' about cluster; defaults to 'cluster'.
 #' @param thresh_p_val Threshold for p-value, defaults to 0.05.
 #' @param thresh_q_val Threshold for q-value, defaults to 0.1.
+#' @param ... Further parameters can be passed to control GSVA::gsva().
 #' @keywords seurat cerebro
 #' @export
 #' @import dplyr
@@ -39,7 +40,8 @@ performGeneSetEnrichmentAnalysis <- function(
   column_sample = 'sample',
   column_cluster = 'cluster',
   thresh_p_val = 0.05,
-  thresh_q_val = 0.1
+  thresh_q_val = 0.1,
+  ...
 )
 {
 
@@ -173,11 +175,7 @@ performGeneSetEnrichmentAnalysis <- function(
     enrichment_scores <- GSVA::gsva(
         expr = matrix_merged,
         gset.idx.list = gene_sets$genesets,
-        min.sz = 1,
-        max.sz = Inf,
-        mx.diff = TRUE,
-        verbose = FALSE,
-        parallel.sz = 0
+        ...
       )
 
     # calculate statistics for enrichment scores and filter those which don't pass
@@ -272,11 +270,7 @@ performGeneSetEnrichmentAnalysis <- function(
     enrichment_scores <- GSVA::gsva(
         expr = matrix_merged,
         gset.idx.list = gene_sets$genesets,
-        min.sz = 1,
-        max.sz = Inf,
-        mx.diff = TRUE,
-        verbose = FALSE,
-        parallel.sz = 0
+        ...
       )
 
     # calculate statistics for enrichment scores and filter those which don't pass

@@ -6,7 +6,7 @@
 \usage{
 performGeneSetEnrichmentAnalysis(object, gene_sets_to_test,
   column_sample = "sample", column_cluster = "cluster",
-  thresh_p_val = 0.05, thresh_q_val = 0.1)
+  thresh_p_val = 0.05, thresh_q_val = 0.1, ...)
 }
 \arguments{
 \item{object}{Seurat object. log-counts for analysis must be stored in
@@ -22,6 +22,8 @@ about cluster; defaults to 'cluster'.}
 \item{thresh_p_val}{Threshold for p-value, defaults to 0.05.}
 
 \item{thresh_q_val}{Threshold for q-value, defaults to 0.1.}
+
+\item{...}{Further parameters can be passed to control GSVA::gsva().}
 
 \item{gene_sets}{Path to GMT file containing the gene sets to be tested.
 The Broad Institute provides many gene sets which can be downloaded:
