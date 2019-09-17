@@ -19,7 +19,6 @@
 #' @keywords seurat cerebro
 #' @export
 #' @import dplyr
-#' @importFrom GSA GSA.read.gmt
 #' @importFrom GSVA gsva
 #' @importFrom Matrix colSums
 #' @importFrom qvalue qvalue
