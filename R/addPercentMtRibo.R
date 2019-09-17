@@ -11,7 +11,6 @@
 #' @export
 #' @import dplyr
 #' @import readr
-#' @import Seurat
 #' @examples
 #' seurat <- addPercentMtRibo(
 #'   object = seurat,

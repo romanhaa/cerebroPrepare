@@ -6,7 +6,6 @@
 #' @param genes List(s) of genes.
 #' @keywords seurat cerebro
 #' @export
-#' @import Seurat
 #' @examples
 #' calculatePercentGenes(
 #'   object = seurat,

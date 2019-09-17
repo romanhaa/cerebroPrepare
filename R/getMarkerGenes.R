@@ -23,7 +23,6 @@
 #' @keywords seurat cerebro
 #' @export
 #' @import dplyr
-#' @import Seurat
 #' @examples
 #' seurat <- getMarkerGenes(
 #'   object = seurat
