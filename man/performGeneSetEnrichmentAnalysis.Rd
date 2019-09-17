@@ -32,7 +32,10 @@ http://software.broadinstitute.org/gsea/msigdb/index.jsp}
 \description{
 This function calculates enrichment scores, p- and q-value
 statistics for provided gene sets for samples and clusters of cells in given
-Seurat object using gene set variation analysis (GSVA).
+Seurat object using gene set variation analysis (GSVA). Calculation of p- and
+q-values for gene sets is performed as done in "Evaluation of methods to
+assign cell type labels to cell clusters from single-cell RNA-sequencing
+data", Diaz-Mejia et al., F1000Research (2019).
 }
 \details{
 Perform gene set enrichment analysis with GSVA.

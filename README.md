@@ -30,7 +30,7 @@ Prepare data:
 
 ```r
 library('cerebroPrepare')
-cerebro <- exportFromSeurat(seurat, 'my_experiment.crb')
+exportFromSeurat(seurat, 'my_experiment.crb')
 ```
 
 Launch Cerebro and load the RDS file you just exported from R.
@@ -42,6 +42,7 @@ seurat <- addPercentMtRibo(seurat)
 seurat <- getMostExpressedGenes(seurat)
 seurat <- getMarkerGenes(seurat)
 seurat <- getEnrichedPathways(seurat)
+seurat <- performGeneSetEnrichmentAnalysis(seurat)
 ```
 
 ## Further details
@@ -50,4 +51,6 @@ For further details, please refer to the official [Cerebro](https://github.com/r
 
 ## Credit
 
-* Pathway enrichment in marker genes is done through the enrichR API (<https://github.com/wjawaid/enrichR>). I took the `enrichr` function and modified it to run in parallel (`future_lapply`) and not print status messages.
+* Pathway enrichment in marker gene lists (`getEnrichedPathways()`) is done through the enrichR API (<https://github.com/wjawaid/enrichR>). I took the `enrichr` function and modified it to run in parallel (`future_lapply`) and not print status messages.
+* Gene set enrichment analysis (`performGeneSetEnrichmentAnalysis()`) is performed using the [GSVA](https://bioconductor.org/packages/release/bioc/html/GSVA.html) R package. p- and q-value statistics are calculated through the same method as used by "Evaluation of methods to assign cell type labels to cell clusters from single-cell RNA-sequencing data", Diaz-Mejia *et al*., F1000Research (2019). [Link to publication](https://f1000research.com/articles/8-296/v2)
+*
