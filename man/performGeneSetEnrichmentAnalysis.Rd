@@ -4,9 +4,9 @@
 \alias{performGeneSetEnrichmentAnalysis}
 \title{Perform gene set enrichment analysis with GSVA.}
 \usage{
-performGeneSetEnrichmentAnalysis(object, column_sample = "sample",
-  column_cluster = "cluster", thresh_p_val = 0.05,
-  thresh_q_val = 0.1, gene_sets_to_test = "msigdb")
+performGeneSetEnrichmentAnalysis(object, gene_sets_to_test,
+  column_sample = "sample", column_cluster = "cluster",
+  thresh_p_val = 0.05, thresh_q_val = 0.1)
 }
 \arguments{
 \item{object}{Seurat object. log-counts for analysis must be stored in
@@ -23,8 +23,8 @@ about cluster; defaults to 'cluster'.}
 
 \item{thresh_q_val}{Threshold for q-value, defaults to 0.1.}
 
-\item{gene_sets}{GMT file containing the gene sets to be tested. Defaults to
-all gene sets stored in MSigDB [v7.0]:
+\item{gene_sets}{Path to GMT file containing the gene sets to be tested.
+The Broad Institute provides many gene sets which can be downloaded:
 http://software.broadinstitute.org/gsea/msigdb/index.jsp}
 }
 \description{
@@ -38,11 +38,11 @@ Perform gene set enrichment analysis with GSVA.
 \examples{
 seurat <- performGeneSetEnrichmentAnalysis(
   object = seurat,
+  gene_sets = 'path/to/gene_sets.gmt',
   column_sample = 'sample',
   column_cluster = 'cluster',
   thresh_p_val = 0.05,
-  thresh_q_val = 0.1,
-  gene_sets = 'msigdb'
+  thresh_q_val = 0.1
 )
 }
 \keyword{cerebro}

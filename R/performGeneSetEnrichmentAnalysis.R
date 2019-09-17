@@ -77,13 +77,7 @@ performGeneSetEnrichmentAnalysis <- function(
     )
   )
   gene_sets <- read_GMT_file(gene_sets_to_test)
-  }
-  message(
-    paste0(
-      '[', format(Sys.time(), '%H:%M:%S'), '] Loaded ',
-      length(gene_sets$genesets), ' gene sets from GMT file.'
-    )
-  )
+
   names(gene_sets$genesets) <- gene_sets$geneset.names
 
   # make tibble that contains name, description and list of genes for each set
@@ -100,6 +94,13 @@ performGeneSetEnrichmentAnalysis <- function(
       unlist() %>%
       paste(., collapse = ',')
   }
+
+  message(
+    paste0(
+      '[', format(Sys.time(), '%H:%M:%S'), '] Loaded ',
+      length(gene_sets$genesets), ' gene sets from GMT file.'
+    )
+  )
 
   # extract transcript count matrix (log-scale) from Seurat object
   message(
