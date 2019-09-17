@@ -49,6 +49,16 @@ getMostExpressedGenes <- function(
       sample_names <- as.character(levels(temp_seurat@meta.data[[column_sample]]))
     } else {
       sample_names <- unique(temp_seurat@meta.data[[column_sample]])
+      if ( any(is.na(sample_names)) ) {
+        number_of_NA_in_sample_column <- which(is.na(sample_names)) %>% length()
+        sample_names <- na.omit(sample_names)
+        message(
+          paste0(
+            '[', format(Sys.time(), '%H:%M:%S'), '] Found ', number_of_NA_in_sample_column,
+            ' cell(s) without cluster information (NA). These cells will be ignored during this analysis.'
+          )
+        )
+      }
     }
     if ( length(sample_names) > 1 ) {
       most_expressed_genes_by_sample <- data.frame(
@@ -110,6 +120,16 @@ getMostExpressedGenes <- function(
       cluster_names <- as.character(levels(temp_seurat@meta.data[[column_cluster]]))
     } else {
       cluster_names <- sort(unique(temp_seurat@meta.data[[column_cluster]]))
+      if ( any(is.na(cluster_names)) ) {
+        number_of_NA_in_cluster_column <- which(is.na(cluster_names)) %>% length()
+        cluster_names <- na.omit(cluster_names)
+        message(
+          paste0(
+            '[', format(Sys.time(), '%H:%M:%S'), '] Found ', number_of_NA_in_cluster_column,
+            ' cell(s) without cluster information (NA). These cells will be ignored during this analysis.'
+          )
+        )
+      }
     }
     if ( length(cluster_names) > 1 ) {
       most_expressed_genes_by_cluster <- data.frame(
