@@ -283,6 +283,13 @@ exportFromSeurat <- function(
     export$marker_genes <- object@misc$marker_genes
   }
   ##--------------------------------------------------------------------------##
+  ## GSVA results
+  ##--------------------------------------------------------------------------##
+  if ( !is.null(object@misc$GSVA_results) ) {
+    message(paste0('[', format(Sys.time(), '%H:%M:%S'), '] Extracting gene set enrichment analysis results...'))
+    export$GSVA_results <- object@misc$GSVA_results
+  }
+  ##--------------------------------------------------------------------------##
   ## dimensional reductions
   ##--------------------------------------------------------------------------##
   message(paste0('[', format(Sys.time(), '%H:%M:%S'), '] Extracting dimensional reductions...'))
