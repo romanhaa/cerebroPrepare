@@ -233,7 +233,7 @@ performGeneSetEnrichmentAnalysis <- function(
       )
     )
 
-    # test if nrow is 0
+    # test if any gene sets passed the filtering
     if ( nrow(results_by_sample) == 0 )
     {
       results_by_sample <- 'no_gene_sets_enriched'
@@ -337,7 +337,7 @@ performGeneSetEnrichmentAnalysis <- function(
       )
     )
 
-    # test if nrow is 0
+    # test if any gene sets passed the filtering
     if ( nrow(results_by_cluster) == 0 )
     {
       results_by_cluster <- 'no_gene_sets_enriched'
