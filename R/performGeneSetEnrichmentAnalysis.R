@@ -56,11 +56,11 @@ performGeneSetEnrichmentAnalysis <- function(
   }
   if ( (column_sample %in% colnames(object@meta.data)) == FALSE )
   {
-    stop("Specified sample column doesn't exist in meta data. Please correct it.", call. = FALSE)
+    stop("Specified sample column doesn't exist in meta data.", call. = FALSE)
   }
   if ( (column_cluster %in% colnames(object@meta.data)) == FALSE )
   {
-    stop("Specified cluster column doesn't exist in meta data. Please correct it.", call. = FALSE)
+    stop("Specified cluster column doesn't exist in meta data.", call. = FALSE)
   }
   if ( thresh_p_val < 0 | thresh_p_val > 1 )
   {
@@ -152,6 +152,14 @@ performGeneSetEnrichmentAnalysis <- function(
         '[', format(Sys.time(), '%H:%M:%S'), '] Performing GSVA for samples...'
       )
     )
+
+    # get sample names
+    if ( is.factor(object@meta.data[[column_sample]]) ) {
+      sample_names <- levels(object@meta.data[[column_sample]])
+    } else {
+      sample_names <- unique(object@meta.data[[column_sample]])
+    }
+
     # add group information as column to expression matrix
     temp_matrix_full <- matrix_full %>%
       dplyr::mutate(group = object@meta.data[[column_sample]])
@@ -214,7 +222,8 @@ performGeneSetEnrichmentAnalysis <- function(
 
     # add description, number of genes and list of genes to results
     results_by_sample <- dplyr::left_join(results_by_sample, gene_sets_tibble, by = 'name') %>%
-      dplyr::select(group, name, description, length, genes, enrichment_score, p_value, q_value)
+      dplyr::select(group, name, description, length, genes, enrichment_score, p_value, q_value) %>%
+      dplyr::mutate(group = factor(group, levels = sample_names))
 
     # print number of enriched gene sets
     message(
@@ -247,6 +256,14 @@ performGeneSetEnrichmentAnalysis <- function(
         '[', format(Sys.time(), '%H:%M:%S'), '] Performing GSVA for clusters...'
       )
     )
+
+    # get cluster names
+    if ( is.factor(object@meta.data[[column_cluster]]) ) {
+      cluster_names <- levels(object@meta.data[[column_cluster]])
+    } else {
+      cluster_names <- unique(object@meta.data[[column_cluster]])
+    }
+
     # add group information as column to expression matrix
     temp_matrix_full <- matrix_full %>%
       dplyr::mutate(group = object@meta.data[[column_cluster]])
@@ -309,7 +326,8 @@ performGeneSetEnrichmentAnalysis <- function(
 
     # add description, number of genes and list of genes to results
     results_by_cluster <- dplyr::left_join(results_by_cluster, gene_sets_tibble, by = 'name') %>%
-      dplyr::select(group, name, description, length, genes, enrichment_score, p_value, q_value)
+      dplyr::select(group, name, description, length, genes, enrichment_score, p_value, q_value) %>%
+      dplyr::mutate(group = factor(group, levels = cluster_names))
 
     # print number of enriched gene sets
     message(
