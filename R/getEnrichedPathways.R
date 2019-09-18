@@ -79,12 +79,9 @@ getEnrichedPathways <- function(
       }
       #
       markers_by_sample <- temp_seurat@misc$marker_genes$by_sample
+
       #
-      if ( is.null(temp_seurat@misc$marker_genes$by_sample_annotation) ) {
-        temp_seurat@misc$marker_genes$by_sample_annotation <- list()
-      }
-      #
-      temp_seurat@misc$marker_genes$by_sample_annotation <- future.apply::future_sapply(
+      results_by_sample <- future.apply::future_sapply(
         sample_names, USE.NAMES = TRUE, simplify = FALSE, future.globals = FALSE, function(x) {
         temp <- list()
         attempt <- 1
@@ -92,7 +89,7 @@ getEnrichedPathways <- function(
           attempt <- attempt + 1
           try(
             temp <- markers_by_sample %>%
-              filter(sample == x) %>%
+              dplyr::filter(sample == x) %>%
               dplyr::select('gene') %>%
               t() %>%
               as.vector() %>%
@@ -101,13 +98,13 @@ getEnrichedPathways <- function(
         }
         #
         results_2 <- sapply(names(temp), USE.NAMES = TRUE, simplify = FALSE, function(y) {
-          length <- temp[[y]] %>% filter(Adjusted.P.value <= adj_p_cutoff) %>% nrow()
+          length <- temp[[y]] %>% dplyr::filter(Adjusted.P.value <= adj_p_cutoff) %>% nrow()
           # if there are more than max_terms entries with an adjusted p-value of 1 or less...
           if ( length > max_terms ) {
-            temp[[y]] %>% top_n(-max_terms, Adjusted.P.value)
+            temp[[y]] %>% dplyr::top_n(-max_terms, Adjusted.P.value)
           # if there is at least 1 entry with an adjusted p-value of 1 or less...
           } else if ( length > 0 ) {
-            temp[[y]] %>% filter(Adjusted.P.value <= adj_p_cutoff)
+            temp[[y]] %>% dplyr::filter(Adjusted.P.value <= adj_p_cutoff)
           # remove the curent database
           } else {
             NULL
@@ -118,11 +115,11 @@ getEnrichedPathways <- function(
             results_2[[i]] <- NULL
           }
         }
-        results_2
+        return(results_2)
       })
     } else if ( temp_seurat@misc$marker_genes$by_sample == 'no_markers_found' ) {
       message(paste0('[', format(Sys.time(), '%H:%M:%S'), '] Skipping pathway enrichment for samples because no marker genes were identified for any sample.'))
-      temp_seurat@misc$marker_genes$by_sample_annotation <- 'no_markers_found'
+      results_by_sample <- 'no_markers_found'
     } else {
       warning('Unexpected data format of marker genes for samples. Please submit an issue on GitHub: https://github.com/romanhaa/cerebroPrepare.')
     }
@@ -149,11 +146,9 @@ getEnrichedPathways <- function(
         cluster_names <- sort(unique(temp_seurat@meta.data[[column_cluster]]))
       }
       markers_by_cluster <- temp_seurat@misc$marker_genes$by_cluster
-      if ( is.null(temp_seurat@misc$marker_genes$by_cluster_annotation) ) {
-        temp_seurat@misc$marker_genes$by_cluster_annotation <- list()
-      }
+
       #
-      temp_seurat@misc$marker_genes$by_cluster_annotation <- future.apply::future_sapply(
+      results_by_cluster <- future.apply::future_sapply(
         cluster_names, USE.NAMES = TRUE, simplify = FALSE, future.globals = FALSE, function(x) {
         temp <- list()
         attempt <- 1
@@ -161,7 +156,7 @@ getEnrichedPathways <- function(
           attempt <- attempt + 1
           try(
             temp <- markers_by_cluster %>%
-              filter(cluster == x) %>%
+              dplyr::filter(cluster == x) %>%
               dplyr::select('gene') %>%
               t() %>%
               as.vector() %>%
@@ -170,13 +165,13 @@ getEnrichedPathways <- function(
         }
         #
         results_2 <- sapply(names(temp), USE.NAMES = TRUE, simplify = FALSE, function(y) {
-          length <- temp[[y]] %>% filter(Adjusted.P.value <= adj_p_cutoff) %>% nrow()
+          length <- temp[[y]] %>% dplyr::filter(Adjusted.P.value <= adj_p_cutoff) %>% nrow()
           # if there are more than max_terms entries with an adjusted p-value of 1 or less...
           if ( length > max_terms ) {
-            temp[[y]] %>% top_n(-max_terms, Adjusted.P.value)
+            temp[[y]] %>% dplyr::top_n(-max_terms, Adjusted.P.value)
           # if there is at least 1 entry with an adjusted p-value of 1 or less...
           } else if ( length > 0 ) {
-            temp[[y]] %>% filter(Adjusted.P.value <= adj_p_cutoff)
+            temp[[y]] %>% dplyr::filter(Adjusted.P.value <= adj_p_cutoff)
           # remove the curent database
           } else {
             NULL
@@ -187,25 +182,32 @@ getEnrichedPathways <- function(
             results_2[[i]] <- NULL
           }
         }
-        results_2
+        return(results_2)
       })
     } else if ( temp_seurat@misc$marker_genes$by_cluster == 'no_markers_found' ) {
       message(paste0('[', format(Sys.time(), '%H:%M:%S'), '] Skipping pathway enrichment for cluster because no marker genes were identified for any cluster.'))
-      temp_seurat@misc$marker_genes$by_clusters_annotation <- 'no_markers_found'
+      results_by_cluster <- 'no_markers_found'
     } else {
       warning('Unexpected data format of marker genes for clusters. Please submit an issue on GitHub: https://github.com/romanhaa/cerebroPrepare.')
     }
   } else {
     warning('No marker genes for clusters available.')
   }
-  ##--------------------------------------------------------------------------##
-  ##
-  ##--------------------------------------------------------------------------##
-  temp_seurat@misc$marker_genes$parameters_annotation <- list(
-    databases = databases,
-    adj_p_cutoff = adj_p_cutoff,
-    max_terms = max_terms
+
+  #----------------------------------------------------------------------------#
+  # merge results, add to Seurat object and return Seurat object
+  #----------------------------------------------------------------------------#
+  results <- list(
+    by_sample = results_by_sample,
+    by_cluster = results_by_cluster,
+    parameters = list(
+      databases = databases,
+      adj_p_cutoff = adj_p_cutoff,
+      max_terms = max_terms
+    )
   )
+  temp_seurat@misc$enriched_pathways$enrichr <- results
+
   ##--------------------------------------------------------------------------##
   ## return Seurat object
   ##--------------------------------------------------------------------------##

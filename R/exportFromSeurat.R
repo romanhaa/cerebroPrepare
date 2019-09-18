@@ -283,11 +283,11 @@ exportFromSeurat <- function(
     export$marker_genes <- object@misc$marker_genes
   }
   ##--------------------------------------------------------------------------##
-  ## GSVA results
+  ## enriched pathways
   ##--------------------------------------------------------------------------##
-  if ( !is.null(object@misc$GSVA_results) ) {
-    message(paste0('[', format(Sys.time(), '%H:%M:%S'), '] Extracting gene set enrichment analysis results...'))
-    export$GSVA_results <- object@misc$GSVA_results
+  if ( !is.null(object@misc$enriched_pathways) ) {
+    message(paste0('[', format(Sys.time(), '%H:%M:%S'), '] Extracting pathway enrichment results...'))
+    export$enriched_pathways <- object@misc$enriched_pathways
   }
   ##--------------------------------------------------------------------------##
   ## dimensional reductions

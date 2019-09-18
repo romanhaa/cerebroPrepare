@@ -85,7 +85,7 @@ performGeneSetEnrichmentAnalysis <- function(
   names(gene_sets$genesets) <- gene_sets$geneset.names
 
   # make tibble that contains name, description and list of genes for each set
-  gene_sets_tibble <- tibble(
+  gene_sets_tibble <- tibble::tibble(
       name = gene_sets$geneset.names,
       description = gene_sets$geneset.description,
       length = NA,
@@ -195,7 +195,7 @@ performGeneSetEnrichmentAnalysis <- function(
         '[', format(Sys.time(), '%H:%M:%S'), '] Filtering results based on specified thresholds...'
       )
     )
-    results_by_sample <- tibble(
+    results_by_sample <- tibble::tibble(
         group = character(),
         name = character(),
         enrichment_score = numeric(),
@@ -299,7 +299,7 @@ performGeneSetEnrichmentAnalysis <- function(
         '[', format(Sys.time(), '%H:%M:%S'), '] Filtering results based on specified thresholds...'
       )
     )
-    results_by_cluster <- tibble(
+    results_by_cluster <- tibble::tibble(
         group = character(),
         name = character(),
         enrichment_score = numeric(),
@@ -356,9 +356,14 @@ performGeneSetEnrichmentAnalysis <- function(
   #----------------------------------------------------------------------------#
   results <- list(
     by_sample = results_by_sample,
-    by_cluster = results_by_cluster
+    by_cluster = results_by_cluster,
+    parameters = list(
+      GMT_file = basename(gene_sets_to_test),
+      thresh_p_val = thresh_p_val,
+      thresh_q_val = thresh_q_val
+    )
   )
-  object@misc$GSVA_results <- results
+  object@misc$enriched_pathways$GSVA <- results
   return(object)
 }
 
