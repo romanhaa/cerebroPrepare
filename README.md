@@ -42,7 +42,7 @@ seurat <- addPercentMtRibo(seurat)
 seurat <- getMostExpressedGenes(seurat)
 seurat <- getMarkerGenes(seurat)
 seurat <- getEnrichedPathways(seurat)
-seurat <- performGeneSetEnrichmentAnalysis(seurat)
+seurat <- performGeneSetEnrichmentAnalysis(seurat, GMT_file = 'c2.all.v7.0.symbols.gmt')
 ```
 
 ## Further details
