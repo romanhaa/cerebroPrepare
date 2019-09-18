@@ -38,7 +38,7 @@
 
 performGeneSetEnrichmentAnalysis <- function(
   object,
-  gene_sets_to_test,
+  GMT_file,
   column_sample = 'sample',
   column_cluster = 'cluster',
   thresh_p_val = 0.05,
@@ -50,7 +50,7 @@ performGeneSetEnrichmentAnalysis <- function(
   #----------------------------------------------------------------------------#
   # check input parameters
   #----------------------------------------------------------------------------#
-  if ( !file.exists(gene_sets_to_test) )
+  if ( !file.exists(GMT_file) )
   {
     stop("Specified GMT file with gene sets cannot be found.", call. = FALSE)
   }
@@ -80,7 +80,7 @@ performGeneSetEnrichmentAnalysis <- function(
       '[', format(Sys.time(), '%H:%M:%S'), '] Loading gene sets...'
     )
   )
-  gene_sets <- read_GMT_file(gene_sets_to_test)
+  gene_sets <- read_GMT_file(GMT_file)
 
   names(gene_sets$genesets) <- gene_sets$geneset.names
 
@@ -358,7 +358,7 @@ performGeneSetEnrichmentAnalysis <- function(
     by_sample = results_by_sample,
     by_cluster = results_by_cluster,
     parameters = list(
-      GMT_file = basename(gene_sets_to_test),
+      GMT_file = basename(GMT_file),
       thresh_p_val = thresh_p_val,
       thresh_q_val = thresh_q_val
     )
