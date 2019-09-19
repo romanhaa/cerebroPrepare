@@ -61,8 +61,8 @@ getEnrichedPathways <- function(
   ##--------------------------------------------------------------------------##
   ## samples
   ## - check if marker genes by sample are available
-  ## - get sample names
   ## - extract marker genes by sample
+  ## - get sample names and remove those for which no marker genes are available
   ## - create slot for annotation if doesn't already exist
   ## - annotate marker genes for each sample in parallel
   ## - try up to three times to run enrichR annotation (fails sometimes)
@@ -72,13 +72,15 @@ getEnrichedPathways <- function(
     if ( is.data.frame(temp_seurat@misc$marker_genes$by_sample) ) {
       message(paste0('[', format(Sys.time(), '%H:%M:%S'), '] Get enriched pathway for samples...'))
       #
+      markers_by_sample <- temp_seurat@misc$marker_genes$by_sample
+      #
       if ( is.factor(temp_seurat@meta.data[[column_sample]]) ) {
         sample_names <- levels(temp_seurat@meta.data[[column_sample]])
       } else {
         sample_names <- unique(temp_seurat@meta.data[[column_sample]])
       }
-      #
-      markers_by_sample <- temp_seurat@misc$marker_genes$by_sample
+      # remove samples for which no marker genes were found
+      sample_names <- sample_names[which(sample_names %in% unique(markers_by_sample$sample))]
 
       #
       results_by_sample <- future.apply::future_sapply(
@@ -129,8 +131,8 @@ getEnrichedPathways <- function(
   ##--------------------------------------------------------------------------##
   ## clusters
   ## - check if marker genes by cluster are available
-  ## - get cluster names
   ## - extract marker genes by cluster
+  ## - get cluster names and remove those for which no marker genes are available
   ## - create slot for annotation if doesn't already exist
   ## - annotate marker genes for each cluster in parallel
   ## - try up to three times to run enrichR annotation (fails sometimes)
@@ -140,12 +142,15 @@ getEnrichedPathways <- function(
     if ( is.data.frame(temp_seurat@misc$marker_genes$by_cluster) ) {
       message(paste0('[', format(Sys.time(), '%H:%M:%S'), '] Get enriched pathway for clusters...'))
       #
+      markers_by_cluster <- temp_seurat@misc$marker_genes$by_cluster
+      #
       if ( is.factor(temp_seurat@meta.data[[column_cluster]]) ) {
         cluster_names <- as.character(levels(temp_seurat@meta.data[[column_cluster]]))
       } else {
         cluster_names <- sort(unique(temp_seurat@meta.data[[column_cluster]]))
       }
-      markers_by_cluster <- temp_seurat@misc$marker_genes$by_cluster
+      # remove clusters for which no marker genes were found
+      cluster_names <- cluster_names[which(cluster_names %in% unique(markers_by_cluster$cluster))]
 
       #
       results_by_cluster <- future.apply::future_sapply(
