@@ -136,7 +136,7 @@ extractMonocleTrajectory <- function(
   if ( is.null(seurat@misc$trajectory) ) {
     seurat@misc$trajectory <- list()
   }
-  seurat@misc$trajectory[[trajectory_name]] <- list(
+  seurat@misc$trajectory$monocle2[[trajectory_name]] <- list(
     meta = trajectory_info,
     edges = edges
   )

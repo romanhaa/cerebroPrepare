@@ -338,7 +338,7 @@ exportFromSeurat <- function(
     }
   }
   ##--------------------------------------------------------------------------##
-  ## trajectory
+  ## trajectories
   ##--------------------------------------------------------------------------##
   if ( length(seurat@misc$trajectory) == 0 ) {
     message(paste0('[', format(Sys.time(), '%H:%M:%S'), '] No trajectories to extracting...'))
